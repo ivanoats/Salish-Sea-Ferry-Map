@@ -35,4 +35,16 @@ describe("ferry dataset integrity", () => {
     const ids = [...TERMINALS_BY_ID.keys()];
     expect(new Set(ids).size).toBe(ids.length);
   });
+
+  it("includes the Pierce County Anderson Island route with the Ketron note", () => {
+    expect(ROUTES.find((route) => route.id === "pierce-county-steilacoom-anderson")).toEqual(
+      expect.objectContaining({
+        operatorId: "pierce-county",
+        mode: "vehicle",
+        status: "active",
+        terminalIds: ["steilacoom-landing", "ketron-island", "anderson-island-yoman"],
+        note: expect.stringMatching(/Ketron Island.+(reservation|request)/i),
+      })
+    );
+  });
 });

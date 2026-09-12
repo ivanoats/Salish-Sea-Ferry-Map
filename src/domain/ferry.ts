@@ -13,6 +13,7 @@ export type OperatorId =
   | "bc-ferries"
   | "black-ball"
   | "kitsap-transit"
+  | "pierce-county"
   | "victoria-clipper"
   | "skagit-county"
   | "whatcom-county";
@@ -21,7 +22,7 @@ export interface Operator {
   readonly id: OperatorId;
   readonly name: string;
   readonly shortName: string;
-  /** Panda color token (see panda.config.ts) used for this operator's routes on the map and in the legend. */
+  /** Concrete hex color used for this operator's routes on the map and in the legend. */
   readonly color: string;
   readonly website: string;
 }

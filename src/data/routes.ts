@@ -6,7 +6,7 @@ import type { FerryRoute } from "@/domain/ferry";
  * Cortes, the Sunshine Coast north of Powell River, and every Vancouver
  * Island west-coast / north-coast / Haida Gwaii route), Black Ball Ferry
  * Line, Kitsap Transit's passenger-only fast ferries, Victoria Clipper, and
- * the two county-run cable/car ferries (Guemes Island, Lummi Island).
+ * the three county-run ferries (Guemes Island, Lummi Island, Anderson Island).
  *
  * Route lines are drawn straight between terminals (see ferry-map.tsx) —
  * that's the actual sailing line for open-water crossings, and a
@@ -138,6 +138,17 @@ export const ROUTES: readonly FerryRoute[] = [
     mode: "passenger",
     status: "active",
     terminalIds: ["seattle-pier-69", "victoria-belleville"],
+  },
+
+  // --- Pierce County ---
+  {
+    id: "pierce-county-steilacoom-anderson",
+    name: "Steilacoom – Ketron Island – Anderson Island",
+    operatorId: "pierce-county",
+    mode: "vehicle",
+    status: "active",
+    terminalIds: ["steilacoom-landing", "ketron-island", "anderson-island-yoman"],
+    note: "Ketron Island stop is by reservation/request, not on every sailing",
   },
 
   // --- County ferries ---
