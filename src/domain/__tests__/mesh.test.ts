@@ -1,0 +1,77 @@
+import { readFileSync } from "node:fs";
+import { describe, expect, it } from "vitest";
+import {
+  buildMeshGraph,
+  haversineNm,
+  meshPathCoordinates,
+  nearestNode,
+  type MeshFeatureCollection,
+} from "@/domain/mesh";
+import { TERMINALS } from "@/data/terminals";
+
+/**
+ * The mesh is read from disk rather than imported, for the same reason it
+ * lives outside `src/` — an import would pull ~800 KB into whatever bundle
+ * traced it.
+ */
+const mesh = JSON.parse(
+  readFileSync("data/salish-mesh.json", "utf8")
+) as MeshFeatureCollection;
+
+const graph = buildMeshGraph(mesh);
+
+describe("salish mesh graph", () => {
+  it("collapses shared vertices into single nodes", () => {
+    const vertexCount = mesh.features
+      .filter((f) => f.geometry.type === "LineString")
+      .reduce((total, f) => total + f.geometry.coordinates.length, 0);
+
+    // The port depends on corridors and spurs meeting at *identical*
+    // coordinates rather than merely nearby ones — that is what makes the
+    // network one connected graph. 21,323 vertices collapsing to 8,189
+    // nodes is that sharing; if a mesh rebuild stopped snapping joins, this
+    // ratio would move toward 1 and paths would silently stop connecting.
+    expect(graph.nodes).toHaveLength(8_189);
+    expect(vertexCount).toBeGreaterThan(graph.nodes.length * 2);
+    expect(graph.byKey.size).toBe(graph.nodes.length);
+  });
+
+  it("gives every node at least one neighbour", () => {
+    const orphans = graph.nodes.filter((n) => n.edges.length === 0);
+    expect(orphans).toHaveLength(0);
+  });
+
+  it("routes Anacortes to Friday Harbor around the islands, not through them", () => {
+    const anacortes: readonly [number, number] = [-122.6789, 48.5077];
+    const fridayHarbor: readonly [number, number] = [-123.0163, 48.5352];
+
+    const path = meshPathCoordinates(graph, anacortes, fridayHarbor);
+    expect(path).not.toBeNull();
+
+    // A straight line here sails over Lopez and Shaw. The mesh path has to
+    // be both longer than the direct distance and made of real geometry
+    // rather than the two endpoints.
+    const along = (points: readonly (readonly [number, number])[]) =>
+      points.reduce(
+        (total, point, at) =>
+          at === 0 ? 0 : total + haversineNm(points[at - 1]!, point),
+        0
+      );
+    expect(path!.length).toBeGreaterThan(2);
+    expect(along(path!)).toBeGreaterThan(haversineNm(anacortes, fridayHarbor));
+  });
+
+  /**
+   * The count is asserted rather than the whole list so that improving the
+   * mesh coverage fails this test loudly and gets the documented figure
+   * updated with it. The four are Comox, Gambier Island, Lasqueti Island,
+   * and Cortes Island — all noted in data/README.md.
+   */
+  it("snaps all but four terminals to the network", () => {
+    const unreachable = TERMINALS.filter(
+      (t) => nearestNode(graph, t.coordinates) === null
+    ).map((t) => t.id);
+
+    expect(unreachable).toHaveLength(4);
+  });
+});
