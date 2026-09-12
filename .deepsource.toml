@@ -8,8 +8,8 @@ exclude_patterns = [
 ]
 
 # Anchored with a leading ** because the suites live beside the code
-# they cover — src/domain/__tests__, src/adapters/outbound/__tests__ and
-# so on — not in one directory at the repo root.
+# they cover — src/domain/__tests__ and src/data/__tests__ — not in one
+# directory at the repo root.
 test_patterns = [
   "**/__tests__/**"
 ]
@@ -20,17 +20,19 @@ test_patterns = [
 
   [analyzers.meta]
     plugins = ["react"]
-    # The app is browser code; scripts/ is Node CLI tooling that prints
-    # its progress to stdout. Without naming both, every console call in
-    # a build script is reported as browser debug output left behind —
-    # 26 of them the day the mesh tooling landed.
+    # The app is browser code; scripts/ is Node CLI tooling that reports
+    # what it did on stdout. Without naming both, every console call in a
+    # build script reads as browser debug output left behind — the three
+    # in scripts/copy-maplibre-worker.mjs, where the console.error is the
+    # whole point: it's what turns a half-staged MapLibre worker into a
+    # failed build instead of a map that renders blank.
     #
     # The trade this makes: `environment` is per-analyzer, not per-path,
     # so there is no way to say "browser under src/, Node under
     # scripts/". Naming nodejs stops JS-0002 (no console in browser code)
-    # firing anywhere, app code included. That rule currently has one
-    # call to catch — the deliberate console.warn in load-dataset.ts —
-    # so the cost is small, but it is a cost. If console statements start
+    # firing anywhere, app code included. Nothing under src/ calls console
+    # today, so the rule is giving up nothing right now — but it is
+    # switched off there, not passing. If console statements start
     # appearing in components, scope the rule in the DeepSource dashboard
     # rather than assuming this file still guards it.
     environment = [
