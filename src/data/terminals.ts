@@ -35,9 +35,9 @@ export const TERMINALS: readonly Terminal[] = [
   { id: "seattle-pier-69", name: "Seattle (Pier 69)", coordinates: [-122.3406, 47.6086], jurisdiction: "WA" },
 
   // --- Pierce County ---
-  { id: "steilacoom-landing", name: "Steilacoom Landing", coordinates: [-122.64493, 47.16939], jurisdiction: "WA" },
-  { id: "ketron-island", name: "Ketron Island", coordinates: [-122.62616, 47.16545], jurisdiction: "WA" },
-  { id: "anderson-island-yoman", name: "Anderson Island (Yoman)", coordinates: [-122.71592, 47.16236], jurisdiction: "WA" },
+  { id: "steilacoom-landing", name: "Steilacoom Landing", coordinates: [-122.6031, 47.17315], jurisdiction: "WA" },
+  { id: "ketron-island", name: "Ketron Island", coordinates: [-122.6292, 47.16223], jurisdiction: "WA" },
+  { id: "anderson-island-yoman", name: "Anderson Island (Yoman)", coordinates: [-122.67726, 47.17855], jurisdiction: "WA" },
 
   // --- Skagit County / Whatcom County ---
   { id: "anacortes-guemes-dock", name: "Anacortes (6th St. dock)", coordinates: [-122.6156, 48.5136], jurisdiction: "WA" },

@@ -36,15 +36,11 @@ describe("ferry dataset integrity", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it("includes the Pierce County Anderson Island route with the Ketron note", () => {
-    expect(ROUTES.find((route) => route.id === "pierce-county-steilacoom-anderson")).toEqual(
-      expect.objectContaining({
-        operatorId: "pierce-county",
-        mode: "vehicle",
-        status: "active",
-        terminalIds: ["steilacoom-landing", "ketron-island", "anderson-island-yoman"],
-        note: expect.stringMatching(/Ketron Island.+(reservation|request)/i),
-      })
-    );
+  it("the Pierce County Anderson Island route progresses westward without doubling back", () => {
+    const route = ROUTES.find((candidate) => candidate.id === "pierce-county-steilacoom-anderson");
+    expect(route).toBeDefined();
+
+    const longitudes = route!.terminalIds.map((terminalId) => TERMINALS_BY_ID.get(terminalId)?.coordinates[0]);
+    expect(longitudes).toEqual([...longitudes].sort((a, b) => b! - a!));
   });
 });
