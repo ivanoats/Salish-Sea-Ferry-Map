@@ -5,6 +5,7 @@ import {
   haversineNm,
   meshPathCoordinates,
   nearestNode,
+  type LonLat,
   type MeshFeatureCollection,
 } from "@/domain/mesh";
 import { TERMINALS } from "@/data/terminals";
@@ -42,23 +43,30 @@ describe("salish mesh graph", () => {
   });
 
   it("routes Anacortes to Friday Harbor around the islands, not through them", () => {
-    const anacortes: readonly [number, number] = [-122.6789, 48.5077];
-    const fridayHarbor: readonly [number, number] = [-123.0163, 48.5352];
+    const anacortes: LonLat = [-122.6789, 48.5077];
+    const fridayHarbor: LonLat = [-123.0163, 48.5352];
 
     const path = meshPathCoordinates(graph, anacortes, fridayHarbor);
-    expect(path).not.toBeNull();
+    if (path === null) {
+      throw new Error("no mesh path between Anacortes and Friday Harbor");
+    }
 
     // A straight line here sails over Lopez and Shaw. The mesh path has to
     // be both longer than the direct distance and made of real geometry
     // rather than the two endpoints.
-    const along = (points: readonly (readonly [number, number])[]) =>
-      points.reduce(
-        (total, point, at) =>
-          at === 0 ? 0 : total + haversineNm(points[at - 1]!, point),
-        0
-      );
-    expect(path!.length).toBeGreaterThan(2);
-    expect(along(path!)).toBeGreaterThan(haversineNm(anacortes, fridayHarbor));
+    const along = (points: readonly LonLat[]): number => {
+      let total = 0;
+      for (let at = 1; at < points.length; at++) {
+        const previous = points[at - 1];
+        const current = points[at];
+        if (previous === undefined || current === undefined) continue;
+        total += haversineNm(previous, current);
+      }
+      return total;
+    };
+
+    expect(path.length).toBeGreaterThan(2);
+    expect(along(path)).toBeGreaterThan(haversineNm(anacortes, fridayHarbor));
   });
 
   /**

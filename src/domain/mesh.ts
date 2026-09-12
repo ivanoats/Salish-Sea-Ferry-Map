@@ -35,11 +35,13 @@ export const haversineNm = (a: LonLat, b: LonLat): number => {
   const lat1 = toRadians(a[1]);
   const lat2 = toRadians(b[1]);
 
-  const h =
+  const halfChordSquared =
     Math.sin(dLat / 2) ** 2 +
     Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
 
-  return 2 * EARTH_RADIUS_NM * Math.asin(Math.min(1, Math.sqrt(h)));
+  return (
+    2 * EARTH_RADIUS_NM * Math.asin(Math.min(1, Math.sqrt(halfChordSquared)))
+  );
 };
 
 /** The subset of the mesh file this needs. */
