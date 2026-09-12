@@ -33,5 +33,8 @@ jobs:
       - name: Stage MapLibre worker
         run: npm run maplibre-worker
 
+      # The local binary rather than `npx panda`: npm ci above already
+      # installed the pinned version, and npx would happily resolve a
+      # different one from the registry and run its lifecycle scripts.
       - name: Generate Panda styled-system
-        run: npx panda codegen --silent
+        run: ./node_modules/.bin/panda codegen --silent

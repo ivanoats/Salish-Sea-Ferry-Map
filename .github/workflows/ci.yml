@@ -13,6 +13,9 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
+    # Read-only: nothing here writes to the repo.
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
