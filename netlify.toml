@@ -11,3 +11,9 @@
   # Skipping scripts also skips this project's own postinstall, but
   # `npm run build` stages the MapLibre worker as its first step anyway.
   NPM_FLAGS = "--legacy-peer-deps --ignore-scripts"
+
+# Declared explicitly rather than relying on Netlify's framework
+# auto-detection: without the runtime, the build "succeeds" but publishes
+# the raw .next directory as static files and every route 404s.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
