@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "24"
+  NEXT_TELEMETRY_DISABLED = "1"
+  # The same two flags the README calls for locally, both upstream quirks:
+  # --legacy-peer-deps dodges an npm bug in vitest 4's peer graph, and
+  # --ignore-scripts skips @park-ui/panda-preset's broken postinstall.
+  # Skipping scripts also skips this project's own postinstall, but
+  # `npm run build` stages the MapLibre worker as its first step anyway.
+  NPM_FLAGS = "--legacy-peer-deps --ignore-scripts"
