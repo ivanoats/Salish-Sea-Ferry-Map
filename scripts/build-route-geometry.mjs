@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
 import { runInNewContext } from "node:vm";
 import ts from "typescript";
 
@@ -305,6 +306,11 @@ export const writeRouteLegGeometryModule = () => {
   writeFileSync(OUTPUT_PATH, moduleSource);
 };
 
-if (process.argv[1]?.endsWith("scripts/build-route-geometry.mjs")) {
+const isDirectInvocation = () =>
+  process.argv[1] !== undefined &&
+  import.meta.url.startsWith("file:") &&
+  resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isDirectInvocation()) {
   writeRouteLegGeometryModule();
 }
