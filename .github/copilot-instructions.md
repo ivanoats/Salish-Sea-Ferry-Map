@@ -48,6 +48,20 @@ Prefer adding to the data files over adding machinery. If a feature can be
 expressed as a new field on `Terminal` or `FerryRoute` and a derivation in
 `src/domain/`, do it that way.
 
+### Architecture docs are generated
+
+`docs/architecture/workspace.dsl` is the source of truth for the C4 model.
+Everything under `docs/architecture/generated/` — both the `.puml` and the
+`.svg` — is build output that happens to be committed so GitHub can render it.
+Edit the DSL and regenerate with the pinned commands in
+`docs/architecture/README.md`; never hand-edit a generated file, and never add a
+diagram the model doesn't produce.
+
+Declare each relationship once, at the most specific level that is true, and let
+Structurizr imply the container and system edges. Declaring the same edge at two
+levels is what let the container and component views disagree about who calls
+OpenStreetMap.
+
 ## Conventions
 
 - **`readonly` throughout.** Data arrays, interface fields, and coordinate
