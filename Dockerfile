@@ -6,11 +6,11 @@ WORKDIR /app
 # Copy package files
 COPY package.json package-lock.json ./
 
-# Copy scripts (needed for postinstall hook)
-COPY scripts ./scripts
-
-# Install dependencies
-RUN npm ci
+# --ignore-scripts keeps dependency lifecycle hooks from executing arbitrary
+# code at install time. This project's own postinstall (which stages the
+# MapLibre worker) is skipped along with them, but `npm run build` runs that
+# same step itself as its first action, so nothing is lost.
+RUN npm ci --ignore-scripts
 
 # Copy source code
 COPY . .
@@ -29,11 +29,9 @@ RUN apk add --no-cache dumb-init
 # Copy package files
 COPY package.json package-lock.json ./
 
-# Copy scripts (needed for postinstall hook)
-COPY scripts ./scripts
-
-# Install only production dependencies
-RUN npm ci --omit=dev
+# Install only production dependencies. Scripts are ignored here for the same
+# reason as in the builder; the worker files are copied in from that stage.
+RUN npm ci --omit=dev --ignore-scripts
 
 # Copy built app from builder stage. Owned by `node` so the runtime user can
 # write Next.js's on-disk caches under .next/ rather than failing on them.
