@@ -117,6 +117,8 @@ describe("ferry dataset integrity", () => {
 
   it("includes baked geometry for the Seattle–West Seattle Water Taxi leg", () => {
     const geometry = ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS["seattle-colman-dock\0west-seattle-seacrest"];
+    const reverseGeometry =
+      ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS["west-seattle-seacrest\0seattle-colman-dock"];
     expect(geometry).toBeDefined();
     expect(geometry?.coordinates[0]).toEqual(
       TERMINALS_BY_ID.get("seattle-colman-dock")?.coordinates
@@ -124,5 +126,6 @@ describe("ferry dataset integrity", () => {
     expect(geometry?.coordinates.at(-1)).toEqual(
       TERMINALS_BY_ID.get("west-seattle-seacrest")?.coordinates
     );
+    expect(reverseGeometry).toBeUndefined();
   });
 });
