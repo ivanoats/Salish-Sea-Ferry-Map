@@ -268,7 +268,7 @@ const loadMesh = () => JSON.parse(readFileSync(MESH_PATH, "utf8"));
 
 export const buildRouteLegGeometryByDirectedTerminalIds = () => {
   const graph = buildMeshGraph(loadMesh());
-  const geometryByDirectedTerminalIds = {};
+  const geometryByDirectedTerminalIds = new Map();
 
   for (const route of ROUTES) {
     for (let legIndex = 0; legIndex < route.terminalIds.length - 1; legIndex++) {
@@ -287,21 +287,24 @@ export const buildRouteLegGeometryByDirectedTerminalIds = () => {
       }
 
       const key = directedLegKey(from.id, to.id);
-      if (geometryByDirectedTerminalIds[key] !== undefined) continue;
+      if (geometryByDirectedTerminalIds.has(key)) continue;
 
       const coordinates = meshPathCoordinates(graph, from.coordinates, to.coordinates);
       if (coordinates !== null) {
-        geometryByDirectedTerminalIds[key] = coordinates;
+        geometryByDirectedTerminalIds.set(key, coordinates);
       }
     }
   }
 
-  return geometryByDirectedTerminalIds;
+  return Object.fromEntries(
+    [...geometryByDirectedTerminalIds.entries()].sort(([leftKey], [rightKey]) =>
+      compareCodeUnits(leftKey, rightKey)
+    )
+  );
 };
 
 export const renderRouteLegGeometryModule = (geometryByDirectedTerminalIds) => {
   const renderedEntries = Object.entries(geometryByDirectedTerminalIds)
-    .sort(([leftKey], [rightKey]) => compareCodeUnits(leftKey, rightKey))
     .map(([key, coordinates]) => {
       const renderedCoordinates = coordinates
         .map(([longitude, latitude]) => `    [${longitude}, ${latitude}],`)
