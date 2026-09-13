@@ -13,13 +13,14 @@ route knowledge across UI code.
 ## C4 views
 
 Following the [C4 model](https://c4model.com/), zooming in one level at a time.
-GitHub renders each `.mmd` file directly in its preview tab.
+The source of truth is [`workspace.dsl`](./workspace.dsl), and committed SVG
+exports are rendered directly by GitHub without cloning.
 
 | Level | View | Scope |
 | --- | --- | --- |
-| 1 | [System context](./system-context.mmd) | The map, its people, and the two external systems it depends on |
-| 2 | [Container view](./container-view.mmd) | The Next.js app, the browser map UI, and the vessel proxy |
-| 3 | [Component view](./component-view.mmd) | Inside the Next.js app: data, domain, and UI components |
+| 1 | [System context](./generated/plantuml/structurizr-system-context.svg) | The map, its people, and the two external systems it depends on |
+| 2 | [Container view](./generated/plantuml/structurizr-container-view.svg) | The Next.js app, the browser map UI, and the vessel proxy |
+| 3 | [Component view](./generated/plantuml/structurizr-component-view.svg) | Inside the Next.js app: data, domain, and UI components |
 
 Level 4 (code) is deliberately omitted — the type definitions in `src/domain/`
 already serve that purpose and would only go stale if duplicated here.
@@ -27,6 +28,32 @@ already serve that purpose and would only go stale if duplicated here.
 The curated dataset is a *component* rather than a container: it compiles into
 the application bundle and is not a separately running thing, which is what
 [C4 means by a container](https://c4model.com/abstractions/container).
+
+### Regenerating diagrams from the DSL
+
+Edit `workspace.dsl`, then regenerate diagrams deliberately (not as part of
+`npm run build` or Netlify deploys):
+
+```bash
+# from the repository root
+mkdir -p docs/architecture/generated/plantuml
+
+docker run --rm \
+  -v "$PWD":/workspace \
+  -w /workspace \
+  structurizr/cli:latest export \
+  -workspace docs/architecture/workspace.dsl \
+  -format plantuml/c4plantuml \
+  -output docs/architecture/generated/plantuml
+
+docker run --rm \
+  -v "$PWD":/workspace \
+  -w /workspace \
+  plantuml/plantuml:latest \
+  -tsvg docs/architecture/generated/plantuml/structurizr-system-context.puml \
+  docs/architecture/generated/plantuml/structurizr-container-view.puml \
+  docs/architecture/generated/plantuml/structurizr-component-view.puml
+```
 
 ## Key runtime pieces
 
