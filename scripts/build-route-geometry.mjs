@@ -1,17 +1,41 @@
-import { readFileSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { createRequire } from "node:module";
 import { runInNewContext } from "node:vm";
 import ts from "typescript";
 
 const MESH_PATH = resolve("data/salish-mesh.json");
 const OUTPUT_PATH = resolve("src/data/route-leg-geometry.ts");
+const requireFromHere = createRequire(import.meta.url);
+const moduleCache = new Map();
 
 const directedLegKey = (fromId, toId) => `${fromId}\0${toId}`;
 const compareCodeUnits = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
 const EARTH_RADIUS_NM = 3440.065;
 const MAX_SNAP_NM = 2;
 
+const resolveLocalModule = (fromPath, specifier) => {
+  const base = specifier.startsWith("@/")
+    ? resolve("src", specifier.slice(2))
+    : resolve(dirname(fromPath), specifier);
+  for (const candidate of [
+    base,
+    `${base}.ts`,
+    `${base}.js`,
+    `${base}.json`,
+    resolve(base, "index.ts"),
+    resolve(base, "index.js"),
+    resolve(base, "index.json"),
+  ]) {
+    if (existsSync(candidate)) return candidate;
+  }
+  throw new Error(`cannot resolve ${specifier} from ${fromPath}`);
+};
+
 const loadModule = (path) => {
+  const cached = moduleCache.get(path);
+  if (cached !== undefined) return cached;
+
   const source = readFileSync(path, "utf8");
   const { outputText } = ts.transpileModule(source, {
     compilerOptions: {
@@ -20,11 +44,23 @@ const loadModule = (path) => {
     },
   });
   const commonJsModule = { exports: {} };
+  moduleCache.set(path, commonJsModule.exports);
+  const require = (specifier) => {
+    if (specifier.startsWith("./") || specifier.startsWith("../") || specifier.startsWith("@/")) {
+      const resolved = resolveLocalModule(path, specifier);
+      if (resolved.endsWith(".json")) {
+        return JSON.parse(readFileSync(resolved, "utf8"));
+      }
+      return loadModule(resolved);
+    }
+    return requireFromHere(specifier);
+  };
   runInNewContext(
     outputText,
-    { module: commonJsModule, exports: commonJsModule.exports },
+    { module: commonJsModule, exports: commonJsModule.exports, require },
     { filename: path }
   );
+  moduleCache.set(path, commonJsModule.exports);
   return commonJsModule.exports;
 };
 
