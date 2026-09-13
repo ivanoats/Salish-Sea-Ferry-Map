@@ -66,16 +66,21 @@ interface RouteLeg {
   readonly coordinates: readonly (readonly [number, number])[];
 }
 
+type RouteLegGeometryByDirectedTerminalIds = Readonly<
+  Record<string, readonly (readonly [number, number])[]>
+>;
+
 const routeLegCoordinates = (
   from: Terminal,
-  to: Terminal
+  to: Terminal,
+  routeLegGeometryByDirectedTerminalIds: RouteLegGeometryByDirectedTerminalIds
 ): readonly (readonly [number, number])[] => {
-  const direct = ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS[
+  const direct = routeLegGeometryByDirectedTerminalIds[
     directedLegKey(from.id, to.id)
   ];
   if (direct !== undefined) return direct;
 
-  const reverse = ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS[
+  const reverse = routeLegGeometryByDirectedTerminalIds[
     directedLegKey(to.id, from.id)
   ];
   if (reverse !== undefined) return [...reverse].reverse();
@@ -91,7 +96,8 @@ const routeLegCoordinates = (
  */
 const routeLegs = (
   routes: readonly FerryRoute[],
-  terminalsById: ReadonlyMap<string, Terminal>
+  terminalsById: ReadonlyMap<string, Terminal>,
+  routeLegGeometryByDirectedTerminalIds: RouteLegGeometryByDirectedTerminalIds
 ): RouteLeg[] => {
   const legs: RouteLeg[] = [];
 
@@ -112,7 +118,11 @@ const routeLegs = (
         // `seen` has just grown to the number of legs kept for this route.
         legIndex: seen.size - 1,
         key,
-        coordinates: routeLegCoordinates(from, to),
+        coordinates: routeLegCoordinates(
+          from,
+          to,
+          routeLegGeometryByDirectedTerminalIds
+        ),
       });
     }
   }
@@ -139,9 +149,14 @@ const routeLegs = (
  */
 export function routesToLineFeatureCollection(
   routes: readonly FerryRoute[],
-  terminalsById: ReadonlyMap<string, Terminal>
+  terminalsById: ReadonlyMap<string, Terminal>,
+  routeLegGeometryByDirectedTerminalIds: RouteLegGeometryByDirectedTerminalIds = ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS
 ): GeoJSON.FeatureCollection<GeoJSON.LineString, RouteLineProperties> {
-  const legs = routeLegs(routes, terminalsById);
+  const legs = routeLegs(
+    routes,
+    terminalsById,
+    routeLegGeometryByDirectedTerminalIds
+  );
 
   const laneCounts = new Map<string, number>();
   for (const leg of legs) {

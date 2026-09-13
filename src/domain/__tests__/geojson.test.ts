@@ -4,7 +4,6 @@ import type { FerryRoute, Terminal } from "@/domain/ferry";
 import { haversineNm } from "@/domain/mesh";
 import { ROUTES } from "@/data/routes";
 import { TERMINALS_BY_ID } from "@/data/terminals";
-import { ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS } from "@/data/route-leg-geometry";
 
 const terminals: Terminal[] = [
   { id: "a", name: "A", coordinates: [-123, 48], jurisdiction: "WA" },
@@ -122,54 +121,36 @@ describe("routesToLineFeatureCollection", () => {
   });
 
   it("reuses reverse-direction baked geometry and orients the full polyline for shared lanes", () => {
-    const key = "a\0b";
-    const prior = ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS[key];
-    (
-      ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS as Record<
-        string,
-        readonly (readonly [number, number])[]
-      >
-    )[key] = [
-      [-124, 49],
-      [-123.8, 48.8],
-      [-123, 48],
-    ];
-
-    try {
-      const carFerry = route("car", ["a", "b"]);
-      const fastFerry = route("fast", ["b", "a"], {
-        operatorId: "kitsap-transit",
-        mode: "passenger",
-      });
-      const fc = routesToLineFeatureCollection([carFerry, fastFerry], terminalsById);
-
-      expect(fc.features.map((f) => f.geometry.coordinates)).toEqual([
-        [
+    const carFerry = route("car", ["a", "b"]);
+    const fastFerry = route("fast", ["b", "a"], {
+      operatorId: "kitsap-transit",
+      mode: "passenger",
+    });
+    const fc = routesToLineFeatureCollection(
+      [carFerry, fastFerry],
+      terminalsById,
+      {
+        "a\0b": [
           [-124, 49],
           [-123.8, 48.8],
           [-123, 48],
         ],
-        [
-          [-124, 49],
-          [-123.8, 48.8],
-          [-123, 48],
-        ],
-      ]);
-      expect(fc.features.map((f) => f.properties.offsetIndex)).toEqual([-0.5, 0.5]);
-    } finally {
-      if (prior === undefined) {
-        delete (ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS as Record<string, unknown>)[
-          key
-        ];
-      } else {
-        (
-          ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS as Record<
-            string,
-            readonly (readonly [number, number])[]
-          >
-        )[key] = prior;
       }
-    }
+    );
+
+    expect(fc.features.map((f) => f.geometry.coordinates)).toEqual([
+      [
+        [-124, 49],
+        [-123.8, 48.8],
+        [-123, 48],
+      ],
+      [
+        [-124, 49],
+        [-123.8, 48.8],
+        [-123, 48],
+      ],
+    ]);
+    expect(fc.features.map((f) => f.properties.offsetIndex)).toEqual([-0.5, 0.5]);
   });
 
   it("centers three routes sharing a leg on the true line", () => {
