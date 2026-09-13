@@ -8,6 +8,7 @@ import {
   buildMeshGraph,
   haversineNm,
   meshPathCoordinates,
+  meshPathCoordinatesFromNodes,
   type LonLat,
   nearestNode,
   type MeshFeatureCollection,
@@ -95,7 +96,7 @@ const osmRouteCoordinates = (
       continue;
     }
 
-    const coordinates = meshPathCoordinates(graph, from, to);
+    const coordinates = meshPathCoordinatesFromNodes(graph, from, start, to, goal);
     if (coordinates === null) continue;
 
     const candidate = {

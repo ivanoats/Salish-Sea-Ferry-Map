@@ -238,28 +238,13 @@ const shortestNodePath = (graph: MeshGraph, start: number, goal: number): number
   return settled[goal] === 1 ? walkBack(cameFrom, start, goal) : null;
 };
 
-/**
- * The shortest way through the water from one position to another.
- *
- * The path runs `from` → mesh vertices → `to`, so it starts and ends where
- * the caller asked rather than at the snapped vertices; an endpoint that
- * already rounds onto its vertex is not repeated. Always two or more
- * positions, so the result is a valid LineString.
- *
- * Null means the mesh cannot serve the pair — either endpoint further than
- * `MAX_SNAP_NM` from the network, or no route between them. Callers should
- * treat that as "fall back to the straight line for this leg", not as an
- * error.
- */
-export const meshPathCoordinates = (
+export const meshPathCoordinatesFromNodes = (
   graph: MeshGraph,
   from: LonLat,
-  to: LonLat
+  start: number,
+  to: LonLat,
+  goal: number
 ): LonLat[] | null => {
-  const start = nearestNode(graph, from);
-  const goal = nearestNode(graph, to);
-  if (start === null || goal === null) return null;
-
   if (start === goal) {
     const node = (graph.nodes[start] as MeshNode).at;
     const coordinates: LonLat[] = [from];
@@ -284,4 +269,29 @@ export const meshPathCoordinates = (
     coordinates.push(to);
   }
   return coordinates;
+};
+
+/**
+ * The shortest way through the water from one position to another.
+ *
+ * The path runs `from` → mesh vertices → `to`, so it starts and ends where
+ * the caller asked rather than at the snapped vertices; an endpoint that
+ * already rounds onto its vertex is not repeated. Always two or more
+ * positions, so the result is a valid LineString.
+ *
+ * Null means the mesh cannot serve the pair — either endpoint further than
+ * `MAX_SNAP_NM` from the network, or no route between them. Callers should
+ * treat that as "fall back to the straight line for this leg", not as an
+ * error.
+ */
+export const meshPathCoordinates = (
+  graph: MeshGraph,
+  from: LonLat,
+  to: LonLat
+): LonLat[] | null => {
+  const start = nearestNode(graph, from);
+  const goal = nearestNode(graph, to);
+  if (start === null || goal === null) return null;
+
+  return meshPathCoordinatesFromNodes(graph, from, start, to, goal);
 };
