@@ -9,7 +9,8 @@
   },
   "scripts": {
     "dev": "npm run maplibre-worker && panda codegen --silent && next dev",
-    "build": "npm run maplibre-worker && panda codegen --silent && next build",
+    "build": "npm run build-route-geometry && npm run maplibre-worker && panda codegen --silent && next build",
+    "build-route-geometry": "node --experimental-strip-types scripts/build-route-geometry.mjs",
     "start": "next start",
     "maplibre-worker": "node scripts/copy-maplibre-worker.mjs",
     "postinstall": "node scripts/copy-maplibre-worker.mjs",

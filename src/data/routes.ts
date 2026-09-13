@@ -1,4 +1,4 @@
-import type { FerryRoute } from "@/domain/ferry";
+import type { FerryRoute } from "../domain/ferry";
 
 /**
  * Every ferry route in scope: Washington State Ferries, BC Ferries (bounded

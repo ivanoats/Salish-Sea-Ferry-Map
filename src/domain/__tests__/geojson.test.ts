@@ -222,6 +222,11 @@ describe("routesToLineFeatureCollection with baked mesh legs", () => {
     if (found === undefined) throw new Error(`missing route ${id}`);
     return found;
   };
+  const terminalById = (id: string) => {
+    const found = TERMINALS_BY_ID.get(id);
+    if (found === undefined) throw new Error(`unknown terminal id ${id}`);
+    return found;
+  };
 
   it("draws Anacortes–Friday Harbor with mesh geometry longer than a straight line", () => {
     const route = routeById("wsf-anacortes-sidney");
@@ -237,8 +242,8 @@ describe("routesToLineFeatureCollection with baked mesh legs", () => {
     expect(coordinates.length).toBeGreaterThan(2);
     expect(lineDistanceNm(coordinates)).toBeGreaterThan(
       haversineNm(
-        TERMINALS_BY_ID.get("anacortes")!.coordinates,
-        TERMINALS_BY_ID.get("friday-harbor")!.coordinates
+        terminalById("anacortes").coordinates,
+        terminalById("friday-harbor").coordinates
       )
     );
   });

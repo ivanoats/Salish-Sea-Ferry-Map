@@ -60,6 +60,12 @@ Re-copy `salish-mesh.json` from `salish-nav-planner` rather than editing it
 in place, then update the coverage table above by running the mesh tests —
 see `src/domain/__tests__/mesh.test.ts`.
 
+If the mesh, terminal coordinates, or route terminal order changes, run
+`npm run build-route-geometry` to refresh the baked output in
+`src/data/route-leg-geometry.ts`. The route-leg geometry test compares that
+checked-in file with a fresh build from the current mesh and dataset, so a
+stale table fails in CI rather than silently drifting.
+
 `src/domain/mesh.ts` is a different matter: it has diverged from the
 upstream `mesh-route.ts` it was ported from, deliberately and in ways the
 file's own header lists. Copying the upstream version over it would revert

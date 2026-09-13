@@ -34,7 +34,9 @@ export interface TerminalPointProperties {
  * NUL is the separator because no terminal id can contain one.
  */
 const legKey = (fromId: string, toId: string): string =>
-  [fromId, toId].sort().join("\0");
+  [fromId, toId]
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+    .join("\0");
 const directedLegKey = (fromId: string, toId: string): string =>
   `${fromId}\0${toId}`;
 
