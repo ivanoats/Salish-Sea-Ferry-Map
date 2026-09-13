@@ -1,0 +1,16 @@
+C4Context
+title Salish Sea Ferry Map — system context
+
+Person(user, "Map user", "Explores ferry connections around the Salish Sea.")
+Person(editor, "Maintainer", "Curates operators, terminals, routes, and geometry inputs.")
+
+System(system, "Salish Sea Ferry Map", "Interactive route map spanning multiple ferry operators.")
+System_Ext(osm, "OpenStreetMap", "Supplies raster basemap tiles for the web map.")
+System_Ext(wsdot, "WSDOT Vessel Locations API", "Optional live vessel positions for Washington State Ferries.")
+
+Rel(user, system, "Browses routes, terminals, and optional live vessels")
+Rel(editor, system, "Updates the static dataset and generated geometry")
+Rel(system, osm, "Uses raster map tiles at runtime")
+Rel(system, wsdot, "Fetches optional live vessel data through a server-side proxy")
+
+UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")

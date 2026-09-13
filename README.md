@@ -3,6 +3,8 @@
 Live at **<https://salishseaferrymap.com/>**.
 [![Netlify Status](https://api.netlify.com/api/v1/badges/b0b761aa-2acb-41c3-93d1-a54f398c1245/deploy-status)](https://app.netlify.com/projects/salish-sea-ferry-map/deploys)
 
+Architecture and ADR docs live in [`docs/`](./docs/).
+
 ## Why this exists
 
 I'm a transportation nerd, and I went looking for a good map of ferry routes around the Salish Sea — car ferries and passenger-only, every operator, one map. It doesn't exist. WSF publishes its own routes, BC Ferries publishes its own, and so does everyone else — Black Ball, Kitsap Transit, the Victoria Clipper, Skagit County, Whatcom County — each on its own site, in its own format. If you want to see all your options at once, you piece it together by hand.
