@@ -83,7 +83,7 @@ it for a leg only when **both** of the leg's terminals sit within
 `MAX_OSM_ENDPOINT_NM` (1.25 nm) of that one route's vertices. So a leg
 either gets the line a ferry actually sails or it gets none — two
 terminals covered by two different routes are never stitched together.
-Geometry beats the mesh where it exists, which is 48 of the 49 legs.
+Geometry beats the mesh where it exists, which is 49 of the 50 legs.
 
 ### Relations first, bare ways only to fill gaps
 
