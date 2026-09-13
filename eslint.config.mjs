@@ -34,6 +34,15 @@ const eslintConfig = [
     // that declares its plugin itself.
     plugins: { "@typescript-eslint": tseslint.plugin },
     rules: {
+      // The `!` operator asserts rather than establishes, and under this
+      // project's noUncheckedIndexedAccess it is the tempting way to quiet
+      // the checker after an array index. It has now been raised on four
+      // separate pull requests, every time by DeepSource after a push
+      // rather than locally — and DeepSource treats **/__tests__/** as test
+      // code, so it never flags the ones in the suites at all. Prefer
+      // narrowing: throw, an undefined check, or restructure to avoid the
+      // index.
+      "@typescript-eslint/no-non-null-assertion": "error",
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",

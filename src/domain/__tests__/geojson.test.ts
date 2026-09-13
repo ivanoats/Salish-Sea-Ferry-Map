@@ -23,10 +23,11 @@ const route = (id: string, terminalIds: string[], over: Partial<FerryRoute> = {}
   ...over,
 });
 
-const routes: FerryRoute[] = [
-  route("r1", ["a", "b"], { name: "A to B" }),
-  route("r2", ["a", "does-not-exist"], { name: "Broken route" }),
-];
+const routeAToB = route("r1", ["a", "b"], { name: "A to B" });
+const routeWithMissingTerminal = route("r2", ["a", "does-not-exist"], {
+  name: "Broken route",
+});
+const routes: FerryRoute[] = [routeAToB, routeWithMissingTerminal];
 
 const toLonLat = (position: GeoJSON.Position): readonly [number, number] => [
   position[0] as number,
@@ -94,7 +95,7 @@ describe("routesToLineFeatureCollection", () => {
   });
 
   it("leaves a leg drawn on its own at offset zero", () => {
-    const fc = routesToLineFeatureCollection([routes[0]!], terminalsById);
+    const fc = routesToLineFeatureCollection([routeAToB], terminalsById);
     expect(fc.features[0]?.properties.offsetIndex).toBe(0);
   });
 
