@@ -39,6 +39,8 @@ interface OsmFerryRouteSnapshot {
     readonly from?: string;
     readonly to?: string;
     readonly osmRelationIds?: readonly number[];
+    /** Set instead of `osmRelationIds` for a crossing OSM maps as a bare way. */
+    readonly osmWayIds?: readonly number[];
     readonly coordinates: readonly (readonly LonLat[])[];
   }[];
 }

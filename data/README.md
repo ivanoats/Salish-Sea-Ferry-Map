@@ -64,14 +64,49 @@ sailing lines, both mapped as ferries rather than inferred from open water.
 Check a terminal against OSM, not against this mesh.
 
 Since the OSM ferry routes landed, the mesh is a fallback rather than the
-primary source: 45 of 49 route legs use OSM geometry, 3 use the mesh
-(`friday-harbor`–`sidney-bc` and the two Kitsap fast-ferry runs into
-Seattle), and 1 falls back to a straight line.
+primary source: 48 of 49 route legs use OSM geometry and 1 uses the mesh
+(`friday-harbor`–`sidney-bc`, suspended since 2020, whose Sidney end has
+no OSM ferry route within `MAX_OSM_ENDPOINT_NM`). No leg falls back to a
+straight line.
 
 ### Licensing
 
 Derived from OpenStreetMap coastline data, which is ODbL. Keep the
 attribution with any published artifact drawn from it.
+
+## `salish-osm-ferry-routes.json`
+
+Real ferry-route geometry from OpenStreetMap, pulled through Overpass and
+vendored unmodified. Each entry is one OSM ferry route as one or more
+lines; `scripts/build-route-geometry.ts` builds a graph per entry and uses
+it for a leg only when **both** of the leg's terminals sit within
+`MAX_OSM_ENDPOINT_NM` (1.25 nm) of that one route's vertices. So a leg
+either gets the line a ferry actually sails or it gets none — two
+terminals covered by two different routes are never stitched together.
+Geometry beats the mesh where it exists, which is 48 of the 49 legs.
+
+### Relations first, bare ways only to fill gaps
+
+Most ferry routes are mapped as a `type=route`, `route=ferry` **relation**,
+and the two queries in the file's `metadata.sources` pull those. But OSM
+also carries ferry routes as a lone `route=ferry` **way** with no parent
+relation, which a relation query cannot see at all — that is why both
+Kitsap Transit fast ferries and the Gambier–Keats crossing fell back to the
+mesh long after every terminal they touch had real geometry nearby.
+
+The third source query subtracts relation member ways from all ferry ways
+in the region, leaving 66 standalone ones. Only three are vendored: the
+ones carrying a route leg no relation reaches. The rest are either the same
+crossing a relation already covers — and a duplicate can only displace
+better geometry, since the builder breaks ties on snap distance — or berth
+approaches, freight barges and water taxis this dataset does not model.
+
+Adding a way here is therefore a deliberate act, not a sweep: check that
+the leg has no relation coverage first.
+
+### Licensing
+
+OpenStreetMap, ODbL. Keep the attribution with anything published from it.
 
 ## Updating
 
@@ -79,9 +114,9 @@ Re-copy `salish-mesh.json` from `salish-nav-planner` rather than editing it
 in place, then update the coverage table above by running the mesh tests —
 see `src/domain/__tests__/mesh.test.ts`.
 
-If the mesh, terminal coordinates, or route terminal order changes, run
-`npm run build-route-geometry` to refresh the baked output in
-`src/data/route-leg-geometry.ts`. The route-leg geometry test compares that
+If the mesh, the OSM extract, terminal coordinates, or route terminal
+order changes, run `npm run build-route-geometry` to refresh the baked
+output in `src/data/route-leg-geometry.ts`. The route-leg geometry test compares that
 checked-in file with a fresh build from the current mesh and dataset, so a
 stale table fails in CI rather than silently drifting.
 
