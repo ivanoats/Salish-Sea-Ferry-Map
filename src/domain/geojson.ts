@@ -128,9 +128,15 @@ const routeLegs = (
       .filter((t): t is Terminal => t !== undefined);
 
     const seen = new Set<string>();
-    for (let i = 0; i < terminals.length - 1; i++) {
-      const from = terminals[i]!;
-      const to = terminals[i + 1]!;
+    // Walked pairwise rather than by index: under noUncheckedIndexedAccess
+    // `terminals[i]` is possibly-undefined, and carrying the previous
+    // terminal gives a guard that actually fires (on the first one) instead
+    // of an assertion that only silences the checker.
+    let previous: Terminal | undefined;
+    for (const to of terminals) {
+      const from = previous;
+      previous = to;
+      if (from === undefined) continue;
       const key = legKey(from.id, to.id);
       if (seen.has(key)) continue;
       seen.add(key);
