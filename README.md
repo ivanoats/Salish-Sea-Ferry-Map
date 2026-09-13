@@ -1,6 +1,6 @@
 # Salish Sea Ferry Map
 
-Live at **<https://salish-sea-ferry-map.netlify.app>**.
+Live at **<https://salishseaferrymap.com/>**.
 [![Netlify Status](https://api.netlify.com/api/v1/badges/b0b761aa-2acb-41c3-93d1-a54f398c1245/deploy-status)](https://app.netlify.com/projects/salish-sea-ferry-map/deploys)
 
 ## Why this exists

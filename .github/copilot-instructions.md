@@ -92,3 +92,10 @@ partial coverage would mislead someone standing at a dock. See issue #7.
 The map is **not for navigation**: dock-level approximations, no soundings,
 no rock clearance. Keep that caveat intact wherever it appears, and carry
 it into anything new that draws route geometry.
+
+<!-- mermaid-ai-skills:start -->
+## Mermaid Diagrams
+
+When the user asks to create, edit, or visualize a diagram, follow the
+instructions in `.github/instructions/mermaid.instructions.md`.
+<!-- mermaid-ai-skills:end -->
