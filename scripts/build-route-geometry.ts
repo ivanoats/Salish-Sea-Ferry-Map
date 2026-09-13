@@ -9,13 +9,14 @@ import {
   haversineNm,
   meshPathCoordinates,
   type LonLat,
+  nearestNode,
   type MeshFeatureCollection,
 } from "../src/domain/mesh.ts";
 
 const OSM_FERRY_ROUTES_PATH = resolve("data/salish-osm-ferry-routes.json");
 const MESH_PATH = resolve("data/salish-mesh.json");
 const OUTPUT_PATH = resolve("src/data/route-leg-geometry.ts");
-const MAX_OSM_ENDPOINT_NM = 1.5;
+const MAX_OSM_ENDPOINT_NM = 1.25;
 
 const directedLegKey = (fromId: string, toId: string): string =>
   `${fromId}\0${toId}`;
@@ -31,12 +32,12 @@ const loadMesh = (): MeshFeatureCollection =>
 
 interface OsmFerryRouteSnapshot {
   readonly routes: readonly {
+    readonly routeName?: string;
     readonly operator?: string;
     readonly from?: string;
     readonly to?: string;
-    readonly duration?: string;
-    readonly terminalIds?: readonly [string, string];
-    readonly coordinates: readonly LonLat[];
+    readonly osmRelationIds?: readonly number[];
+    readonly coordinates: readonly (readonly LonLat[])[];
   }[];
 }
 
@@ -54,70 +55,74 @@ const lineDistanceNm = (coordinates: readonly LonLat[]): number => {
   return total;
 };
 
+const routeLinesToMesh = (
+  lines: readonly (readonly LonLat[])[]
+): MeshFeatureCollection => ({
+  features: lines.map((coordinates) => ({
+    geometry: { type: "LineString", coordinates },
+    properties: {},
+  })),
+});
+
+interface OsmRouteCandidate {
+  readonly coordinates: readonly LonLat[];
+  readonly endpointNm: number;
+  readonly lineNm: number;
+}
+
+interface OsmRouteGraph {
+  readonly graph: ReturnType<typeof buildMeshGraph>;
+}
+
 const osmRouteCoordinates = (
-  snapshot: OsmFerryRouteSnapshot,
-  fromId: string,
+  routeGraphs: readonly OsmRouteGraph[],
   from: LonLat,
-  toId: string,
   to: LonLat
 ): readonly LonLat[] | null => {
-  let bestCoordinates: readonly LonLat[] | null = null;
-  let bestEndpointNm = Number.POSITIVE_INFINITY;
-  let bestLineNm = Number.POSITIVE_INFINITY;
+  let best: OsmRouteCandidate | null = null;
+  for (const { graph } of routeGraphs) {
+    const start = nearestNode(graph, from);
+    const goal = nearestNode(graph, to);
+    if (start === null || goal === null) continue;
 
-  for (const route of snapshot.routes) {
+    const startNode = graph.nodes[start];
+    const goalNode = graph.nodes[goal];
+    if (startNode === undefined || goalNode === undefined) continue;
+
+    const fromNm = haversineNm(from, startNode.at);
+    const toNm = haversineNm(to, goalNode.at);
+    if (fromNm > MAX_OSM_ENDPOINT_NM || toNm > MAX_OSM_ENDPOINT_NM) {
+      continue;
+    }
+
+    const coordinates = meshPathCoordinates(graph, from, to);
+    if (coordinates === null) continue;
+
+    const candidate = {
+      coordinates,
+      endpointNm: fromNm + toNm,
+      lineNm: lineDistanceNm(coordinates),
+    };
     if (
-      route.terminalIds !== undefined &&
-      (route.terminalIds[0] !== fromId || route.terminalIds[1] !== toId)
+      best === null ||
+      candidate.endpointNm < best.endpointNm ||
+      (candidate.endpointNm === best.endpointNm &&
+        candidate.lineNm < best.lineNm)
     ) {
-      continue;
-    }
-
-    const start = route.coordinates[0];
-    const end = route.coordinates.at(-1);
-    if (start === undefined || end === undefined || route.coordinates.length < 2) {
-      continue;
-    }
-
-    for (const candidate of [
-      {
-        coordinates: route.coordinates,
-        fromNm: haversineNm(from, start),
-        toNm: haversineNm(to, end),
-      },
-      {
-        coordinates: [...route.coordinates].reverse(),
-        fromNm: haversineNm(from, end),
-        toNm: haversineNm(to, start),
-      },
-    ]) {
-      if (
-        candidate.fromNm > MAX_OSM_ENDPOINT_NM ||
-        candidate.toNm > MAX_OSM_ENDPOINT_NM
-      ) {
-        continue;
-      }
-
-      const endpointNm = candidate.fromNm + candidate.toNm;
-      const lineNm = lineDistanceNm(candidate.coordinates);
-      if (
-        endpointNm < bestEndpointNm ||
-        (endpointNm === bestEndpointNm && lineNm < bestLineNm)
-      ) {
-        bestCoordinates = candidate.coordinates;
-        bestEndpointNm = endpointNm;
-        bestLineNm = lineNm;
-      }
+      best = candidate;
     }
   }
 
-  return bestCoordinates;
+  return best?.coordinates ?? null;
 };
 
 export const buildRouteLegGeometryByDirectedTerminalIds = (): Readonly<
   Record<string, RouteLegGeometry>
 > => {
   const osmFerryRoutes = loadOsmFerryRoutes();
+  const osmRouteGraphs = osmFerryRoutes.routes.map((route) => ({
+    graph: buildMeshGraph(routeLinesToMesh(route.coordinates)),
+  }));
   const graph = buildMeshGraph(loadMesh());
   const geometryByDirectedTerminalIds = new Map<string, RouteLegGeometry>();
 
@@ -141,10 +146,8 @@ export const buildRouteLegGeometryByDirectedTerminalIds = (): Readonly<
       if (geometryByDirectedTerminalIds.has(directedKey)) continue;
 
       const osmCoordinates = osmRouteCoordinates(
-        osmFerryRoutes,
-        from.id,
+        osmRouteGraphs,
         from.coordinates,
-        to.id,
         to.coordinates
       );
       if (osmCoordinates !== null) {
