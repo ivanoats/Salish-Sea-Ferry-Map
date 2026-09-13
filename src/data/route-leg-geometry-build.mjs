@@ -9,6 +9,7 @@ const directedLegKey = (fromId, toId) => `${fromId}\0${toId}`;
 const compareCodeUnits = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
 const EARTH_RADIUS_NM = 3440.065;
 const MAX_SNAP_NM = 2;
+const SNAP_BUCKET_DEGREES = 0.05;
 
 const literalValue = (node) => {
   if (ts.isArrayLiteralExpression(node)) {
@@ -115,6 +116,8 @@ const roundPoint = (point) => [
   Math.round(point[1] * 1e5) / 1e5,
 ];
 const roundsTo = (point, node) => key(roundPoint(point)) === key(node);
+const snapBucketKey = (point) =>
+  `${Math.floor(point[0] / SNAP_BUCKET_DEGREES)}:${Math.floor(point[1] / SNAP_BUCKET_DEGREES)}`;
 
 const buildMeshGraph = (mesh) => {
   const nodes = [];
@@ -145,17 +148,48 @@ const buildMeshGraph = (mesh) => {
   return { nodes, byKey };
 };
 
-const nearestNode = (graph, at) => {
+const buildNearestNodeIndex = (graph) => {
+  const buckets = new Map();
+
+  graph.nodes.forEach((node, index) => {
+    const bucketKey = snapBucketKey(node.at);
+    const bucket = buckets.get(bucketKey);
+    if (bucket === undefined) {
+      buckets.set(bucketKey, [index]);
+      return;
+    }
+    bucket.push(index);
+  });
+
+  return buckets;
+};
+
+const nearestNode = (graph, nearestNodeIndex, at) => {
   const exact = graph.byKey.get(key(roundPoint(at)));
   if (exact !== undefined) return exact;
 
   let best = null;
   let bestNm = MAX_SNAP_NM;
-  for (let index = 0; index < graph.nodes.length; index++) {
-    const nm = haversineNm(graph.nodes[index].at, at);
-    if (nm < bestNm) {
-      bestNm = nm;
-      best = index;
+  const longitudeBucket = Math.floor(at[0] / SNAP_BUCKET_DEGREES);
+  const latitudeBucket = Math.floor(at[1] / SNAP_BUCKET_DEGREES);
+  const searchRadius = Math.max(
+    1,
+    Math.ceil(MAX_SNAP_NM / (SNAP_BUCKET_DEGREES * 60))
+  );
+
+  for (let dLon = -searchRadius; dLon <= searchRadius; dLon++) {
+    for (let dLat = -searchRadius; dLat <= searchRadius; dLat++) {
+      const bucket = nearestNodeIndex.get(
+        `${longitudeBucket + dLon}:${latitudeBucket + dLat}`
+      );
+      if (bucket === undefined) continue;
+      for (const index of bucket) {
+        const nm = haversineNm(graph.nodes[index].at, at);
+        if (nm < bestNm) {
+          bestNm = nm;
+          best = index;
+        }
+      }
     }
   }
   return best;
@@ -243,7 +277,14 @@ const shortestNodePath = (graph, start, goal) => {
   return walkBack(cameFrom, start, goal);
 };
 
-const meshPathCoordinates = (graph, from, to, start = nearestNode(graph, from), goal = nearestNode(graph, to)) => {
+const meshPathCoordinates = (
+  graph,
+  nearestNodeIndex,
+  from,
+  to,
+  start = nearestNode(graph, nearestNodeIndex, from),
+  goal = nearestNode(graph, nearestNodeIndex, to)
+) => {
   if (start === null || goal === null) return null;
 
   if (start === goal) {
@@ -267,13 +308,14 @@ const loadMesh = () => JSON.parse(readFileSync(MESH_PATH, "utf8"));
 
 export const buildRouteLegGeometryByDirectedTerminalIds = () => {
   const graph = buildMeshGraph(loadMesh());
+  const nearestNodeIndex = buildNearestNodeIndex(graph);
   const geometryByDirectedTerminalIds = new Map();
   const nearestNodeByTerminalId = new Map();
 
   const nearestNodeForTerminal = (terminal) => {
     const cached = nearestNodeByTerminalId.get(terminal.id);
     if (cached !== undefined) return cached;
-    const found = nearestNode(graph, terminal.coordinates);
+    const found = nearestNode(graph, nearestNodeIndex, terminal.coordinates);
     nearestNodeByTerminalId.set(terminal.id, found);
     return found;
   };
@@ -302,7 +344,14 @@ export const buildRouteLegGeometryByDirectedTerminalIds = () => {
       const coordinates =
         start === null || goal === null
           ? null
-          : meshPathCoordinates(graph, from.coordinates, to.coordinates, start, goal);
+          : meshPathCoordinates(
+              graph,
+              nearestNodeIndex,
+              from.coordinates,
+              to.coordinates,
+              start,
+              goal
+            );
       if (coordinates !== null) {
         geometryByDirectedTerminalIds.set(key, coordinates);
       }
