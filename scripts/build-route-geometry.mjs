@@ -211,6 +211,7 @@ const walkBack = (cameFrom, start, goal) => {
     path.push(at);
     if (at === start) break;
   }
+  if (path[path.length - 1] !== start) return null;
   return path.reverse();
 };
 
@@ -239,12 +240,11 @@ const shortestNodePath = (graph, start, goal) => {
     }
   }
 
-  return settled[goal] === 1 ? walkBack(cameFrom, start, goal) : null;
+  if (settled[goal] !== 1) return null;
+  return walkBack(cameFrom, start, goal);
 };
 
-const meshPathCoordinates = (graph, from, to) => {
-  const start = nearestNode(graph, from);
-  const goal = nearestNode(graph, to);
+const meshPathCoordinates = (graph, from, to, start = nearestNode(graph, from), goal = nearestNode(graph, to)) => {
   if (start === null || goal === null) return null;
 
   if (start === goal) {
@@ -269,6 +269,15 @@ const loadMesh = () => JSON.parse(readFileSync(MESH_PATH, "utf8"));
 export const buildRouteLegGeometryByDirectedTerminalIds = () => {
   const graph = buildMeshGraph(loadMesh());
   const geometryByDirectedTerminalIds = new Map();
+  const nearestNodeByTerminalId = new Map();
+
+  const nearestNodeForTerminal = (terminal) => {
+    const cached = nearestNodeByTerminalId.get(terminal.id);
+    if (cached !== undefined) return cached;
+    const found = nearestNode(graph, terminal.coordinates);
+    nearestNodeByTerminalId.set(terminal.id, found);
+    return found;
+  };
 
   for (const route of ROUTES) {
     for (let legIndex = 0; legIndex < route.terminalIds.length - 1; legIndex++) {
@@ -289,7 +298,12 @@ export const buildRouteLegGeometryByDirectedTerminalIds = () => {
       const key = directedLegKey(from.id, to.id);
       if (geometryByDirectedTerminalIds.has(key)) continue;
 
-      const coordinates = meshPathCoordinates(graph, from.coordinates, to.coordinates);
+      const start = nearestNodeForTerminal(from);
+      const goal = nearestNodeForTerminal(to);
+      const coordinates =
+        start === null || goal === null
+          ? null
+          : meshPathCoordinates(graph, from.coordinates, to.coordinates, start, goal);
       if (coordinates !== null) {
         geometryByDirectedTerminalIds.set(key, coordinates);
       }
