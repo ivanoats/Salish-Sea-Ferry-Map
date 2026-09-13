@@ -78,6 +78,11 @@ is wrong in a way nobody notices.
 ids, unknown operators, duplicate ids, and routes with fewer than two
 terminals. It does not check whether a coordinate is in the water.
 
+Data files are excluded from Sonar's copy-paste detector (see
+`.sonarcloud.properties`). Record-shaped data is repetitive by nature and
+that repetition is the point — never restructure the dataset, or generate
+it from a terser source, to satisfy a duplication metric.
+
 ## Scope
 
 This is a route map, not a trip planner. **Schedules and fares are out of
