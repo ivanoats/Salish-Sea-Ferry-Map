@@ -1,0 +1,40 @@
+# Prepares the Copilot coding agent's ephemeral environment. GitHub looks
+# for a job named exactly `copilot-setup-steps` and runs its steps before
+# handing the agent the checkout, so the agent starts with node_modules and
+# the generated Panda styled-system already in place.
+name: Copilot setup steps
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      # See netlify.toml and .github/workflows/ci.yml — both flags work
+      # around upstream bugs and the install fails without them.
+      - name: Install
+        run: npm ci --legacy-peer-deps --ignore-scripts
+
+      # --ignore-scripts skipped the project's own postinstall, so stage
+      # the MapLibre worker and generate styled-system explicitly.
+      - name: Stage MapLibre worker
+        run: npm run maplibre-worker
+
+      # The local binary rather than `npx panda`: npm ci above already
+      # installed the pinned version, and npx would happily resolve a
+      # different one from the registry and run its lifecycle scripts.
+      - name: Generate Panda styled-system
+        run: ./node_modules/.bin/panda codegen --silent
