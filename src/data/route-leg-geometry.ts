@@ -99,8 +99,8 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
     [-123.51777, 48.61399],
   ],
   "buckley-bay\u0000denman-island-west": [
-    [-124.79979, 49.49813],
-    [-124.7875, 49.50474],
+    [-124.84655, 49.52639],
+    [-124.83294, 49.52918],
     [-124.79205, 49.50762],
     [-124.78069, 49.49756],
     [-124.83066, 49.52918],
@@ -142,8 +142,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
   "denman-island-east\u0000hornby-island": [
     [-124.70882, 49.49393],
     [-124.70572, 49.50187],
-    [-124.72049, 49.51121],
-    [-124.71092, 49.51191],
+    [-124.70454, 49.51125],
   ],
   "departure-bay\u0000horseshoe-bay": [
     [-123.9556, 49.1934],
@@ -629,7 +628,11 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
   "thetis-island\u0000penelakut-island": [
     [-123.67824, 48.98096],
     [-123.66806, 48.97736],
-    [-123.68036, 48.98592],
+    [-123.66757, 48.97725],
+    [-123.66757, 48.97582],
+    [-123.6653, 48.97294],
+    [-123.66416, 48.97079],
+    [-123.66127, 48.97073],
   ],
   "tsawwassen\u0000duke-point": [
     [-123.1306, 49.0062],

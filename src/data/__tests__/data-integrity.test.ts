@@ -44,7 +44,7 @@ describe("ferry dataset integrity", () => {
    */
   it("keeps known dock-level terminal coordinates on the terminal itself", () => {
     const expectedByTerminalId: Readonly<Record<string, readonly [number, number]>> = {
-      "buckley-bay": [-124.79979, 49.49813],
+      "buckley-bay": [-124.84655, 49.52639],
       "comox": [-124.92382, 49.73991],
       "cortes-island": [-125.05386, 50.10974],
       "denman-island-east": [-124.70882, 49.49393],
@@ -53,13 +53,13 @@ describe("ferry dataset integrity", () => {
       "gabriola-island": [-123.85838, 49.1778],
       "gambier-island": [-123.43958, 49.44999],
       "gooseberry-point": [-122.6702, 48.73123],
-      "hornby-island": [-124.71092, 49.51191],
+      "hornby-island": [-124.70454, 49.51125],
       "keats-island": [-123.4332, 49.39556],
       "lasqueti-island": [-124.35159, 49.49144],
       "mayne-island": [-123.32328, 48.84454],
       "mill-bay": [-123.51777, 48.61399],
       "pender-island": [-123.31561, 48.80052],
-      "penelakut-island": [-123.68036, 48.98592],
+      "penelakut-island": [-123.66127, 48.97073],
       "saltery-bay": [-124.1771, 49.78142],
       "saturna-island": [-123.20138, 48.79809],
       "texada-island": [-124.62007, 49.79482],
