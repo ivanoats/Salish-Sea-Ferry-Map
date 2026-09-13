@@ -4,18 +4,6 @@ Files here are **not** part of the client bundle. They live outside `src/`
 and `public/` so nothing can import or serve them by accident: the mesh
 alone is ~800 KB, and it is only needed when route geometry is generated.
 
-## `salish-osm-ferry-routes.json`
-
-Directional ferry-route geometry snapshots vendored from OpenStreetMap for
-build-time use. `scripts/build-route-geometry.ts` matches them to this
-repo's terminals by endpoint proximity rather than by terminal name, so
-spelling quirks in OSM relation tags do not matter.
-
-This snapshot currently seeds the Seattle–Bainbridge pair that the mesh
-routes through Elliott Bay Marina's entrance spur. Like the basemap and
-the mesh, it is ODbL-derived and **not for navigation**: these are mapped
-approximations of sailing lines, not charted tracks.
-
 ## `salish-mesh.json`
 
 Vendored from [`salish-nav-planner`](https://github.com/ivanoats/salish-nav-planner)
@@ -45,20 +33,20 @@ that caveat and must keep it visible.
 
 ### Terminal coverage
 
-The planner's harbours are not this project's ferry terminals, so a
-terminal is not guaranteed its own entrance spur. After correcting a
-batch of terminal coordinates that were kilometres from the real dock,
-66 of 68 terminals in `src/data/terminals.ts` now fall within
-`MAX_SNAP_NM` (2 nm) of a mesh vertex. Two do not:
+Measured against the current `src/data/terminals.ts`, 66 of 68 terminals
+fall within `MAX_SNAP_NM` (2 nm) of a mesh vertex. Two do not:
 
 | Terminal | Nearest vertex |
 | --- | --- |
 | `comox` (Comox / Little River) | 3.90 nm |
 | `gambier-island` (New Brighton) | 2.14 nm |
 
-These need either a mesh patch or a hand-placed approach point. Until then
-`meshPathCoordinates` returns `null` for legs touching them, which callers
+`meshPathCoordinates` returns `null` for legs touching these, which callers
 must treat as "keep the straight line" rather than as an error.
+
+`comox` and `gambier-island` are both now verified at the ferry terminal
+itself and still sit beyond `MAX_SNAP_NM`, so these two look like genuine
+mesh-coverage gaps rather than remaining coordinate errors.
 
 ### Licensing
 
@@ -71,11 +59,11 @@ Re-copy `salish-mesh.json` from `salish-nav-planner` rather than editing it
 in place, then update the coverage table above by running the mesh tests —
 see `src/domain/__tests__/mesh.test.ts`.
 
-If the OSM snapshot, mesh, terminal coordinates, or route terminal order
-changes, run `npm run build-route-geometry` to refresh the baked output in
+If the mesh, terminal coordinates, or route terminal order changes, run
+`npm run build-route-geometry` to refresh the baked output in
 `src/data/route-leg-geometry.ts`. The route-leg geometry test compares that
-checked-in file with a fresh build from the current build-time datasets and
-route data, so a stale table fails in CI rather than silently drifting.
+checked-in file with a fresh build from the current mesh and dataset, so a
+stale table fails in CI rather than silently drifting.
 
 `src/domain/mesh.ts` is a different matter: it has diverged from the
 upstream `mesh-route.ts` it was ported from, deliberately and in ways the

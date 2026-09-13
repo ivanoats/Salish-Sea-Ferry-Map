@@ -186,9 +186,13 @@ describe("salish mesh graph", () => {
   });
 
   /**
-   * Both the count and the names are asserted, so that patching the mesh
-   * to reach one of these fails loudly and gets the table in
-   * data/README.md updated with it rather than left stale.
+   * Both the count and the names are asserted, so that anything bringing
+   * one of these within range fails loudly and gets the table in
+   * data/README.md updated rather than left stale.
+   *
+   * Most out-of-range terminals in issue #16 were bad coordinates; these
+   * two remain outside the snap radius even after being corrected to the
+   * ferry terminal itself. See data/README.md.
    */
   it("snaps all but two terminals to the network", () => {
     const unreachable = TERMINALS.filter(
