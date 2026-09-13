@@ -2,7 +2,7 @@
 
 - Status: Accepted
 - Date: 2026-09-13
-- Reconstructed from: `README.md`, issue [#7](https://github.com/ivanoats/Salish-Sea-Ferry-Map/issues/7), `data/README.md`
+- Reconstructed from: `README.md`, issue [#7](https://github.com/ivanoats/Salish-Sea-Ferry-Map/issues/7), top-level `data/README.md`
 
 ## Context
 
@@ -26,4 +26,4 @@ geometry as navigationally authoritative.
 
 - `README.md` says schedules and fares are intentionally out of scope and that the map is not for navigation.
 - Issue [#7](https://github.com/ivanoats/Salish-Sea-Ferry-Map/issues/7) records the scope decision explicitly.
-- `data/README.md` repeats the caution that geometry inputs are planning aids rather than charts.
+- The top-level `data/README.md` repeats the caution that geometry inputs are planning aids rather than charts.

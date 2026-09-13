@@ -2,7 +2,7 @@
 
 - Status: Accepted
 - Date: 2026-09-13
-- Reconstructed from: `README.md`, `src/data/`, `data/README.md`
+- Reconstructed from: `README.md`, `src/data/`, top-level `data/README.md`
 
 ## Context
 
@@ -25,4 +25,4 @@ and treat that dataset as the source of truth for the application.
 
 - `README.md` describes the dataset as static and hand-curated.
 - `src/data/operators.ts`, `src/data/terminals.ts`, and `src/data/routes.ts` hold the core records.
-- `data/README.md` documents the build-time geometry inputs that support the curated dataset.
+- The top-level `data/README.md` documents the build-time geometry inputs that support the curated dataset.
