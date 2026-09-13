@@ -86,7 +86,6 @@ const roundPoint = (point: LonLat): LonLat => [
   Math.round(point[0] * 1e5) / 1e5,
   Math.round(point[1] * 1e5) / 1e5,
 ];
-const samePoint = (a: LonLat, b: LonLat): boolean => a[0] === b[0] && a[1] === b[1];
 const roundsTo = (point: LonLat, node: LonLat): boolean =>
   key(roundPoint(point)) === key(node);
 
