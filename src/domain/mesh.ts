@@ -228,12 +228,13 @@ export const meshPathCoordinates = (
 ): LonLat[] | null => {
   const start = nearestNode(graph, from);
   const goal = nearestNode(graph, to);
-  if (start === null || goal === null || start === goal) return null;
+  if (start === null || goal === null) return null;
 
-  const path = shortestNodePath(graph, start, goal);
-  if (path === null) return null;
+  const nodePath =
+    start === goal ? [start] : shortestNodePath(graph, start, goal);
+  if (nodePath === null) return null;
 
-  const coordinates = path.map((index) => {
+  const coordinates = nodePath.map((index) => {
     const node = graph.nodes[index] as MeshNode;
     return node.at;
   });

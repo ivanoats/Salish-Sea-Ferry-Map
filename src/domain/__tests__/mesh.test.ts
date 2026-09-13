@@ -83,6 +83,30 @@ describe("salish mesh graph", () => {
     expect(along(path)).toBeGreaterThan(haversineNm(anacortes, fridayHarbor));
   });
 
+  it("keeps the requested endpoints when both positions snap to one mesh node", () => {
+    const localGraph = buildMeshGraph({
+      features: [
+        {
+          geometry: {
+            type: "LineString",
+            coordinates: [
+              [-123, 49],
+              [-122.99, 49],
+              [-122.98, 49],
+            ],
+          },
+          properties: {},
+        },
+      ],
+    });
+    const from: LonLat = [-122.9904, 49.0006];
+    const to: LonLat = [-122.9896, 48.9994];
+
+    const path = meshPathCoordinates(localGraph, from, to);
+
+    expect(path).toEqual([from, [-122.99, 49], to]);
+  });
+
   /**
    * The count is asserted rather than the whole list so that improving the
    * mesh coverage fails this test loudly and gets the documented figure
