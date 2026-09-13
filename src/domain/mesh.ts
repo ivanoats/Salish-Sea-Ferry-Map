@@ -71,6 +71,7 @@ const roundPoint = (point: LonLat): LonLat => [
   Math.round(point[0] * 1e5) / 1e5,
   Math.round(point[1] * 1e5) / 1e5,
 ];
+const samePoint = (a: LonLat, b: LonLat): boolean => a[0] === b[0] && a[1] === b[1];
 const roundsTo = (point: LonLat, node: LonLat): boolean =>
   key(roundPoint(point)) === key(node);
 
@@ -232,8 +233,15 @@ export const meshPathCoordinates = (
   const goal = nearestNode(graph, to);
   if (start === null || goal === null) return null;
 
-  const nodePath =
-    start === goal ? [start] : shortestNodePath(graph, start, goal);
+  if (start === goal) {
+    const node = (graph.nodes[start] as MeshNode).at;
+    const coordinates: LonLat[] = [from];
+    if (!roundsTo(from, node) && !roundsTo(to, node)) coordinates.push(node);
+    if (!samePoint(from, to)) coordinates.push(to);
+    return coordinates;
+  }
+
+  const nodePath = shortestNodePath(graph, start, goal);
   if (nodePath === null) return null;
 
   const coordinates = nodePath.map((index) => {

@@ -133,6 +133,29 @@ describe("salish mesh graph", () => {
     ]);
   });
 
+  it("keeps both requested endpoints when only one rounds to the snapped node", () => {
+    const localGraph = buildMeshGraph({
+      features: [
+        {
+          geometry: {
+            type: "LineString",
+            coordinates: [
+              [-123, 49],
+              [-122.99, 49],
+            ],
+          },
+          properties: {},
+        },
+      ],
+    });
+    const from: LonLat = [-122.99, 49];
+    const to: LonLat = [-122.9896, 48.9994];
+
+    const path = meshPathCoordinates(localGraph, from, to);
+
+    expect(path).toEqual([from, to]);
+  });
+
   /**
    * The count is asserted rather than the whole list so that improving the
    * mesh coverage fails this test loudly and gets the documented figure
