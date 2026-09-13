@@ -190,19 +190,17 @@ describe("salish mesh graph", () => {
    * to reach one of these fails loudly and gets the table in
    * data/README.md updated with it rather than left stale.
    */
-  it("snaps all but four terminals to the network", () => {
+  it("snaps all but two terminals to the network", () => {
     const unreachable = TERMINALS.filter(
       (t) => nearestNode(graph, t.coordinates) === null
     )
       .map((t) => t.id)
       .sort();
 
-    expect(unreachable).toHaveLength(4);
+    expect(unreachable).toHaveLength(2);
     expect(unreachable).toEqual([
       "comox",
-      "cortes-island",
       "gambier-island",
-      "lasqueti-island",
     ]);
   });
 });

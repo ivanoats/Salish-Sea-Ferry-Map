@@ -34,16 +34,15 @@ that caveat and must keep it visible.
 ### Terminal coverage
 
 The planner's harbours are not this project's ferry terminals, so a
-terminal is not guaranteed its own entrance spur. Measured against the
-current `src/data/terminals.ts`, 61 of 65 terminals fall within
-`MAX_SNAP_NM` (2 nm) of a mesh vertex. Four do not:
+terminal is not guaranteed its own entrance spur. After correcting a
+batch of terminal coordinates that were kilometres from the real dock,
+66 of 68 terminals in `src/data/terminals.ts` now fall within
+`MAX_SNAP_NM` (2 nm) of a mesh vertex. Two do not:
 
 | Terminal | Nearest vertex |
 | --- | --- |
-| `comox` (Comox / Little River) | 3.49 nm |
-| `gambier-island` (New Brighton) | 2.82 nm |
-| `lasqueti-island` (False Bay) | 2.33 nm |
-| `cortes-island` (Whaletown) | 2.15 nm |
+| `comox` (Comox / Little River) | 3.90 nm |
+| `gambier-island` (New Brighton) | 2.14 nm |
 
 These need either a mesh patch or a hand-placed approach point. Until then
 `meshPathCoordinates` returns `null` for legs touching them, which callers
