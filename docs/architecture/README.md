@@ -38,19 +38,18 @@ Edit `workspace.dsl`, then regenerate diagrams deliberately (not as part of
 # from the repository root
 mkdir -p docs/architecture/generated/plantuml
 
-docker run --rm \
-  -v "$PWD":/workspace \
-  -w /workspace \
-  structurizr/cli:latest export \
+curl -L -o /tmp/structurizr-cli.zip \
+  https://github.com/structurizr/cli/releases/download/v2025.11.09/structurizr-cli.zip
+unzip -o /tmp/structurizr-cli.zip -d /tmp/structurizr-cli
+/tmp/structurizr-cli/structurizr.sh export \
   -workspace docs/architecture/workspace.dsl \
   -format plantuml/c4plantuml \
   -output docs/architecture/generated/plantuml
 
-docker run --rm \
-  -v "$PWD":/workspace \
-  -w /workspace \
-  plantuml/plantuml:latest \
-  -tsvg docs/architecture/generated/plantuml/structurizr-system-context.puml \
+curl -L -o /tmp/plantuml.jar \
+  https://github.com/plantuml/plantuml/releases/download/v1.2026.8/plantuml.jar
+java -jar /tmp/plantuml.jar -tsvg \
+  docs/architecture/generated/plantuml/structurizr-system-context.puml \
   docs/architecture/generated/plantuml/structurizr-container-view.puml \
   docs/architecture/generated/plantuml/structurizr-component-view.puml
 ```
