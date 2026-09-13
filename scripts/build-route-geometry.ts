@@ -73,35 +73,68 @@ interface OsmRouteCandidate {
 
 interface OsmRouteGraph {
   readonly graph: ReturnType<typeof buildMeshGraph>;
+  readonly snapsByTerminalId: ReadonlyMap<
+    string,
+    {
+      readonly node: number;
+      readonly nm: number;
+    }
+  >;
 }
+
+const buildOsmRouteGraph = (
+  lines: readonly (readonly LonLat[])[]
+): OsmRouteGraph => {
+  const graph = buildMeshGraph(routeLinesToMesh(lines));
+  const snapsByTerminalId = new Map<
+    string,
+    {
+      readonly node: number;
+      readonly nm: number;
+    }
+  >();
+
+  for (const terminal of TERMINALS_BY_ID.values()) {
+    const node = nearestNode(graph, terminal.coordinates);
+    if (node === null) continue;
+
+    const matchedNode = graph.nodes[node];
+    if (matchedNode === undefined) continue;
+
+    const nm = haversineNm(terminal.coordinates, matchedNode.at);
+    if (nm <= MAX_OSM_ENDPOINT_NM) {
+      snapsByTerminalId.set(terminal.id, { node, nm });
+    }
+  }
+
+  return { graph, snapsByTerminalId };
+};
 
 const osmRouteCoordinates = (
   routeGraphs: readonly OsmRouteGraph[],
+  fromId: string,
   from: LonLat,
+  toId: string,
   to: LonLat
 ): readonly LonLat[] | null => {
   let best: OsmRouteCandidate | null = null;
-  for (const { graph } of routeGraphs) {
-    const start = nearestNode(graph, from);
-    const goal = nearestNode(graph, to);
-    if (start === null || goal === null) continue;
+  for (const { graph, snapsByTerminalId } of routeGraphs) {
+    const start = snapsByTerminalId.get(fromId);
+    const goal = snapsByTerminalId.get(toId);
+    if (start === undefined || goal === undefined) continue;
 
-    const startNode = graph.nodes[start];
-    const goalNode = graph.nodes[goal];
-    if (startNode === undefined || goalNode === undefined) continue;
-
-    const fromNm = haversineNm(from, startNode.at);
-    const toNm = haversineNm(to, goalNode.at);
-    if (fromNm > MAX_OSM_ENDPOINT_NM || toNm > MAX_OSM_ENDPOINT_NM) {
-      continue;
-    }
-
-    const coordinates = meshPathCoordinatesFromNodes(graph, from, start, to, goal);
+    const coordinates = meshPathCoordinatesFromNodes(
+      graph,
+      from,
+      start.node,
+      to,
+      goal.node
+    );
     if (coordinates === null) continue;
 
     const candidate = {
       coordinates,
-      endpointNm: fromNm + toNm,
+      endpointNm: start.nm + goal.nm,
       lineNm: lineDistanceNm(coordinates),
     };
     if (
@@ -121,9 +154,9 @@ export const buildRouteLegGeometryByDirectedTerminalIds = (): Readonly<
   Record<string, RouteLegGeometry>
 > => {
   const osmFerryRoutes = loadOsmFerryRoutes();
-  const osmRouteGraphs = osmFerryRoutes.routes.map((route) => ({
-    graph: buildMeshGraph(routeLinesToMesh(route.coordinates)),
-  }));
+  const osmRouteGraphs = osmFerryRoutes.routes.map((route) =>
+    buildOsmRouteGraph(route.coordinates)
+  );
   const graph = buildMeshGraph(loadMesh());
   const geometryByDirectedTerminalIds = new Map<string, RouteLegGeometry>();
 
@@ -148,7 +181,9 @@ export const buildRouteLegGeometryByDirectedTerminalIds = (): Readonly<
 
       const osmCoordinates = osmRouteCoordinates(
         osmRouteGraphs,
+        from.id,
         from.coordinates,
+        to.id,
         to.coordinates
       );
       if (osmCoordinates !== null) {
