@@ -87,7 +87,6 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
   "brentwood-bay\u0000mill-bay": [
     [-123.4632, 48.5716],
     [-123.47107, 48.57409],
-    [-123.47221, 48.57122],
     [-123.47107, 48.57625],
     [-123.47789, 48.58128],
     [-123.49379, 48.58415],
@@ -102,9 +101,6 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
   "buckley-bay\u0000denman-island-west": [
     [-124.8497, 49.5069],
     [-124.83294, 49.52918],
-    [-124.79205, 49.50762],
-    [-124.78069, 49.49756],
-    [-124.83066, 49.52918],
     [-124.8228, 49.5286],
   ],
   "campbell-river\u0000quadra-quathiaski": [
@@ -204,8 +200,6 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
     [-124.12304, 49.76921],
     [-124.18097, 49.7613],
     [-124.22299, 49.75843],
-    [-124.18665, 49.7613],
-    [-124.15711, 49.77136],
     [-124.1682, 49.7757],
   ],
   "edmonds\u0000kingston": [
