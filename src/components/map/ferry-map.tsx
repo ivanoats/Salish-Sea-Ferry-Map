@@ -14,6 +14,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 import type { OperatorId } from "@/domain/ferry";
 import { routesToLineFeatureCollection, terminalsToPointFeatureCollection } from "@/domain/geojson";
+import type { RouteLegGeometrySource } from "@/data/route-leg-geometry";
 import type { VesselPosition } from "@/domain/vessel";
 import { ROUTES } from "@/data/routes";
 import { TERMINALS_BY_ID } from "@/data/terminals";
@@ -87,7 +88,7 @@ const emptyFeatureCollection = (): GeoJSON.FeatureCollection => ({
   features: [],
 });
 
-const geometrySourceLabel = (source: string): string => {
+const geometrySourceLabel = (source: RouteLegGeometrySource): string => {
   switch (source) {
     case "osm":
       return "OSM ferry-route geometry";
@@ -194,7 +195,14 @@ export function FerryMap({ visibleOperatorIds, showInactiveRoutes, vessels }: Fe
       if (feature === undefined) return;
       const name = String(feature.properties.name);
       const status = String(feature.properties.status);
-      const geometrySource = String(feature.properties.geometrySource ?? "straight");
+      const geometrySource = feature.properties.geometrySource;
+      if (
+        geometrySource !== "osm" &&
+        geometrySource !== "mesh" &&
+        geometrySource !== "straight"
+      ) {
+        return;
+      }
       const labelBase =
         status === "suspended"
           ? `${name} (suspended)`
