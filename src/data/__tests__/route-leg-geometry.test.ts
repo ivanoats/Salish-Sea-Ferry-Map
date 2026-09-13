@@ -70,11 +70,27 @@ describe("baked route-leg geometry", () => {
     expect(osmLegs.length).toBeGreaterThan(10);
   });
 
-  it("records straight-line fallbacks explicitly when neither vendored source can serve a leg", () => {
+  /**
+   * Asserts the shape of a straight-line fallback rather than naming the
+   * legs that currently need one. Which legs fall back changes every time
+   * the vendored OSM extract grows — comox->powell-river and
+   * langdale->gambier-island were both pinned here until BC Ferries
+   * relations were added, and both are real geometry now. The invariant
+   * that matters is that a fallback is two points and says so.
+   */
+  it("records straight-line fallbacks explicitly, as a two-point line", () => {
     const fresh = buildRouteLegGeometryByDirectedTerminalIds();
+    const straight = Object.values(fresh).filter(
+      ({ source }) => source === "straight"
+    );
 
-    expect(fresh["comox\0powell-river"]?.source).toBe("straight");
-    expect(fresh["langdale\0gambier-island"]?.source).toBe("straight");
+    for (const leg of straight) {
+      expect(leg.coordinates).toHaveLength(2);
+    }
+    // A leg with more than two points must have come from a real source.
+    for (const leg of Object.values(fresh)) {
+      if (leg.coordinates.length > 2) expect(leg.source).not.toBe("straight");
+    }
   });
 
   it("matches a fresh build from the vendored mesh and current route data", () => {
