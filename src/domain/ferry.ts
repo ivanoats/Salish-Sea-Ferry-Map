@@ -12,6 +12,7 @@ export type OperatorId =
   | "wsf"
   | "bc-ferries"
   | "black-ball"
+  | "king-county-water-taxi"
   | "kitsap-transit"
   | "pierce-county"
   | "victoria-clipper"

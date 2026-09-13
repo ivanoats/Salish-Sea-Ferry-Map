@@ -1005,6 +1005,15 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
       [-122.6273, 47.5673],
     ],
   },
+  "seattle-colman-dock\u0000west-seattle-seacrest": {
+    source: "osm",
+    coordinates: [
+      [-122.3393, 47.6021],
+      [-122.3392034, 47.6011648],
+      [-122.3796008, 47.6009406],
+      [-122.37653, 47.59217],
+    ],
+  },
   "seattle-pier-69\u0000victoria-belleville": {
     source: "osm",
     coordinates: [

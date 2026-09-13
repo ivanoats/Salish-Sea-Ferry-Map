@@ -103,4 +103,14 @@ describe("ferry dataset integrity", () => {
 
     expect(longitudes).toEqual([...longitudes].sort((a, b) => b - a));
   });
+
+  it("includes the King County Water Taxi Seattle–West Seattle (Alki) route", () => {
+    const route = ROUTES.find((candidate) => candidate.id === "kcwt-seattle-west-seattle");
+    expect(route).toMatchObject({
+      operatorId: "king-county-water-taxi",
+      terminalIds: ["seattle-colman-dock", "west-seattle-seacrest"],
+      mode: "passenger",
+      status: "active",
+    });
+  });
 });

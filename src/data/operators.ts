@@ -30,6 +30,13 @@ export const OPERATORS: readonly Operator[] = [
     website: "https://www.cohoferry.com",
   },
   {
+    id: "king-county-water-taxi",
+    name: "King County Water Taxi",
+    shortName: "King County Water Taxi",
+    color: "#0284c7",
+    website: "https://kingcounty.gov/en/dept/metro/travel-options/water-taxi",
+  },
+  {
     id: "kitsap-transit",
     name: "Kitsap Transit Fast Ferries",
     shortName: "Kitsap Transit",

@@ -29,6 +29,9 @@ export const TERMINALS: readonly Terminal[] = [
   { id: "friday-harbor", name: "Friday Harbor (San Juan Island)", coordinates: [-123.0163, 48.5352], jurisdiction: "WA" },
   { id: "sidney-bc", name: "Sidney, BC", coordinates: [-123.3956, 48.6497], jurisdiction: "BC" },
 
+  // --- King County Water Taxi ---
+  { id: "west-seattle-seacrest", name: "West Seattle (Seacrest)", coordinates: [-122.37653, 47.59217], jurisdiction: "WA" },
+
   // --- Black Ball Ferry Line / Victoria Clipper ---
   { id: "port-angeles", name: "Port Angeles", coordinates: [-123.4307, 48.1176], jurisdiction: "WA" },
   { id: "victoria-belleville", name: "Victoria, BC (Belleville St. Terminal)", coordinates: [-123.3719, 48.4229], jurisdiction: "BC" },
