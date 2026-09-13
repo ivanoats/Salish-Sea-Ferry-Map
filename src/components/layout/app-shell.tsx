@@ -56,7 +56,7 @@ export function AppShell() {
         })}
       >
         <div>
-          <h1 className={css({ fontSize: "lg", fontWeight: "bold", lineHeight: "short" })}>
+          <h1 className={css({ fontSize: "lg", fontWeight: "bold", lineHeight: "tight" })}>
             Salish Sea Ferry Map
           </h1>
           <p className={css({ fontSize: "xs", color: "fg.muted", mt: "1" })}>
