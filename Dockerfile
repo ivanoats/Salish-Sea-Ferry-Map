@@ -26,16 +26,9 @@ WORKDIR /app
 # Install dumb-init for proper signal handling
 RUN apk add --no-cache dumb-init
 
-# Copy package files
-COPY package.json package-lock.json ./
-
-# Install only production dependencies. Scripts are ignored here for the same
-# reason as in the builder; the worker files are copied in from that stage.
-RUN npm ci --omit=dev --ignore-scripts
-
-# Copy built app from builder stage. Owned by `node` so the runtime user can
-# write Next.js's on-disk caches under .next/ rather than failing on them.
-COPY --from=builder --chown=node:node /app/.next ./.next
+# Copy the standalone server plus only the traced runtime files it needs.
+COPY --from=builder --chown=node:node /app/.next/standalone ./
+COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 COPY --from=builder --chown=node:node /app/public ./public
 
 # Expose port
@@ -48,4 +41,4 @@ USER node
 ENTRYPOINT ["dumb-init", "--"]
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
