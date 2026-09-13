@@ -18,6 +18,7 @@ const OSM_FERRY_ROUTES_PATH = resolve("data/salish-osm-ferry-routes.json");
 const MESH_PATH = resolve("data/salish-mesh.json");
 const OUTPUT_PATH = resolve("src/data/route-leg-geometry.ts");
 const MAX_OSM_ENDPOINT_NM = 1.25;
+const ENDPOINT_TIE_EPSILON_NM = 1e-6;
 
 const directedLegKey = (fromId: string, toId: string): string =>
   `${fromId}\0${toId}`;
@@ -139,8 +140,9 @@ const osmRouteCoordinates = (
     };
     if (
       best === null ||
-      candidate.endpointNm < best.endpointNm ||
-      (candidate.endpointNm === best.endpointNm &&
+      candidate.endpointNm < best.endpointNm - ENDPOINT_TIE_EPSILON_NM ||
+      (Math.abs(candidate.endpointNm - best.endpointNm) <=
+        ENDPOINT_TIE_EPSILON_NM &&
         candidate.lineNm < best.lineNm)
     ) {
       best = candidate;
