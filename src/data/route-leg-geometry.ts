@@ -1009,8 +1009,6 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
     source: "osm",
     coordinates: [
       [-122.3393, 47.6021],
-      [-122.3392034, 47.6011648],
-      [-122.3796008, 47.6009406],
       [-122.37653, 47.59217],
     ],
   },

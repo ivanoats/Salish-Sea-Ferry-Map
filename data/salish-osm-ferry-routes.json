@@ -982,6 +982,27 @@
       ]
     },
     {
+      "routeName": "Seattle \u2194 West Seattle (Seacrest)",
+      "operator": "King County Water Taxi",
+      "from": "Seattle",
+      "to": "West Seattle (Seacrest)",
+      "osmWayIds": [
+        12905453
+      ],
+      "coordinates": [
+        [
+          [
+            -122.3393,
+            47.6021
+          ],
+          [
+            -122.37653,
+            47.59217
+          ]
+        ]
+      ]
+    },
+    {
       "routeName": "Seattle \u2194 Vashon",
       "operator": "King County Water Taxi",
       "from": "Seattle",
