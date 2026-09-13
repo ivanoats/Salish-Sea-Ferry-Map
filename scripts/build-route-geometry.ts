@@ -5,12 +5,16 @@ import { ROUTES } from "../src/data/routes.ts";
 import { TERMINALS_BY_ID } from "../src/data/terminals.ts";
 import {
   buildMeshGraph,
+  haversineNm,
   meshPathCoordinates,
+  type LonLat,
   type MeshFeatureCollection,
 } from "../src/domain/mesh.ts";
 
+const OSM_FERRY_ROUTES_PATH = resolve("data/salish-osm-ferry-routes.json");
 const MESH_PATH = resolve("data/salish-mesh.json");
 const OUTPUT_PATH = resolve("src/data/route-leg-geometry.ts");
+const MAX_OSM_ENDPOINT_NM = 1.5;
 
 const directedLegKey = (fromId: string, toId: string): string =>
   `${fromId}\0${toId}`;
@@ -24,14 +28,75 @@ const compareCodeUnits = (a: string, b: string): number => {
 const loadMesh = (): MeshFeatureCollection =>
   JSON.parse(readFileSync(MESH_PATH, "utf8")) as MeshFeatureCollection;
 
+interface OsmFerryRouteSnapshot {
+  readonly routes: readonly {
+    readonly operator?: string;
+    readonly from?: string;
+    readonly to?: string;
+    readonly duration?: string;
+    readonly coordinates: readonly LonLat[];
+  }[];
+}
+
+const loadOsmFerryRoutes = (): OsmFerryRouteSnapshot =>
+  JSON.parse(readFileSync(OSM_FERRY_ROUTES_PATH, "utf8")) as OsmFerryRouteSnapshot;
+
+export type RouteLegGeometrySource = "osm" | "mesh" | "straight";
+
+export interface RouteLegGeometry {
+  readonly source: RouteLegGeometrySource;
+  readonly coordinates: readonly LonLat[];
+}
+
+const lineDistanceNm = (coordinates: readonly LonLat[]): number => {
+  let total = 0;
+  for (let at = 1; at < coordinates.length; at++) {
+    const from = coordinates[at - 1];
+    const to = coordinates[at];
+    if (from === undefined || to === undefined) continue;
+    total += haversineNm(from, to);
+  }
+  return total;
+};
+
+const osmRouteCoordinates = (
+  snapshot: OsmFerryRouteSnapshot,
+  from: LonLat,
+  to: LonLat
+): readonly LonLat[] | null => {
+  const match = snapshot.routes
+    .map((route) => {
+      const start = route.coordinates[0];
+      const end = route.coordinates.at(-1);
+      if (start === undefined || end === undefined || route.coordinates.length < 2) {
+        return null;
+      }
+
+      const fromNm = haversineNm(from, start);
+      const toNm = haversineNm(to, end);
+      if (fromNm > MAX_OSM_ENDPOINT_NM || toNm > MAX_OSM_ENDPOINT_NM) return null;
+
+      return {
+        coordinates: route.coordinates,
+        endpointNm: fromNm + toNm,
+        lineNm: lineDistanceNm(route.coordinates),
+      };
+    })
+    .filter((candidate): candidate is { coordinates: readonly LonLat[]; endpointNm: number; lineNm: number } => candidate !== null)
+    .sort(
+      (left, right) =>
+        left.endpointNm - right.endpointNm || left.lineNm - right.lineNm
+    )[0];
+
+  return match?.coordinates ?? null;
+};
+
 export const buildRouteLegGeometryByDirectedTerminalIds = (): Readonly<
-  Record<string, readonly (readonly [number, number])[]>
+  Record<string, RouteLegGeometry>
 > => {
+  const osmFerryRoutes = loadOsmFerryRoutes();
   const graph = buildMeshGraph(loadMesh());
-  const geometryByDirectedTerminalIds = new Map<
-    string,
-    readonly (readonly [number, number])[]
-  >();
+  const geometryByDirectedTerminalIds = new Map<string, RouteLegGeometry>();
 
   for (const route of ROUTES) {
     for (let legIndex = 0; legIndex < route.terminalIds.length - 1; legIndex++) {
@@ -52,10 +117,32 @@ export const buildRouteLegGeometryByDirectedTerminalIds = (): Readonly<
       const directedKey = directedLegKey(from.id, to.id);
       if (geometryByDirectedTerminalIds.has(directedKey)) continue;
 
-      const coordinates = meshPathCoordinates(graph, from.coordinates, to.coordinates);
-      if (coordinates !== null) {
-        geometryByDirectedTerminalIds.set(directedKey, coordinates);
+      const osmCoordinates = osmRouteCoordinates(
+        osmFerryRoutes,
+        from.coordinates,
+        to.coordinates
+      );
+      if (osmCoordinates !== null) {
+        geometryByDirectedTerminalIds.set(directedKey, {
+          source: "osm",
+          coordinates: osmCoordinates,
+        });
+        continue;
       }
+
+      const meshCoordinates = meshPathCoordinates(graph, from.coordinates, to.coordinates);
+      if (meshCoordinates !== null) {
+        geometryByDirectedTerminalIds.set(directedKey, {
+          source: "mesh",
+          coordinates: meshCoordinates,
+        });
+        continue;
+      }
+
+      geometryByDirectedTerminalIds.set(directedKey, {
+        source: "straight",
+        coordinates: [from.coordinates, to.coordinates],
+      });
     }
   }
 
@@ -67,33 +154,39 @@ export const buildRouteLegGeometryByDirectedTerminalIds = (): Readonly<
 };
 
 const renderRouteLegGeometryModule = (
-  geometryByDirectedTerminalIds: Readonly<
-    Record<string, readonly (readonly [number, number])[]>
-  >
+  geometryByDirectedTerminalIds: Readonly<Record<string, RouteLegGeometry>>
 ): string => {
   const renderedEntries = Object.entries(geometryByDirectedTerminalIds)
-    .map(([key, coordinates]) => {
-      const renderedCoordinates = coordinates
+    .map(([key, geometry]) => {
+      const renderedCoordinates = geometry.coordinates
         .map(
           ([longitude, latitude]) =>
-            `    [${longitude}, ${latitude}],`
+            `      [${longitude}, ${latitude}],`
         )
         .join("\n");
-      return `  ${JSON.stringify(key)}: [\n${renderedCoordinates}\n  ],`;
+      return `  ${JSON.stringify(key)}: {\n    source: ${JSON.stringify(geometry.source)},\n    coordinates: [\n${renderedCoordinates}\n    ],\n  },`;
     })
     .join("\n");
 
   return `export type RouteLegCoordinate = readonly [number, number];
+export type RouteLegGeometrySource = "osm" | "mesh" | "straight";
+
+export interface RouteLegGeometry {
+  readonly source: RouteLegGeometrySource;
+  readonly coordinates: readonly RouteLegCoordinate[];
+}
 
 /**
- * Build-time baked mesh geometry keyed by directed terminal pair, as
- * "fromTerminalId\\0toTerminalId".
+ * Build-time baked route geometry keyed by directed terminal pair, as
+ * "fromTerminalId\\0toTerminalId". Geometry prefers vendored OSM ferry
+ * routes, then the navigable-water mesh, then a straight line fallback.
  *
- * Generated by \`npm run build-route-geometry\` from \`data/salish-mesh.json\`;
- * legs not present here fall back to straight lines. Keeping this in
- * \`src/data\` avoids shipping the ~800 KB mesh to the client bundle.
+ * Generated by \`npm run build-route-geometry\` from
+ * \`data/salish-osm-ferry-routes.json\` and \`data/salish-mesh.json\`.
+ * Keeping this in \`src/data\` avoids shipping either build-time dataset
+ * to the client bundle.
  */
-export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string, readonly RouteLegCoordinate[]>> = {
+export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string, RouteLegGeometry>> = {
 ${renderedEntries}
 };
 `;

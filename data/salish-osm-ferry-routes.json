@@ -1,0 +1,36 @@
+{
+  "metadata": {
+    "description": "Directional ferry-route geometry snapshots vendored from OpenStreetMap for build-time route lines.",
+    "license": "ODbL-1.0"
+  },
+  "routes": [
+    {
+      "operator": "Washington State Ferries",
+      "from": "Seattle",
+      "to": "Bainbridge Island",
+      "duration": "00:35",
+      "coordinates": [
+        [-122.3393, 47.6021],
+        [-122.35, 47.607],
+        [-122.39, 47.618],
+        [-122.45, 47.62],
+        [-122.5, 47.619],
+        [-122.5108, 47.6229]
+      ]
+    },
+    {
+      "operator": "Washington State Ferries",
+      "from": "Bainbridge Island",
+      "to": "Seattle",
+      "duration": "00:35",
+      "coordinates": [
+        [-122.5108, 47.6229],
+        [-122.5, 47.619],
+        [-122.45, 47.62],
+        [-122.39, 47.618],
+        [-122.35, 47.607],
+        [-122.3393, 47.6021]
+      ]
+    }
+  ]
+}

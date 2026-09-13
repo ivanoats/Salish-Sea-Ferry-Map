@@ -8,11 +8,12 @@ import type { FerryRoute } from "@/domain/ferry";
  * Line, Kitsap Transit's passenger-only fast ferries, Victoria Clipper, and
  * the three county-run ferries (Guemes Island, Lummi Island, Anderson Island).
  *
- * Route legs use mesh-baked geometry through navigable water where the mesh
- * can serve that terminal pair, and fall back to straight lines where it
- * cannot. The mesh follows the middle of water as OSM describes the
- * shoreline and carries no soundings or rock clearance. This is a reference
- * map, not a navigational chart.
+ * Route legs prefer vendored OSM ferry-route geometry, fall back to the
+ * navigable-water mesh where that can serve the terminal pair, and fall
+ * back again to a straight line where neither build-time source can. Both
+ * datasets are mapped approximations, carry no soundings or rock
+ * clearance, and keep this a reference map rather than a navigational
+ * chart.
  */
 export const ROUTES: readonly FerryRoute[] = [
   // --- Washington State Ferries (vehicle) ---

@@ -87,6 +87,17 @@ const emptyFeatureCollection = (): GeoJSON.FeatureCollection => ({
   features: [],
 });
 
+const geometrySourceLabel = (source: string): string => {
+  switch (source) {
+    case "osm":
+      return "OSM ferry-route geometry";
+    case "mesh":
+      return "mesh fallback";
+    default:
+      return "straight-line fallback";
+  }
+};
+
 /** MapLibre `match` expression pairing each operator id with its display color. */
 const operatorColorExpression: unknown[] = ["match", ["get", "operatorId"]];
 for (const operator of OPERATORS) {
@@ -183,7 +194,14 @@ export function FerryMap({ visibleOperatorIds, showInactiveRoutes, vessels }: Fe
       if (feature === undefined) return;
       const name = String(feature.properties.name);
       const status = String(feature.properties.status);
-      const label = status === "suspended" ? `${name} (suspended)` : status === "seasonal" ? `${name} (seasonal)` : name;
+      const geometrySource = String(feature.properties.geometrySource ?? "straight");
+      const labelBase =
+        status === "suspended"
+          ? `${name} (suspended)`
+          : status === "seasonal"
+            ? `${name} (seasonal)`
+            : name;
+      const label = `${labelBase} — ${geometrySourceLabel(geometrySource)}`;
       popupRef.current?.remove();
       popupRef.current = new Popup().setLngLat(event.lngLat).setText(label).addTo(map);
     });

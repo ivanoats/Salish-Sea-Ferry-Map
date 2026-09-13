@@ -1,5 +1,9 @@
 import type { FerryRoute, Terminal } from "@/domain/ferry";
-import { ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS } from "@/data/route-leg-geometry";
+import {
+  ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS,
+  type RouteLegGeometry,
+  type RouteLegGeometrySource,
+} from "@/data/route-leg-geometry";
 
 export interface RouteLineProperties {
   routeId: string;
@@ -7,6 +11,8 @@ export interface RouteLineProperties {
   operatorId: string;
   mode: string;
   status: string;
+  /** Which build-time source produced this leg's geometry. */
+  geometrySource: RouteLegGeometrySource;
   /** Which leg of the route this is, counting from 0 in sailing order. */
   legIndex: number;
   /**
@@ -69,18 +75,19 @@ interface RouteLeg {
   readonly route: FerryRoute;
   readonly legIndex: number;
   readonly key: string;
+  readonly geometrySource: RouteLegGeometrySource;
   readonly coordinates: readonly (readonly [number, number])[];
 }
 
 type RouteLegGeometryByDirectedTerminalIds = Readonly<
-  Record<string, readonly (readonly [number, number])[]>
+  Record<string, RouteLegGeometry>
 >;
 
-const routeLegCoordinates = (
+const routeLegGeometry = (
   from: Terminal,
   to: Terminal,
   routeLegGeometryByDirectedTerminalIds: RouteLegGeometryByDirectedTerminalIds
-): readonly (readonly [number, number])[] => {
+): RouteLegGeometry => {
   const direct = routeLegGeometryByDirectedTerminalIds[
     directedLegKey(from.id, to.id)
   ];
@@ -89,9 +96,17 @@ const routeLegCoordinates = (
   const reverse = routeLegGeometryByDirectedTerminalIds[
     directedLegKey(to.id, from.id)
   ];
-  if (reverse !== undefined) return [...reverse].reverse();
+  if (reverse !== undefined) {
+    return {
+      source: reverse.source,
+      coordinates: [...reverse.coordinates].reverse(),
+    };
+  }
 
-  return [from.coordinates, to.coordinates];
+  return {
+    source: "straight",
+    coordinates: [from.coordinates, to.coordinates],
+  };
 };
 
 /**
@@ -119,16 +134,18 @@ const routeLegs = (
       const key = legKey(from.id, to.id);
       if (seen.has(key)) continue;
       seen.add(key);
+      const geometry = routeLegGeometry(
+        from,
+        to,
+        routeLegGeometryByDirectedTerminalIds
+      );
       legs.push({
         route,
         // `seen` has just grown to the number of legs kept for this route.
         legIndex: seen.size - 1,
         key,
-        coordinates: routeLegCoordinates(
-          from,
-          to,
-          routeLegGeometryByDirectedTerminalIds
-        ),
+        geometrySource: geometry.source,
+        coordinates: geometry.coordinates,
       });
     }
   }
@@ -191,6 +208,7 @@ export function routesToLineFeatureCollection(
         operatorId: leg.route.operatorId,
         mode: leg.route.mode,
         status: leg.route.status,
+        geometrySource: leg.geometrySource,
         legIndex: leg.legIndex,
         offsetIndex: shared ? lane - (laneCount - 1) / 2 : 0,
       },
