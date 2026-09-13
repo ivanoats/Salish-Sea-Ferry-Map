@@ -190,24 +190,21 @@ describe("salish mesh graph", () => {
    * one of these within range fails loudly and gets the table in
    * data/README.md updated rather than left stale.
    *
-   * The expected fix is a corrected coordinate, not a patched mesh: all
-   * four also sit kilometres from the nearest OSM ferry terminal, which
-   * points at the terminals rather than at the network. See issue #16 and
-   * data/README.md.
+   * Most out-of-range terminals in issue #16 were bad coordinates; these
+   * two remain outside the snap radius even after being corrected to the
+   * ferry terminal itself. See data/README.md.
    */
-  it("snaps all but four terminals to the network", () => {
+  it("snaps all but two terminals to the network", () => {
     const unreachable = TERMINALS.filter(
       (t) => nearestNode(graph, t.coordinates) === null
     )
       .map((t) => t.id)
       .sort();
 
-    expect(unreachable).toHaveLength(4);
+    expect(unreachable).toHaveLength(2);
     expect(unreachable).toEqual([
       "comox",
-      "cortes-island",
       "gambier-island",
-      "lasqueti-island",
     ]);
   });
 });
