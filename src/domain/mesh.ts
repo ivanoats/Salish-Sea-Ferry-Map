@@ -134,11 +134,17 @@ export const buildMeshGraph = (mesh: MeshFeatureCollection): MeshGraph => {
  * terminal here is guaranteed its own spur, and the scan below does real
  * work rather than usually hitting the exact-match fast path.
  *
- * When a terminal falls outside this radius, the fix is often its
- * coordinate; the wider audit in issue #16 found many that were kilometres
- * from the real dock. The two that still do not snap are now verified at
- * the ferry terminal itself, so they look like genuine mesh-coverage gaps.
- * See `data/README.md`.
+ * A terminal falling outside this radius says nothing about whether its
+ * coordinate is right. This network describes sailing routes, not ferry
+ * services, so a correctly placed dock can sit well outside it simply
+ * because no sailing route passes that way — as the two that still do not
+ * snap demonstrate, both verified at the terminal itself. Check terminals
+ * against OSM's `amenity=ferry_terminal`, which is the authority here; the
+ * mesh is not.
+ *
+ * Either way the response is the same: don't patch the mesh, don't
+ * hand-place an approach point, and don't widen this constant. See
+ * `data/README.md`.
  */
 export const MAX_SNAP_NM = 2;
 
