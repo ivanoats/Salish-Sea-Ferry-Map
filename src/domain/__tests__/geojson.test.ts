@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { routesToLineFeatureCollection, terminalsToPointFeatureCollection } from "@/domain/geojson";
 import type { FerryRoute, Terminal } from "@/domain/ferry";
+import { haversineNm } from "@/domain/mesh";
+import { ROUTES } from "@/data/routes";
+import { TERMINALS_BY_ID } from "@/data/terminals";
 
 const terminals: Terminal[] = [
   { id: "a", name: "A", coordinates: [-123, 48], jurisdiction: "WA" },
@@ -24,6 +27,22 @@ const routes: FerryRoute[] = [
   route("r1", ["a", "b"], { name: "A to B" }),
   route("r2", ["a", "does-not-exist"], { name: "Broken route" }),
 ];
+
+const toLonLat = (position: GeoJSON.Position): readonly [number, number] => [
+  position[0] as number,
+  position[1] as number,
+];
+
+const lineDistanceNm = (coordinates: readonly GeoJSON.Position[]): number => {
+  let total = 0;
+  for (let at = 1; at < coordinates.length; at++) {
+    const from = coordinates[at - 1];
+    const to = coordinates[at];
+    if (from === undefined || to === undefined) continue;
+    total += haversineNm(toLonLat(from), toLonLat(to));
+  }
+  return total;
+};
 
 describe("routesToLineFeatureCollection", () => {
   it("builds one LineString per resolvable route leg", () => {
@@ -161,5 +180,73 @@ describe("terminalsToPointFeatureCollection", () => {
     const fc = terminalsToPointFeatureCollection(routes, terminalsById);
     const ids = fc.features.map((f) => f.properties.terminalId).sort();
     expect(ids).toEqual(["a", "b"]);
+  });
+});
+
+describe("routesToLineFeatureCollection with baked mesh legs", () => {
+  const routeById = (id: string): FerryRoute => {
+    const found = ROUTES.find((route) => route.id === id);
+    if (found === undefined) throw new Error(`missing route ${id}`);
+    return found;
+  };
+
+  it("draws Anacortes–Friday Harbor with mesh geometry longer than a straight line", () => {
+    const route = routeById("wsf-anacortes-sidney");
+    const fc = routesToLineFeatureCollection([route], TERMINALS_BY_ID);
+    const leg = fc.features.find(
+      (feature) =>
+        feature.properties.routeId === "wsf-anacortes-sidney" &&
+        feature.properties.legIndex === 0
+    );
+
+    expect(leg).toBeDefined();
+    const coordinates = leg?.geometry.coordinates ?? [];
+    expect(coordinates.length).toBeGreaterThan(2);
+    expect(lineDistanceNm(coordinates)).toBeGreaterThan(
+      haversineNm(
+        TERMINALS_BY_ID.get("anacortes")!.coordinates,
+        TERMINALS_BY_ID.get("friday-harbor")!.coordinates
+      )
+    );
+  });
+
+  it("keeps Southern Gulf shared legs as matching polylines with opposite offsets", () => {
+    const swartz = routeById("bcf-swartzbay-southerngulfislands");
+    const tsawwassen = routeById("bcf-tsawwassen-southerngulfislands");
+    const fc = routesToLineFeatureCollection([swartz, tsawwassen], TERMINALS_BY_ID);
+
+    for (const legIndex of [1, 2, 3]) {
+      const swartzLeg = fc.features.find(
+        (feature) =>
+          feature.properties.routeId === swartz.id &&
+          feature.properties.legIndex === legIndex
+      );
+      const tsawwassenLeg = fc.features.find(
+        (feature) =>
+          feature.properties.routeId === tsawwassen.id &&
+          feature.properties.legIndex === legIndex
+      );
+
+      expect(swartzLeg).toBeDefined();
+      expect(tsawwassenLeg).toBeDefined();
+
+      const swartzCoordinates = swartzLeg?.geometry.coordinates ?? [];
+      const tsawwassenCoordinates = tsawwassenLeg?.geometry.coordinates ?? [];
+      expect(swartzCoordinates.length).toBeGreaterThan(2);
+      expect(tsawwassenCoordinates.length).toBeGreaterThan(2);
+      expect(swartzCoordinates).toEqual(tsawwassenCoordinates);
+
+      expect(swartzLeg?.properties.offsetIndex).toBe(-0.5);
+      expect(tsawwassenLeg?.properties.offsetIndex).toBe(0.5);
+
+      const from = swartzCoordinates[0];
+      const to = swartzCoordinates.at(-1);
+      expect(from).toBeDefined();
+      expect(to).toBeDefined();
+      if (from === undefined || to === undefined) continue;
+      expect(lineDistanceNm(swartzCoordinates)).toBeGreaterThan(
+        haversineNm(toLonLat(from), toLonLat(to))
+      );
+    }
   });
 });
