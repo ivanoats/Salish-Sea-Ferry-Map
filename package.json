@@ -5,12 +5,12 @@
   "type": "module",
   "description": "Interactive map of every ferry route across the Salish Sea — Puget Sound, the Strait of Georgia, and the Strait of Juan de Fuca — spanning Washington State Ferries, BC Ferries, Black Ball Ferry Line, Kitsap Transit, Victoria Clipper, and regional county ferries.",
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "scripts": {
     "dev": "npm run maplibre-worker && panda codegen --silent && next dev",
     "build": "npm run maplibre-worker && panda codegen --silent && next build",
-    "build-route-geometry": "node scripts/build-route-geometry.mjs",
+    "build-route-geometry": "node scripts/build-route-geometry.ts",
     "start": "next start",
     "maplibre-worker": "node scripts/copy-maplibre-worker.mjs",
     "postinstall": "node scripts/copy-maplibre-worker.mjs",

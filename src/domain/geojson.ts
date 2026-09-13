@@ -33,10 +33,14 @@ export interface TerminalPointProperties {
  * Bremerton→Seattle; it is the same crossing and it gets the same key.
  * NUL is the separator because no terminal id can contain one.
  */
+const compareCodeUnits = (a: string, b: string): number => {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
+};
+
 const legKey = (fromId: string, toId: string): string =>
-  [fromId, toId]
-    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
-    .join("\0");
+  [fromId, toId].sort(compareCodeUnits).join("\0");
 const directedLegKey = (fromId: string, toId: string): string =>
   `${fromId}\0${toId}`;
 
