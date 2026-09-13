@@ -33,10 +33,8 @@ that caveat and must keep it visible.
 
 ### Terminal coverage
 
-The planner's harbours are not this project's ferry terminals, so a
-terminal is not guaranteed its own entrance spur. Measured against the
-current `src/data/terminals.ts`, 61 of 65 terminals fall within
-`MAX_SNAP_NM` (2 nm) of a mesh vertex. Four do not:
+Measured against the current `src/data/terminals.ts`, 64 of 68 terminals
+fall within `MAX_SNAP_NM` (2 nm) of a mesh vertex. Four do not:
 
 | Terminal | Nearest vertex |
 | --- | --- |
@@ -45,9 +43,24 @@ current `src/data/terminals.ts`, 61 of 65 terminals fall within
 | `lasqueti-island` (False Bay) | 2.33 nm |
 | `cortes-island` (Whaletown) | 2.15 nm |
 
-These need either a mesh patch or a hand-placed approach point. Until then
-`meshPathCoordinates` returns `null` for legs touching them, which callers
+`meshPathCoordinates` returns `null` for legs touching these, which callers
 must treat as "keep the straight line" rather than as an error.
+
+**These four are almost certainly bad coordinates in this repo, not gaps in
+the mesh.** An earlier version of this file blamed the mesh — that the
+planner's harbours are not this project's ferry terminals, so a terminal
+was not guaranteed its own entrance spur. That was the wrong conclusion.
+
+All four also sit 1.3–6.4 km from the nearest OSM `amenity=ferry_terminal`
+feature, and OSM carries a correctly-named terminal at the far end of each
+gap. Two independently built datasets failing to reach the same four
+points is evidence about the points, not about either dataset. The wider
+audit in issue #16 found 21 of 68 terminals in that state.
+
+So don't patch the mesh or hand-place an approach point to make these fit.
+Fix the coordinate. Widening `MAX_SNAP_NM` would be worse still: it would
+draw a confident line from somewhere the ferry never was, which is the
+exact failure the constant exists to prevent.
 
 ### Licensing
 

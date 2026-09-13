@@ -131,9 +131,17 @@ export const buildMeshGraph = (mesh: MeshFeatureCollection): MeshGraph => {
  * caller keep the straight line, which is at least honestly wrong.
  *
  * Ferry terminals are *not* the planner's harbours, so unlike there, no
- * terminal here is guaranteed its own spur. Expect the scan below to do
- * real work, and expect some terminals to need a mesh patch or a hand
- * placed approach point.
+ * terminal here is guaranteed its own spur, and the scan below does real
+ * work rather than usually hitting the exact-match fast path.
+ *
+ * When a terminal falls outside this radius, the fix is almost always its
+ * coordinate. The four that currently do also sit kilometres from the
+ * nearest OSM `amenity=ferry_terminal`, and two independently built
+ * datasets missing the same points is evidence about the points. Don't
+ * patch the mesh or hand-place an approach point to accommodate one, and
+ * don't widen this constant — that would draw exactly the confident line
+ * from nowhere the paragraph above exists to prevent. See issue #16 and
+ * `data/README.md`.
  */
 export const MAX_SNAP_NM = 2;
 
