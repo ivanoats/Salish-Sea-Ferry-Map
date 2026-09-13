@@ -9,6 +9,7 @@
       "from": "Seattle",
       "to": "Bainbridge Island",
       "duration": "00:35",
+      "terminalIds": ["seattle-colman-dock", "bainbridge-island"],
       "coordinates": [
         [-122.3393, 47.6021],
         [-122.35, 47.607],
@@ -23,6 +24,7 @@
       "from": "Bainbridge Island",
       "to": "Seattle",
       "duration": "00:35",
+      "terminalIds": ["bainbridge-island", "seattle-colman-dock"],
       "coordinates": [
         [-122.5108, 47.6229],
         [-122.5, 47.619],

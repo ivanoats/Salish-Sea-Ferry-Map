@@ -34,6 +34,7 @@ interface OsmFerryRouteSnapshot {
     readonly from?: string;
     readonly to?: string;
     readonly duration?: string;
+    readonly terminalIds?: readonly [string, string];
     readonly coordinates: readonly LonLat[];
   }[];
 }
@@ -61,7 +62,9 @@ const lineDistanceNm = (coordinates: readonly LonLat[]): number => {
 
 const osmRouteCoordinates = (
   snapshot: OsmFerryRouteSnapshot,
+  fromId: string,
   from: LonLat,
+  toId: string,
   to: LonLat
 ): readonly LonLat[] | null => {
   let bestCoordinates: readonly LonLat[] | null = null;
@@ -69,6 +72,13 @@ const osmRouteCoordinates = (
   let bestLineNm = Number.POSITIVE_INFINITY;
 
   for (const route of snapshot.routes) {
+    if (
+      route.terminalIds !== undefined &&
+      (route.terminalIds[0] !== fromId || route.terminalIds[1] !== toId)
+    ) {
+      continue;
+    }
+
     const start = route.coordinates[0];
     const end = route.coordinates.at(-1);
     if (start === undefined || end === undefined || route.coordinates.length < 2) {
@@ -138,7 +148,9 @@ export const buildRouteLegGeometryByDirectedTerminalIds = (): Readonly<
 
       const osmCoordinates = osmRouteCoordinates(
         osmFerryRoutes,
+        from.id,
         from.coordinates,
+        to.id,
         to.coordinates
       );
       if (osmCoordinates !== null) {
