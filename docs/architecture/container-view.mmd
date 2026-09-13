@@ -3,21 +3,18 @@ title Salish Sea Ferry Map — container view
 
 Person(user, "Map user", "Browses the map in a web browser.")
 System_Ext(osm, "OpenStreetMap", "Raster tiles for the basemap.")
-System_Ext(wsdot, "WSDOT Traveler API", "Optional live vessel positions.")
+System_Ext(wsdot, "WSDOT Vessel Locations API", "Optional live vessel positions.")
 
 System_Boundary(system, "Salish Sea Ferry Map") {
-  Container(app, "Next.js web app", "Next.js App Router, React, TypeScript", "Serves the site shell and owns the runtime architecture.")
-  Container(data, "Static ferry dataset", "TypeScript modules + generated route-leg geometry", "Hand-curated operators, terminals, routes, and prebuilt geometry.")
+  Container(app, "Next.js web app", "Next.js App Router, React, TypeScript", "Serves the site and bundles the curated dataset and domain logic.")
   Container(map, "Browser map UI", "MapLibre GL JS", "Renders routes, terminals, filters, and optional vessels over the basemap.")
   Container(api, "Live vessel proxy", "Next.js route handler", "Keeps the WSDOT API key server-side and normalizes live vessel responses.")
 }
 
 Rel(user, map, "Views and filters ferry routes")
-Rel(map, app, "Loads the application")
-Rel(app, data, "Imports routes, terminals, operators, and geometry")
-Rel(map, data, "Consumes GeoJSON derived from the static dataset")
+Rel(app, map, "Delivers to the browser")
 Rel(map, osm, "Requests basemap tiles")
-Rel(map, api, "Requests optional live WSF vessels")
+Rel(map, api, "Requests optional live vessels")
 Rel(api, wsdot, "Fetches vessel positions")
 
-UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")

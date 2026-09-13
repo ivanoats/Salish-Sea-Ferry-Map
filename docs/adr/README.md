@@ -1,7 +1,11 @@
 # Architecture decision records
 
-These records are reconstructed from the current repository because no prior
-`docs/adr/` directory existed yet.
+One file per decision, reflecting what is true today. These were reconstructed
+from the repository itself, since no prior `docs/adr/` directory existed — each
+record cites the files it was derived from in its **Evidence** section.
+
+For the chronological history of status changes, see
+[`../adl/`](../adl/).
 
 | ADR | Status | Decision |
 | --- | --- | --- |
