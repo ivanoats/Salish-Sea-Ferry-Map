@@ -156,9 +156,16 @@ export const buildRouteLegGeometryByDirectedTerminalIds = (): Readonly<
   Record<string, RouteLegGeometry>
 > => {
   const osmFerryRoutes = loadOsmFerryRoutes();
-  const osmRouteGraphs = osmFerryRoutes.routes.map((route) =>
-    buildOsmRouteGraph(route.coordinates)
-  );
+  const osmRouteGraphByCoordinates = new Map<string, OsmRouteGraph>();
+  const osmRouteGraphs = osmFerryRoutes.routes.map((route) => {
+    const coordinatesKey = JSON.stringify(route.coordinates);
+    const cached = osmRouteGraphByCoordinates.get(coordinatesKey);
+    if (cached !== undefined) return cached;
+
+    const graph = buildOsmRouteGraph(route.coordinates);
+    osmRouteGraphByCoordinates.set(coordinatesKey, graph);
+    return graph;
+  });
   const graph = buildMeshGraph(loadMesh());
   const geometryByDirectedTerminalIds = new Map<string, RouteLegGeometry>();
 
