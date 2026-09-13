@@ -64,31 +64,34 @@ const osmRouteCoordinates = (
   from: LonLat,
   to: LonLat
 ): readonly LonLat[] | null => {
-  const match = snapshot.routes
-    .map((route) => {
-      const start = route.coordinates[0];
-      const end = route.coordinates.at(-1);
-      if (start === undefined || end === undefined || route.coordinates.length < 2) {
-        return null;
-      }
+  let bestCoordinates: readonly LonLat[] | null = null;
+  let bestEndpointNm = Number.POSITIVE_INFINITY;
+  let bestLineNm = Number.POSITIVE_INFINITY;
 
-      const fromNm = haversineNm(from, start);
-      const toNm = haversineNm(to, end);
-      if (fromNm > MAX_OSM_ENDPOINT_NM || toNm > MAX_OSM_ENDPOINT_NM) return null;
+  for (const route of snapshot.routes) {
+    const start = route.coordinates[0];
+    const end = route.coordinates.at(-1);
+    if (start === undefined || end === undefined || route.coordinates.length < 2) {
+      continue;
+    }
 
-      return {
-        coordinates: route.coordinates,
-        endpointNm: fromNm + toNm,
-        lineNm: lineDistanceNm(route.coordinates),
-      };
-    })
-    .filter((candidate): candidate is { coordinates: readonly LonLat[]; endpointNm: number; lineNm: number } => candidate !== null)
-    .sort(
-      (left, right) =>
-        left.endpointNm - right.endpointNm || left.lineNm - right.lineNm
-    )[0];
+    const fromNm = haversineNm(from, start);
+    const toNm = haversineNm(to, end);
+    if (fromNm > MAX_OSM_ENDPOINT_NM || toNm > MAX_OSM_ENDPOINT_NM) continue;
 
-  return match?.coordinates ?? null;
+    const endpointNm = fromNm + toNm;
+    const lineNm = lineDistanceNm(route.coordinates);
+    if (
+      endpointNm < bestEndpointNm ||
+      (endpointNm === bestEndpointNm && lineNm < bestLineNm)
+    ) {
+      bestCoordinates = route.coordinates;
+      bestEndpointNm = endpointNm;
+      bestLineNm = lineNm;
+    }
+  }
+
+  return bestCoordinates;
 };
 
 export const buildRouteLegGeometryByDirectedTerminalIds = (): Readonly<
