@@ -36,11 +36,31 @@ describe("ferry dataset integrity", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  /**
+   * Steilacoom, then Ketron, then Anderson runs steadily west. A leg that
+   * doubles back is the shape a misplaced terminal makes, and the first
+   * version of this route shipped with two coordinates about three
+   * kilometres out — which typechecked, and which every other test here
+   * passed, because none of them can tell whether a point is in the water.
+   */
   it("the Pierce County Anderson Island route progresses westward without doubling back", () => {
     const route = ROUTES.find((candidate) => candidate.id === "pierce-county-steilacoom-anderson");
-    expect(route).toBeDefined();
+    if (route === undefined) {
+      throw new Error("pierce-county-steilacoom-anderson is missing from ROUTES");
+    }
 
-    const longitudes = route!.terminalIds.map((terminalId) => TERMINALS_BY_ID.get(terminalId)?.coordinates[0]);
-    expect(longitudes).toEqual([...longitudes].sort((a, b) => b! - a!));
+    // Resolved by throwing rather than with `?.`, so `longitudes` is
+    // number[] and the comparator below needs no assertions. Referential
+    // integrity has its own test above; an unresolved id here is a broken
+    // precondition, not this test's subject.
+    const longitudes = route.terminalIds.map((terminalId) => {
+      const terminal = TERMINALS_BY_ID.get(terminalId);
+      if (terminal === undefined) {
+        throw new Error(`route references unknown terminal id ${terminalId}`);
+      }
+      return terminal.coordinates[0];
+    });
+
+    expect(longitudes).toEqual([...longitudes].sort((a, b) => b - a));
   });
 });
