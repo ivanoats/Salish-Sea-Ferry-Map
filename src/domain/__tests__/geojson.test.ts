@@ -130,11 +130,14 @@ describe("routesToLineFeatureCollection", () => {
       [carFerry, fastFerry],
       terminalsById,
       {
-        "a\0b": [
-          [-124, 49],
-          [-123.8, 48.8],
-          [-123, 48],
-        ],
+        "a\0b": {
+          source: "mesh",
+          coordinates: [
+            [-124, 49],
+            [-123.8, 48.8],
+            [-123, 48],
+          ],
+        },
       }
     );
 
@@ -151,6 +154,10 @@ describe("routesToLineFeatureCollection", () => {
       ],
     ]);
     expect(fc.features.map((f) => f.properties.offsetIndex)).toEqual([-0.5, 0.5]);
+    expect(fc.features.map((f) => f.properties.geometrySource)).toEqual([
+      "mesh",
+      "mesh",
+    ]);
   });
 
   it("centers three routes sharing a leg on the true line", () => {

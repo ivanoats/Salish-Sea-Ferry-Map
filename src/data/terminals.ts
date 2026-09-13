@@ -42,7 +42,7 @@ export const TERMINALS: readonly Terminal[] = [
   // --- Skagit County / Whatcom County ---
   { id: "anacortes-guemes-dock", name: "Anacortes (6th St. dock)", coordinates: [-122.6156, 48.5136], jurisdiction: "WA" },
   { id: "guemes-island", name: "Guemes Island", coordinates: [-122.6304, 48.5218], jurisdiction: "WA" },
-  { id: "gooseberry-point", name: "Gooseberry Point", coordinates: [-122.67067, 48.7321], jurisdiction: "WA" },
+  { id: "gooseberry-point", name: "Gooseberry Point", coordinates: [-122.6702, 48.73123], jurisdiction: "WA" },
   { id: "lummi-island", name: "Lummi Island", coordinates: [-122.6698, 48.7318], jurisdiction: "WA" },
 
   // --- BC Ferries ---

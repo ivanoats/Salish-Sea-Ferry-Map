@@ -14,6 +14,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 import type { OperatorId } from "@/domain/ferry";
 import { routesToLineFeatureCollection, terminalsToPointFeatureCollection } from "@/domain/geojson";
+import type { RouteLegGeometrySource } from "@/data/route-leg-geometry";
 import type { VesselPosition } from "@/domain/vessel";
 import { ROUTES } from "@/data/routes";
 import { TERMINALS_BY_ID } from "@/data/terminals";
@@ -86,6 +87,30 @@ const emptyFeatureCollection = (): GeoJSON.FeatureCollection => ({
   type: "FeatureCollection",
   features: [],
 });
+
+const geometrySourceLabel = (source: RouteLegGeometrySource): string => {
+  switch (source) {
+    case "osm":
+      return "OSM ferry-route geometry";
+    case "mesh":
+      return "mesh fallback";
+    default:
+      return "straight-line fallback";
+  }
+};
+
+const routeLegGeometrySource = (
+  value: unknown
+): RouteLegGeometrySource | null => {
+  switch (value) {
+    case "osm":
+    case "mesh":
+    case "straight":
+      return value;
+    default:
+      return null;
+  }
+};
 
 /** MapLibre `match` expression pairing each operator id with its display color. */
 const operatorColorExpression: unknown[] = ["match", ["get", "operatorId"]];
@@ -183,7 +208,19 @@ export function FerryMap({ visibleOperatorIds, showInactiveRoutes, vessels }: Fe
       if (feature === undefined) return;
       const name = String(feature.properties.name);
       const status = String(feature.properties.status);
-      const label = status === "suspended" ? `${name} (suspended)` : status === "seasonal" ? `${name} (seasonal)` : name;
+      const geometrySource = routeLegGeometrySource(
+        feature.properties.geometrySource
+      );
+      const labelBase =
+        status === "suspended"
+          ? `${name} (suspended)`
+          : status === "seasonal"
+            ? `${name} (seasonal)`
+            : name;
+      const label =
+        geometrySource === null
+          ? labelBase
+          : `${labelBase} — ${geometrySourceLabel(geometrySource)}`;
       popupRef.current?.remove();
       popupRef.current = new Popup().setLngLat(event.lngLat).setText(label).addTo(map);
     });

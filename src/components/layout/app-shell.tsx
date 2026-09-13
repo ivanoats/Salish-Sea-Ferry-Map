@@ -106,6 +106,11 @@ export function AppShell() {
           ) : null}
         </div>
 
+        <p className={css({ fontSize: "xs", color: "fg.subtle" })}>
+          Route geometry prefers OSM ferry lines where they are vendored, then the navigable-water
+          mesh, then a straight-line fallback.
+        </p>
+
         <p className={css({ fontSize: "xs", color: "fg.subtle", mt: "auto", pt: "4" })}>
           Route lines and terminal locations are approximate and for reference only —{" "}
           <strong>not for navigation.</strong> Data compiled from operator websites, September 2026.
