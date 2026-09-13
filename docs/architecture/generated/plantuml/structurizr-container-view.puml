@@ -16,20 +16,22 @@ left to right direction
 !include <C4/C4_Container>
 
 Person(Mapuser, "Map user", $descr="Browses and filters ferry routes.", $tags="", $link="")
+Person(Maintainer, "Maintainer", $descr="Curates operators, terminals, routes, and geometry inputs.", $tags="", $link="")
 System(OpenStreetMap, "OpenStreetMap", $descr="Raster tiles for the basemap.", $tags="", $link="")
 System(WSDOTVesselLocationsAPI, "WSDOT Vessel Locations API", $descr="Optional live vessel positions.", $tags="", $link="")
 
 System_Boundary("SalishSeaFerryMap_boundary", "Salish Sea Ferry Map", $tags="") {
-  Container(SalishSeaFerryMap.BrowsermapUI, "Browser map UI", $techn="MapLibre GL JS", $descr="Renders routes, terminals, filters, and optional vessels over the basemap.", $tags="", $link="")
-  Container(SalishSeaFerryMap.Livevesselproxy, "Live vessel proxy", $techn="Next.js route handler", $descr="Keeps the WSDOT API key server-side and normalizes live vessel responses.", $tags="", $link="")
-  Container(SalishSeaFerryMap.Nextjswebapp, "Next.js web app", $techn="Next.js App Router, React, TypeScript", $descr="Serves the site and bundles the curated dataset and domain logic.", $tags="", $link="")
+  Container(SalishSeaFerryMap.BrowsermapUI, "Browser map UI", $techn="MapLibre GL JS, React", $descr="Renders routes, terminals, filters, and optional vessels over the basemap.", $tags="", $link="")
+  Container(SalishSeaFerryMap.Nextjswebapp, "Next.js web app", $techn="Next.js App Router, React, TypeScript", $descr="Serves the site, exposes the vessel proxy, and bundles the curated dataset and domain logic.", $tags="", $link="")
 }
 
+Rel(Mapuser, SalishSeaFerryMap.Nextjswebapp, "Requests pages", $techn="", $tags="", $link="")
 Rel(Mapuser, SalishSeaFerryMap.BrowsermapUI, "Views and filters ferry routes", $techn="", $tags="", $link="")
+Rel(Maintainer, SalishSeaFerryMap.Nextjswebapp, "Curates operators, terminals, routes, and geometry", $techn="", $tags="", $link="")
 Rel(SalishSeaFerryMap.Nextjswebapp, SalishSeaFerryMap.BrowsermapUI, "Delivers to the browser", $techn="", $tags="", $link="")
-Rel(SalishSeaFerryMap.BrowsermapUI, OpenStreetMap, "Requests basemap tiles", $techn="", $tags="", $link="")
-Rel(SalishSeaFerryMap.BrowsermapUI, SalishSeaFerryMap.Livevesselproxy, "Requests optional live vessels", $techn="", $tags="", $link="")
-Rel(SalishSeaFerryMap.Livevesselproxy, WSDOTVesselLocationsAPI, "Fetches vessel positions", $techn="", $tags="", $link="")
+Rel(SalishSeaFerryMap.Nextjswebapp, WSDOTVesselLocationsAPI, "Vessel locations", $techn="", $tags="", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI, SalishSeaFerryMap.Nextjswebapp, "Operators, routes", $techn="", $tags="", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI, OpenStreetMap, "Basemap tiles", $techn="", $tags="", $link="")
 
 SHOW_LEGEND(true)
 hide stereotypes

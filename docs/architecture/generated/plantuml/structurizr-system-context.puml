@@ -20,10 +20,10 @@ System(OpenStreetMap, "OpenStreetMap", $descr="Raster tiles for the basemap.", $
 System(WSDOTVesselLocationsAPI, "WSDOT Vessel Locations API", $descr="Optional live vessel positions.", $tags="", $link="")
 System(SalishSeaFerryMap, "Salish Sea Ferry Map", $descr="Interactive route map spanning multiple ferry operators.", $tags="", $link="")
 
-Rel(Mapuser, SalishSeaFerryMap, "Browses routes, terminals, and optional live vessels", $techn="", $tags="", $link="")
-Rel(Maintainer, SalishSeaFerryMap, "Updates the static dataset and generated geometry", $techn="", $tags="", $link="")
-Rel(SalishSeaFerryMap, OpenStreetMap, "Uses raster map tiles at runtime", $techn="", $tags="", $link="")
-Rel(SalishSeaFerryMap, WSDOTVesselLocationsAPI, "Fetches optional live vessel data through a server-side proxy", $techn="", $tags="", $link="")
+Rel(Mapuser, SalishSeaFerryMap, "Requests pages", $techn="", $tags="", $link="")
+Rel(Maintainer, SalishSeaFerryMap, "Curates operators, terminals, routes, and geometry", $techn="", $tags="", $link="")
+Rel(SalishSeaFerryMap, WSDOTVesselLocationsAPI, "Vessel locations", $techn="", $tags="", $link="")
+Rel(SalishSeaFerryMap, OpenStreetMap, "Basemap tiles", $techn="", $tags="", $link="")
 
 SHOW_LEGEND(true)
 hide stereotypes

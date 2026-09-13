@@ -13,46 +13,71 @@ route knowledge across UI code.
 ## C4 views
 
 Following the [C4 model](https://c4model.com/), zooming in one level at a time.
-The source of truth is [`workspace.dsl`](./workspace.dsl), and committed SVG
-exports are rendered directly by GitHub without cloning.
+The source of truth is [`workspace.dsl`](./workspace.dsl); everything below is
+generated from it, so the levels cannot disagree with each other.
 
-| Level | View | Scope |
-| --- | --- | --- |
-| 1 | [System context](./generated/plantuml/structurizr-system-context.svg) | The map, its people, and the two external systems it depends on |
-| 2 | [Container view](./generated/plantuml/structurizr-container-view.svg) | The Next.js app, the browser map UI, and the vessel proxy |
-| 3 | [Component view](./generated/plantuml/structurizr-component-view.svg) | Inside the Next.js app: data, domain, and UI components |
+### Level 1 — System context
+
+![System context](./generated/plantuml/structurizr-system-context.svg)
+
+The map, the people who use and maintain it, and the two external systems it
+depends on.
+
+### Level 2 — Containers
+
+![Container view](./generated/plantuml/structurizr-container-view.svg)
+
+Two runtime pieces: the Next.js app that serves the site and the vessel proxy,
+and the browser-side map UI it delivers.
+
+### Level 3 — Components
+
+![Component view, Next.js web app](./generated/plantuml/structurizr-component-view-web-app.svg)
+
+![Component view, browser map UI](./generated/plantuml/structurizr-component-view-browser-map.svg)
 
 Level 4 (code) is deliberately omitted — the type definitions in `src/domain/`
 already serve that purpose and would only go stale if duplicated here.
 
-The curated dataset is a *component* rather than a container: it compiles into
-the application bundle and is not a separately running thing, which is what
-[C4 means by a container](https://c4model.com/abstractions/container).
+### Where things live, and why
+
+A [C4 container](https://c4model.com/abstractions/container) is "a runtime
+boundary around some code that is being executed or some data that is being
+stored". Two placements follow from that and are easy to get wrong:
+
+- The **curated dataset** is a component, not a container. It compiles into the
+  application bundle and starts nothing.
+- The **vessel proxy route** is likewise a component of the Next.js app rather
+  than a container of its own. It is a route handler in that same application,
+  not a separate runtime boundary.
+
+`src/domain/mesh.ts` appears in no view at all: it is reached only by
+`scripts/build-route-geometry.ts` at build time.
+
+Relationships are declared once in the DSL, at the most specific level that is
+true, and Structurizr implies the container- and system-level edges from them.
+That is why the container view says the browser map UI requests basemap tiles
+and the component view attributes it to the `Ferry map` component — the same
+statement, shown at two zoom levels, rather than two claims that can drift apart.
 
 ### Regenerating diagrams from the DSL
 
-Edit `workspace.dsl`, then regenerate diagrams deliberately (not as part of
-`npm run build` or Netlify deploys):
+Edit `workspace.dsl`, then regenerate deliberately — this is not part of
+`npm run build` or Netlify deploys. Both tools are pinned, and Docker is used so
+that no local Java install is required:
 
 ```bash
 # from the repository root
-mkdir -p docs/architecture/generated/plantuml
-
-curl -L -o /tmp/structurizr-cli.zip \
-  https://github.com/structurizr/cli/releases/download/v2025.11.09/structurizr-cli.zip
-unzip -o /tmp/structurizr-cli.zip -d /tmp/structurizr-cli
-/tmp/structurizr-cli/structurizr.sh export \
-  -workspace docs/architecture/workspace.dsl \
+docker run --rm -v "$PWD":/work -w /work structurizr/cli:2025.11.09 \
+  export -workspace docs/architecture/workspace.dsl \
   -format plantuml/c4plantuml \
   -output docs/architecture/generated/plantuml
 
-curl -L -o /tmp/plantuml.jar \
-  https://github.com/plantuml/plantuml/releases/download/v1.2026.8/plantuml.jar
-java -jar /tmp/plantuml.jar -tsvg \
-  docs/architecture/generated/plantuml/structurizr-system-context.puml \
-  docs/architecture/generated/plantuml/structurizr-container-view.puml \
-  docs/architecture/generated/plantuml/structurizr-component-view.puml
+docker run --rm -v "$PWD":/work -w /work plantuml/plantuml:1.2026.8 \
+  -tsvg docs/architecture/generated/plantuml/*.puml
 ```
+
+Commit the regenerated `.puml` and `.svg` files alongside the DSL change.
 
 ## Key runtime pieces
 

@@ -1,0 +1,47 @@
+@startuml
+title <size:24>Component View: Salish Sea Ferry Map - Browser map UI</size>\n<size:24>Component view — browser map UI</size>
+
+set separator none
+left to right direction
+
+<style>
+  root {
+    BackgroundColor: #ffffff
+    FontColor: #444444
+  }
+</style>
+
+!include <C4/C4>
+!include <C4/C4_Context>
+!include <C4/C4_Container>
+!include <C4/C4_Component>
+
+Person(Mapuser, "Map user", $descr="Browses and filters ferry routes.", $tags="", $link="")
+
+System(OpenStreetMap, "OpenStreetMap", $descr="Raster tiles for the basemap.", $tags="", $link="")
+
+System_Boundary("SalishSeaFerryMap_boundary", "Salish Sea Ferry Map", $tags="") {
+  Container_Boundary("SalishSeaFerryMap.BrowsermapUI_boundary", "Browser map UI", $tags="") {
+    Component(SalishSeaFerryMap.BrowsermapUI.Appshell, "App shell", $techn="src/components/layout/app-shell.tsx", $descr="Owns operator filter state and wires the panel to the map.", $tags="", $link="")
+    Component(SalishSeaFerryMap.BrowsermapUI.Operatorfilter, "Operator filter", $techn="src/components/panels/operator-filter.tsx", $descr="Ark UI checkboxes for per-operator visibility.", $tags="", $link="")
+    Component(SalishSeaFerryMap.BrowsermapUI.Ferrymap, "Ferry map", $techn="src/components/map/ferry-map.tsx", $descr="MapLibre GL map, layers, and interactions.", $tags="", $link="")
+    Component(SalishSeaFerryMap.BrowsermapUI.Vesselpositionshook, "Vessel positions hook", $techn="src/components/map/use-vessel-positions.ts", $descr="Polls the proxy for live WSF vessels.", $tags="", $link="")
+  }
+
+  Container(SalishSeaFerryMap.Nextjswebapp, "Next.js web app", $techn="Next.js App Router, React, TypeScript", $descr="Serves the site, exposes the vessel proxy, and bundles the curated dataset and domain logic.", $tags="", $link="")
+}
+
+Rel(Mapuser, SalishSeaFerryMap.Nextjswebapp, "Requests pages", $techn="", $tags="", $link="")
+Rel(Mapuser, SalishSeaFerryMap.BrowsermapUI.Appshell, "Views and filters ferry routes", $techn="", $tags="", $link="")
+Rel(SalishSeaFerryMap.Nextjswebapp, SalishSeaFerryMap.BrowsermapUI.Appshell, "Delivers to the browser", $techn="", $tags="", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI.Appshell, SalishSeaFerryMap.BrowsermapUI.Operatorfilter, "Filter state", $techn="", $tags="", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI.Appshell, SalishSeaFerryMap.BrowsermapUI.Ferrymap, "Visible routes", $techn="", $tags="", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI.Appshell, SalishSeaFerryMap.BrowsermapUI.Vesselpositionshook, "Live vessels", $techn="", $tags="", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI.Appshell, SalishSeaFerryMap.Nextjswebapp, "Operators, routes", $techn="", $tags="", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI.Ferrymap, SalishSeaFerryMap.Nextjswebapp, "Feature collections", $techn="", $tags="", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI.Ferrymap, OpenStreetMap, "Basemap tiles", $techn="", $tags="", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI.Vesselpositionshook, SalishSeaFerryMap.Nextjswebapp, "GET /api/vessels", $techn="", $tags="", $link="")
+
+SHOW_LEGEND(true)
+hide stereotypes
+@enduml
