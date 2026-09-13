@@ -39,6 +39,12 @@ const linkClassName = css({
 
 const backLinkClassName = `${linkClassName} ${css({ marginBottom: "1" })}`;
 
+const sectionHeadingClassName = css({
+  fontSize: "xl",
+  fontWeight: "semibold",
+  lineHeight: "tight",
+});
+
 function CoverageList() {
   return (
     <ul className={css({ margin: 0, paddingLeft: "5", display: "grid", gap: "2", listStyleType: "disc" })}>
@@ -48,6 +54,59 @@ function CoverageList() {
         </li>
       ))}
     </ul>
+  );
+}
+
+function AboutHeader() {
+  return (
+    <div className={css({ display: "grid", gap: "2" })}>
+      <Link href="/" className={backLinkClassName}>
+        ← Back to the map
+      </Link>
+      <h1 className={css({ fontSize: { base: "2xl", md: "3xl" }, fontWeight: "bold", lineHeight: "tight" })}>
+        About this map
+      </h1>
+      <p className={proseClassName}>
+        A reference map of ferry routes across the Salish Sea, gathered into one place.
+      </p>
+    </div>
+  );
+}
+
+function WhyThisExists() {
+  return (
+    <section className={sectionClassName}>
+      <h2 className={sectionHeadingClassName}>Why this exists</h2>
+      <p className={proseClassName}>
+        Good ferry maps around the Salish Sea usually stop at a single operator. This project
+        exists to show Washington State Ferries, BC Ferries, Black Ball, Kitsap Transit,
+        Victoria Clipper, and the county ferries together on one map so visitors can see the
+        whole network at a glance.
+      </p>
+      <p className={proseClassName}>
+        It is especially meant for trip ideas that mix bikes, foot passengers, and multiple
+        agencies. Instead of piecing together several operator sites by hand, you can see how a
+        loop or crossing fits into the broader shape of the Salish Sea.
+      </p>
+    </section>
+  );
+}
+
+function WhatItCovers() {
+  return (
+    <section className={sectionClassName}>
+      <h2 className={sectionHeadingClassName}>What it covers</h2>
+      <p className={proseClassName}>
+        The map covers ferry routes across Puget Sound, the Strait of Georgia, and the Strait
+        of Juan de Fuca, including both vehicle ferries and passenger-only services.
+      </p>
+      <CoverageList />
+      <p className={proseClassName}>
+        This is a route map, not a trip planner: schedules and fares are intentionally out of
+        scope. Route lines and terminal locations are approximate and for reference only —{" "}
+        <strong>not for navigation.</strong>
+      </p>
+    </section>
   );
 }
 
@@ -70,50 +129,9 @@ export default function AboutPage() {
           gap: "8",
         })}
       >
-        <div className={css({ display: "grid", gap: "2" })}>
-          <Link href="/" className={backLinkClassName}>
-            ← Back to the map
-          </Link>
-          <h1 className={css({ fontSize: { base: "2xl", md: "3xl" }, fontWeight: "bold", lineHeight: "tight" })}>
-            About this map
-          </h1>
-          <p className={proseClassName}>
-            A reference map of ferry routes across the Salish Sea, gathered into one place.
-          </p>
-        </div>
-
-        <section className={sectionClassName}>
-          <h2 className={css({ fontSize: "xl", fontWeight: "semibold", lineHeight: "tight" })}>
-            Why this exists
-          </h2>
-          <p className={proseClassName}>
-            Good ferry maps around the Salish Sea usually stop at a single operator. This project
-            exists to show Washington State Ferries, BC Ferries, Black Ball, Kitsap Transit,
-            Victoria Clipper, and the county ferries together on one map so visitors can see the
-            whole network at a glance.
-          </p>
-          <p className={proseClassName}>
-            It is especially meant for trip ideas that mix bikes, foot passengers, and multiple
-            agencies. Instead of piecing together several operator sites by hand, you can see how a
-            loop or crossing fits into the broader shape of the Salish Sea.
-          </p>
-        </section>
-
-        <section className={sectionClassName}>
-          <h2 className={css({ fontSize: "xl", fontWeight: "semibold", lineHeight: "tight" })}>
-            What it covers
-          </h2>
-          <p className={proseClassName}>
-            The map covers ferry routes across Puget Sound, the Strait of Georgia, and the Strait
-            of Juan de Fuca, including both vehicle ferries and passenger-only services.
-          </p>
-          <CoverageList />
-          <p className={proseClassName}>
-            This is a route map, not a trip planner: schedules and fares are intentionally out of
-            scope. Route lines and terminal locations are approximate and for reference only —{" "}
-            <strong>not for navigation.</strong>
-          </p>
-        </section>
+        <AboutHeader />
+        <WhyThisExists />
+        <WhatItCovers />
       </div>
     </main>
   );
