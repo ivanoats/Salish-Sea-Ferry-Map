@@ -1,10 +1,9 @@
-export type RouteLegCoordinate = readonly [number, number];
-export type RouteLegGeometrySource = "osm" | "mesh" | "straight";
-
-export interface RouteLegGeometry {
-  readonly source: RouteLegGeometrySource;
-  readonly coordinates: readonly RouteLegCoordinate[];
-}
+import type { RouteLegGeometry } from "@/domain/route-leg-geometry";
+export type {
+  RouteLegCoordinate,
+  RouteLegGeometry,
+  RouteLegGeometrySource,
+} from "@/domain/route-leg-geometry";
 
 /**
  * Build-time baked route geometry keyed by directed terminal pair, as

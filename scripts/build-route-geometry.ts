@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ROUTES } from "../src/data/routes.ts";
 import { TERMINALS_BY_ID } from "../src/data/terminals.ts";
+import type { RouteLegGeometry } from "../src/domain/route-leg-geometry.ts";
 import {
   buildMeshGraph,
   haversineNm,
@@ -41,13 +42,6 @@ interface OsmFerryRouteSnapshot {
 
 const loadOsmFerryRoutes = (): OsmFerryRouteSnapshot =>
   JSON.parse(readFileSync(OSM_FERRY_ROUTES_PATH, "utf8")) as OsmFerryRouteSnapshot;
-
-export type RouteLegGeometrySource = "osm" | "mesh" | "straight";
-
-export interface RouteLegGeometry {
-  readonly source: RouteLegGeometrySource;
-  readonly coordinates: readonly LonLat[];
-}
 
 const lineDistanceNm = (coordinates: readonly LonLat[]): number => {
   let total = 0;
@@ -199,13 +193,12 @@ const renderRouteLegGeometryModule = (
     })
     .join("\n");
 
-  return `export type RouteLegCoordinate = readonly [number, number];
-export type RouteLegGeometrySource = "osm" | "mesh" | "straight";
-
-export interface RouteLegGeometry {
-  readonly source: RouteLegGeometrySource;
-  readonly coordinates: readonly RouteLegCoordinate[];
-}
+  return `import type { RouteLegGeometry } from "@/domain/route-leg-geometry";
+export type {
+  RouteLegCoordinate,
+  RouteLegGeometry,
+  RouteLegGeometrySource,
+} from "@/domain/route-leg-geometry";
 
 /**
  * Build-time baked route geometry keyed by directed terminal pair, as
