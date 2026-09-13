@@ -1,72 +1,98 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { createRequire } from "node:module";
+import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { runInNewContext } from "node:vm";
 import ts from "typescript";
 
 const MESH_PATH = resolve("data/salish-mesh.json");
 const OUTPUT_PATH = resolve("src/data/route-leg-geometry.ts");
-const requireFromHere = createRequire(import.meta.url);
-const moduleCache = new Map();
 
 const directedLegKey = (fromId, toId) => `${fromId}\0${toId}`;
 const compareCodeUnits = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
 const EARTH_RADIUS_NM = 3440.065;
 const MAX_SNAP_NM = 2;
 
-const resolveLocalModule = (fromPath, specifier) => {
-  const base = specifier.startsWith("@/")
-    ? resolve("src", specifier.slice(2))
-    : resolve(dirname(fromPath), specifier);
-  for (const candidate of [
-    base,
-    `${base}.ts`,
-    `${base}.js`,
-    `${base}.json`,
-    resolve(base, "index.ts"),
-    resolve(base, "index.js"),
-    resolve(base, "index.json"),
-  ]) {
-    if (existsSync(candidate)) return candidate;
+const literalValue = (node) => {
+  if (ts.isArrayLiteralExpression(node)) {
+    return node.elements.map((element) => literalValue(element));
   }
-  throw new Error(`cannot resolve ${specifier} from ${fromPath}`);
+
+  if (ts.isObjectLiteralExpression(node)) {
+    return Object.fromEntries(
+      node.properties.map((property) => {
+        if (!ts.isPropertyAssignment(property)) {
+          throw new Error("expected plain object literal properties");
+        }
+
+        const name = property.name;
+        if (ts.isIdentifier(name) || ts.isStringLiteral(name)) {
+          return [name.text, literalValue(property.initializer)];
+        }
+        throw new Error("expected identifier or string literal property name");
+      })
+    );
+  }
+
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+    return node.text;
+  }
+
+  if (ts.isNumericLiteral(node)) {
+    return Number(node.text);
+  }
+
+  if (ts.isPrefixUnaryExpression(node) && node.operator === ts.SyntaxKind.MinusToken) {
+    return -literalValue(node.operand);
+  }
+
+  switch (node.kind) {
+    case ts.SyntaxKind.TrueKeyword:
+      return true;
+    case ts.SyntaxKind.FalseKeyword:
+      return false;
+    case ts.SyntaxKind.NullKeyword:
+      return null;
+    default:
+      throw new Error(`expected literal data, got ${ts.SyntaxKind[node.kind]}`);
+  }
 };
 
-const loadModule = (path) => {
-  const cached = moduleCache.get(path);
-  if (cached !== undefined) return cached;
-
+const loadExportedConst = (path, exportName) => {
   const source = readFileSync(path, "utf8");
-  const { outputText } = ts.transpileModule(source, {
-    compilerOptions: {
-      module: ts.ModuleKind.CommonJS,
-      target: ts.ScriptTarget.ES2020,
-    },
-  });
-  const commonJsModule = { exports: {} };
-  moduleCache.set(path, commonJsModule.exports);
-  const require = (specifier) => {
-    if (specifier.startsWith("./") || specifier.startsWith("../") || specifier.startsWith("@/")) {
-      const resolved = resolveLocalModule(path, specifier);
-      if (resolved.endsWith(".json")) {
-        return JSON.parse(readFileSync(resolved, "utf8"));
-      }
-      return loadModule(resolved);
-    }
-    return requireFromHere(specifier);
-  };
-  runInNewContext(
-    outputText,
-    { module: commonJsModule, exports: commonJsModule.exports, require },
-    { filename: path }
+  const file = ts.createSourceFile(
+    path,
+    source,
+    ts.ScriptTarget.ES2020,
+    true,
+    ts.ScriptKind.TS
   );
-  moduleCache.set(path, commonJsModule.exports);
-  return commonJsModule.exports;
+
+  for (const statement of file.statements) {
+    if (
+      !ts.isVariableStatement(statement) ||
+      !statement.modifiers?.some(
+        (modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword
+      )
+    ) {
+      continue;
+    }
+
+    for (const declaration of statement.declarationList.declarations) {
+      if (!ts.isIdentifier(declaration.name) || declaration.name.text !== exportName) {
+        continue;
+      }
+      if (declaration.initializer === undefined) {
+        throw new Error(`export ${exportName} in ${path} has no initializer`);
+      }
+      return literalValue(declaration.initializer);
+    }
+  }
+
+  throw new Error(`could not find export ${exportName} in ${path}`);
 };
 
-const { ROUTES } = loadModule(resolve("src/data/routes.ts"));
-const { TERMINALS_BY_ID } = loadModule(resolve("src/data/terminals.ts"));
+const ROUTES = loadExportedConst(resolve("src/data/routes.ts"), "ROUTES");
+const TERMINALS = loadExportedConst(resolve("src/data/terminals.ts"), "TERMINALS");
+const TERMINALS_BY_ID = new Map(TERMINALS.map((terminal) => [terminal.id, terminal]));
 
 const toRadians = (degrees) => (degrees * Math.PI) / 180;
 const haversineNm = (a, b) => {
