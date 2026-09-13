@@ -190,10 +190,10 @@ describe("salish mesh graph", () => {
    * one of these within range fails loudly and gets the table in
    * data/README.md updated rather than left stale.
    *
-   * The expected fix is a corrected coordinate, not a patched mesh: all
-   * four also sit kilometres from the nearest OSM ferry terminal, which
-   * points at the terminals rather than at the network. See issue #16 and
-   * data/README.md.
+   * The expected fix is a corrected coordinate, not a patched mesh: both
+   * currently unreachable terminals also sit kilometres from the nearest
+   * OSM ferry terminal, which points at the terminals rather than at the
+   * network. See issue #16 and data/README.md.
    */
   it("snaps all but two terminals to the network", () => {
     const unreachable = TERMINALS.filter(

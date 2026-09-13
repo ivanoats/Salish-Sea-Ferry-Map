@@ -135,7 +135,7 @@ export const buildMeshGraph = (mesh: MeshFeatureCollection): MeshGraph => {
  * work rather than usually hitting the exact-match fast path.
  *
  * When a terminal falls outside this radius, the fix is almost always its
- * coordinate. The four that currently do also sit kilometres from the
+ * coordinate. The two that currently do also sit kilometres from the
  * nearest OSM `amenity=ferry_terminal`, and two independently built
  * datasets missing the same points is evidence about the points. Don't
  * patch the mesh or hand-place an approach point to accommodate one, and
