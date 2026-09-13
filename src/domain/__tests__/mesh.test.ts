@@ -133,6 +133,35 @@ describe("salish mesh graph", () => {
     ]);
   });
 
+  /**
+   * A LineString needs two positions. Every other branch returns at least
+   * two by construction; this is the one that could return a single point,
+   * and a caller drawing it would get geometry MapLibre refuses rather than
+   * a visible mistake.
+   */
+  it("still returns a drawable line when from and to are the same position", () => {
+    const localGraph = buildMeshGraph({
+      features: [
+        {
+          geometry: {
+            type: "LineString",
+            coordinates: [
+              [-123, 49],
+              [-122.99, 49],
+            ],
+          },
+          properties: {},
+        },
+      ],
+    });
+    const onVertex: LonLat = [-123, 49];
+
+    expect(meshPathCoordinates(localGraph, onVertex, onVertex)).toEqual([
+      onVertex,
+      onVertex,
+    ]);
+  });
+
   it("keeps both requested endpoints when only one rounds to the snapped node", () => {
     const localGraph = buildMeshGraph({
       features: [
@@ -157,10 +186,9 @@ describe("salish mesh graph", () => {
   });
 
   /**
-   * The count is asserted rather than the whole list so that improving the
-   * mesh coverage fails this test loudly and gets the documented figure
-   * updated with it. The four are Comox, Gambier Island, Lasqueti Island,
-   * and Cortes Island — all noted in data/README.md.
+   * Both the count and the names are asserted, so that patching the mesh
+   * to reach one of these fails loudly and gets the table in
+   * data/README.md updated with it rather than left stale.
    */
   it("snaps all but four terminals to the network", () => {
     const unreachable = TERMINALS.filter(

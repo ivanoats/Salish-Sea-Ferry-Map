@@ -56,6 +56,11 @@ attribution with any published artifact drawn from it.
 
 ## Updating
 
-Re-copy from `salish-nav-planner` rather than editing in place, and update
-the coverage table above by running the mesh tests — see
-`src/domain/__tests__/mesh.test.ts`.
+Re-copy `salish-mesh.json` from `salish-nav-planner` rather than editing it
+in place, then update the coverage table above by running the mesh tests —
+see `src/domain/__tests__/mesh.test.ts`.
+
+`src/domain/mesh.ts` is a different matter: it has diverged from the
+upstream `mesh-route.ts` it was ported from, deliberately and in ways the
+file's own header lists. Copying the upstream version over it would revert
+those silently. Port individual upstream changes across by hand.

@@ -13,11 +13,26 @@
  * `public/` so it cannot reach the client bundle: it is ~800 KB and is
  * build-time input only. See `data/README.md` for its provenance.
  *
- * Two differences from the original, both to match this repo: positions
- * are `[longitude, latitude]` tuples rather than `{lat, lon}` objects, and
- * the planner's route-walking entry point is left out — it was written
- * against `PlannedRoute`, and this repo's equivalent belongs next to
- * `routesToLineFeatureCollection` in `geojson.ts`.
+ * Four deliberate divergences from the original:
+ *
+ * 1. Positions are `[longitude, latitude]` tuples rather than `{lat, lon}`
+ *    objects, matching the rest of this repo.
+ * 2. The planner's route-walking entry point is left out — it was written
+ *    against `PlannedRoute`, and this repo's equivalent belongs next to
+ *    `routesToLineFeatureCollection` in `geojson.ts`.
+ * 3. A returned path begins and ends at the positions actually asked for,
+ *    not at the mesh vertices they snapped to. Upstream that mattered
+ *    less, because every harbour there has a spur ending on its exact
+ *    published position; here a terminal can sit up to `MAX_SNAP_NM` from
+ *    the network, and a route line that started a mile offshore of the
+ *    dock would be wrong in a way the reader would notice.
+ * 4. Two positions snapping to the same node returns that short path
+ *    rather than null. Upstream treats it as "the mesh has nothing to say
+ *    here"; the endpoints are still the honest answer, so there is no
+ *    reason to make the caller re-derive them.
+ *
+ * Divergences 3 and 4 mean this file can no longer be refreshed by
+ * copying the upstream one over it — see `data/README.md`.
  */
 
 /** `[longitude, latitude]`, matching GeoJSON coordinate order. */
@@ -220,9 +235,17 @@ const shortestNodePath = (graph: MeshGraph, start: number, goal: number): number
 };
 
 /**
- * The shortest way through the water from one position to another, or null
- * when the mesh cannot serve the pair — which the caller should treat as
- * "fall back to the straight line", not as an error.
+ * The shortest way through the water from one position to another.
+ *
+ * The path runs `from` → mesh vertices → `to`, so it starts and ends where
+ * the caller asked rather than at the snapped vertices; an endpoint that
+ * already rounds onto its vertex is not repeated. Always two or more
+ * positions, so the result is a valid LineString.
+ *
+ * Null means the mesh cannot serve the pair — either endpoint further than
+ * `MAX_SNAP_NM` from the network, or no route between them. Callers should
+ * treat that as "fall back to the straight line for this leg", not as an
+ * error.
  */
 export const meshPathCoordinates = (
   graph: MeshGraph,
@@ -237,7 +260,10 @@ export const meshPathCoordinates = (
     const node = (graph.nodes[start] as MeshNode).at;
     const coordinates: LonLat[] = [from];
     if (!roundsTo(from, node) && !roundsTo(to, node)) coordinates.push(node);
-    if (!samePoint(from, to)) coordinates.push(to);
+    // `to` is pushed even when it equals `from`: a one-position array is
+    // not a LineString, and a caller asking for a zero-length leg should
+    // get back a degenerate line rather than something it cannot render.
+    coordinates.push(to);
     return coordinates;
   }
 
