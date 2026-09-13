@@ -64,9 +64,10 @@ sailing lines, both mapped as ferries rather than inferred from open water.
 Check a terminal against OSM, not against this mesh.
 
 Since the OSM ferry routes landed, the mesh is a fallback rather than the
-primary source: 45 of 49 route legs use OSM geometry, 3 use the mesh
-(`friday-harbor`–`sidney-bc` and the two Kitsap fast-ferry runs into
-Seattle), and 1 falls back to a straight line.
+primary source: 48 of 49 route legs use OSM geometry and 1 uses the mesh
+(`friday-harbor`–`sidney-bc`, suspended since 2020, whose Sidney end has
+no OSM ferry route within `MAX_OSM_ENDPOINT_NM`). No leg falls back to a
+straight line.
 
 ### Licensing
 

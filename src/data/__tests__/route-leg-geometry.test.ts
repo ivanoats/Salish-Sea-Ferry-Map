@@ -80,8 +80,10 @@ describe("baked route-leg geometry", () => {
    * that currently falls back — southworth->seattle-colman-dock was pinned
    * here until the Southworth Fast Ferry way was vendored, and it is real
    * geometry now. A leg's first and last positions are the terminals
-   * themselves, which the builder adds, so at most two of its positions
-   * may be absent from the route the rest came from.
+   * themselves, which the builder adds; every position between them must
+   * come from one route, and the two ends must be the terminals — a
+   * budget of "at most two positions from anywhere" would let a short
+   * stitched segment through as long as it stayed under the count.
    */
   it("draws each OSM leg from a single vendored route, never stitched across two", () => {
     const fresh = buildRouteLegGeometryByDirectedTerminalIds();
@@ -94,14 +96,19 @@ describe("baked route-leg geometry", () => {
 
     expect(osmLegs.length).toBeGreaterThan(0);
     for (const [directedKey, leg] of osmLegs) {
-      const positionsFromElsewhere = vertexSetsByRoute.map(
-        (vertices) =>
-          leg.coordinates.filter(
-            (position) => !vertices.has(vertexKey(position))
-          ).length
+      const [fromId = "", toId = ""] = directedKey.split("\0");
+      const between = leg.coordinates.slice(1, -1);
+      const drawnFromOneRoute = vertexSetsByRoute.some((vertices) =>
+        between.every((position) => vertices.has(vertexKey(position)))
       );
 
-      expect(Math.min(...positionsFromElsewhere), directedKey).toBeLessThanOrEqual(2);
+      expect(drawnFromOneRoute, directedKey).toBe(true);
+      expect(leg.coordinates[0], directedKey).toEqual(
+        TERMINALS_BY_ID.get(fromId)?.coordinates
+      );
+      expect(leg.coordinates.at(-1), directedKey).toEqual(
+        TERMINALS_BY_ID.get(toId)?.coordinates
+      );
     }
   });
 
