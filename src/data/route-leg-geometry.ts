@@ -255,7 +255,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
     [-123.32328, 48.84454],
   ],
   "gooseberry-point\u0000lummi-island": [
-    [-122.6702, 48.73123],
+    [-122.67067, 48.7321],
     [-122.67712, 48.72788],
     [-122.6698, 48.7318],
   ],

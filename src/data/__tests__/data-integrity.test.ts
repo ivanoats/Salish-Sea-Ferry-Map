@@ -52,7 +52,7 @@ describe("ferry dataset integrity", () => {
       "french-creek": [-124.35662, 49.34895],
       "gabriola-island": [-123.85838, 49.1778],
       "gambier-island": [-123.43958, 49.44999],
-      "gooseberry-point": [-122.6702, 48.73123],
+      "gooseberry-point": [-122.67067, 48.7321],
       "hornby-island": [-124.70454, 49.51125],
       "keats-island": [-123.4332, 49.39556],
       "lasqueti-island": [-124.35159, 49.49144],
