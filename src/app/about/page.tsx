@@ -37,6 +37,8 @@ const linkClassName = css({
   textUnderlineOffset: "2px",
 });
 
+const backLinkClassName = `${linkClassName} ${css({ marginBottom: "1" })}`;
+
 export default function AboutPage() {
   return (
     <main
@@ -56,18 +58,16 @@ export default function AboutPage() {
           gap: "8",
         })}
       >
-        <div className={css({ display: "grid", gap: "3" })}>
-          <Link href="/" className={linkClassName}>
+        <div className={css({ display: "grid", gap: "2" })}>
+          <Link href="/" className={backLinkClassName}>
             ← Back to the map
           </Link>
-          <div className={css({ display: "grid", gap: "2" })}>
-            <h1 className={css({ fontSize: { base: "2xl", md: "3xl" }, fontWeight: "bold", lineHeight: "shorter" })}>
-              About this map
-            </h1>
-            <p className={proseClassName}>
-              A reference map of ferry routes across the Salish Sea, gathered into one place.
-            </p>
-          </div>
+          <h1 className={css({ fontSize: { base: "2xl", md: "3xl" }, fontWeight: "bold", lineHeight: "shorter" })}>
+            About this map
+          </h1>
+          <p className={proseClassName}>
+            A reference map of ferry routes across the Salish Sea, gathered into one place.
+          </p>
         </div>
 
         <section className={sectionClassName}>
