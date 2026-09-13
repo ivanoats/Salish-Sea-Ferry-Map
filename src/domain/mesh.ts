@@ -67,8 +67,10 @@ export interface MeshGraph {
 }
 
 const key = (point: LonLat): string => `${point[0]},${point[1]}`;
-const samePoint = (a: LonLat, b: LonLat): boolean =>
-  a[0] === b[0] && a[1] === b[1];
+const roundPoint = (point: LonLat): LonLat => [
+  Math.round(point[0] * 1e5) / 1e5,
+  Math.round(point[1] * 1e5) / 1e5,
+];
 
 /**
  * Indexes the mesh once, so many legs can be walked without rebuilding it.
@@ -120,9 +122,7 @@ export const MAX_SNAP_NM = 2;
 
 /** Nearest mesh node to a position, or null when none is close enough. */
 export const nearestNode = (graph: MeshGraph, at: LonLat): number | null => {
-  const exact = graph.byKey.get(
-    key([Math.round(at[0] * 1e5) / 1e5, Math.round(at[1] * 1e5) / 1e5])
-  );
+  const exact = graph.byKey.get(key(roundPoint(at)));
   if (exact !== undefined) return exact;
 
   let best: number | null = null;
@@ -239,8 +239,8 @@ export const meshPathCoordinates = (
     return node.at;
   });
 
-  if (!samePoint(from, coordinates[0] as LonLat)) coordinates.unshift(from);
-  if (!samePoint(to, coordinates[coordinates.length - 1] as LonLat)) {
+  if (graph.byKey.get(key(roundPoint(from))) !== start) coordinates.unshift(from);
+  if (graph.byKey.get(key(roundPoint(to))) !== goal) {
     coordinates.push(to);
   }
   return coordinates;

@@ -107,6 +107,32 @@ describe("salish mesh graph", () => {
     expect(path).toEqual([from, [-122.99, 49], to]);
   });
 
+  it("does not duplicate endpoints that already round to snapped mesh vertices", () => {
+    const localGraph = buildMeshGraph({
+      features: [
+        {
+          geometry: {
+            type: "LineString",
+            coordinates: [
+              [-123, 49],
+              [-122.99, 49],
+            ],
+          },
+          properties: {},
+        },
+      ],
+    });
+    const from: LonLat = [-123.000000001, 49.000000001];
+    const to: LonLat = [-122.990000001, 49.000000001];
+
+    const path = meshPathCoordinates(localGraph, from, to);
+
+    expect(path).toEqual([
+      [-123, 49],
+      [-122.99, 49],
+    ]);
+  });
+
   /**
    * The count is asserted rather than the whole list so that improving the
    * mesh coverage fails this test loudly and gets the documented figure
