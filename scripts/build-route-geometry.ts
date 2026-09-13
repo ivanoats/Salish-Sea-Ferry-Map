@@ -75,19 +75,35 @@ const osmRouteCoordinates = (
       continue;
     }
 
-    const fromNm = haversineNm(from, start);
-    const toNm = haversineNm(to, end);
-    if (fromNm > MAX_OSM_ENDPOINT_NM || toNm > MAX_OSM_ENDPOINT_NM) continue;
+    for (const candidate of [
+      {
+        coordinates: route.coordinates,
+        fromNm: haversineNm(from, start),
+        toNm: haversineNm(to, end),
+      },
+      {
+        coordinates: [...route.coordinates].reverse(),
+        fromNm: haversineNm(from, end),
+        toNm: haversineNm(to, start),
+      },
+    ]) {
+      if (
+        candidate.fromNm > MAX_OSM_ENDPOINT_NM ||
+        candidate.toNm > MAX_OSM_ENDPOINT_NM
+      ) {
+        continue;
+      }
 
-    const endpointNm = fromNm + toNm;
-    const lineNm = lineDistanceNm(route.coordinates);
-    if (
-      endpointNm < bestEndpointNm ||
-      (endpointNm === bestEndpointNm && lineNm < bestLineNm)
-    ) {
-      bestCoordinates = route.coordinates;
-      bestEndpointNm = endpointNm;
-      bestLineNm = lineNm;
+      const endpointNm = candidate.fromNm + candidate.toNm;
+      const lineNm = lineDistanceNm(candidate.coordinates);
+      if (
+        endpointNm < bestEndpointNm ||
+        (endpointNm === bestEndpointNm && lineNm < bestLineNm)
+      ) {
+        bestCoordinates = candidate.coordinates;
+        bestEndpointNm = endpointNm;
+        bestLineNm = lineNm;
+      }
     }
   }
 

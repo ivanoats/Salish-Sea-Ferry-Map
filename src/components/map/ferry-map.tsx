@@ -99,6 +99,19 @@ const geometrySourceLabel = (source: RouteLegGeometrySource): string => {
   }
 };
 
+const routeLegGeometrySource = (
+  value: unknown
+): RouteLegGeometrySource | null => {
+  switch (value) {
+    case "osm":
+    case "mesh":
+    case "straight":
+      return value;
+    default:
+      return null;
+  }
+};
+
 /** MapLibre `match` expression pairing each operator id with its display color. */
 const operatorColorExpression: unknown[] = ["match", ["get", "operatorId"]];
 for (const operator of OPERATORS) {
@@ -195,21 +208,19 @@ export function FerryMap({ visibleOperatorIds, showInactiveRoutes, vessels }: Fe
       if (feature === undefined) return;
       const name = String(feature.properties.name);
       const status = String(feature.properties.status);
-      const geometrySource = feature.properties.geometrySource;
-      if (
-        geometrySource !== "osm" &&
-        geometrySource !== "mesh" &&
-        geometrySource !== "straight"
-      ) {
-        return;
-      }
+      const geometrySource = routeLegGeometrySource(
+        feature.properties.geometrySource
+      );
       const labelBase =
         status === "suspended"
           ? `${name} (suspended)`
           : status === "seasonal"
             ? `${name} (seasonal)`
             : name;
-      const label = `${labelBase} — ${geometrySourceLabel(geometrySource)}`;
+      const label =
+        geometrySource === null
+          ? labelBase
+          : `${labelBase} — ${geometrySourceLabel(geometrySource)}`;
       popupRef.current?.remove();
       popupRef.current = new Popup().setLngLat(event.lngLat).setText(label).addTo(map);
     });
