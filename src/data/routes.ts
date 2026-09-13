@@ -5,8 +5,9 @@ import type { FerryRoute } from "@/domain/ferry";
  * to the Salish Sea proper — excludes Discovery Passage north of Quadra/
  * Cortes, the Sunshine Coast north of Powell River, and every Vancouver
  * Island west-coast / north-coast / Haida Gwaii route), Black Ball Ferry
- * Line, Kitsap Transit's passenger-only fast ferries, Victoria Clipper, and
- * the three county-run ferries (Guemes Island, Lummi Island, Anderson Island).
+ * Line, Kitsap Transit's passenger-only fast ferries, King County Water
+ * Taxi, Victoria Clipper, and the three county-run ferries (Guemes Island,
+ * Lummi Island, Anderson Island).
  *
  * Route legs prefer vendored OSM ferry-route geometry, fall back to the
  * navigable-water mesh where that can serve the terminal pair, and fall
@@ -119,6 +120,26 @@ export const ROUTES: readonly FerryRoute[] = [
     mode: "passenger",
     status: "active",
     terminalIds: ["southworth", "seattle-colman-dock"],
+  },
+
+  // --- King County Water Taxi ---
+  {
+    id: "kcwt-seattle-west-seattle",
+    name: "Seattle – West Seattle (Seacrest)",
+    operatorId: "king-county-water-taxi",
+    mode: "passenger",
+    status: "active",
+    terminalIds: ["seattle-colman-dock", "west-seattle-seacrest"],
+    note: "~10 min crossing",
+  },
+  {
+    id: "kcwt-seattle-vashon",
+    name: "Seattle – Vashon Island",
+    operatorId: "king-county-water-taxi",
+    mode: "passenger",
+    status: "active",
+    terminalIds: ["seattle-colman-dock", "vashon-north"],
+    note: "~22 min crossing",
   },
 
   // --- Black Ball Ferry Line ---

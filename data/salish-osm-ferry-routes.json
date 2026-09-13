@@ -21,7 +21,7 @@
         "query": "[out:json][timeout:300];way[\"route\"=\"ferry\"](47.0,-125.6,50.4,-122.1)->.w;relation[\"route\"=\"ferry\"](46.5,-126.5,51.0,-121.5)->.r;way(r.r)->.rw;(.w; - .rw;);out geom;",
         "endpoint": "https://overpass-api.de/api/interpreter",
         "retrieved": "2026-09-12",
-        "note": "Ferry routes OSM maps as a bare way with no parent relation, so the relation queries above cannot see them. The query returns 66 such ways; vendored here are only the three that carry a route leg no relation reaches \u2014 the two Kitsap Transit fast ferries and the Gambier\u2013Keats crossing. The other 63 either duplicate relation coverage or are berth approaches, freight barges and water taxis this dataset does not model. Way geometry, unmodified."
+        "note": "Ferry routes OSM maps as a bare way with no parent relation, so the relation queries above cannot see them. The query returns 66 such ways; vendored here are only the four that carry a route leg no relation reaches \u2014 the two Kitsap Transit fast ferries, the Gambier\u2013Keats crossing, and Seattle\u2013West Seattle. The other 62 either duplicate relation coverage or are berth approaches, freight barges and water taxis this dataset does not model beyond Seattle\u2013West Seattle. Way geometry, unmodified."
       }
     ]
   },
@@ -977,6 +977,27 @@
           [
             -122.883081,
             48.5708431
+          ]
+        ]
+      ]
+    },
+    {
+      "routeName": "Seattle \u2194 West Seattle (Seacrest)",
+      "operator": "King County Water Taxi",
+      "from": "Seattle",
+      "to": "West Seattle (Seacrest)",
+      "osmWayIds": [
+        12905453
+      ],
+      "coordinates": [
+        [
+          [
+            -122.3392034,
+            47.6011648
+          ],
+          [
+            -122.379616,
+            47.5894252
           ]
         ]
       ]

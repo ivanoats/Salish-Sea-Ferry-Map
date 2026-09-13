@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ROUTES } from "@/data/routes";
 import { TERMINALS_BY_ID } from "@/data/terminals";
 import { OPERATORS_BY_ID } from "@/data/operators";
+import { ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS } from "@/data/route-leg-geometry";
 
 describe("ferry dataset integrity", () => {
   it("every route references terminal ids that exist", () => {
@@ -102,5 +103,39 @@ describe("ferry dataset integrity", () => {
     });
 
     expect(longitudes).toEqual([...longitudes].sort((a, b) => b - a));
+  });
+
+  it("includes both King County Water Taxi routes", () => {
+    expect(ROUTES.find((candidate) => candidate.id === "kcwt-seattle-west-seattle")).toMatchObject({
+      operatorId: "king-county-water-taxi",
+      terminalIds: ["seattle-colman-dock", "west-seattle-seacrest"],
+      mode: "passenger",
+      status: "active",
+    });
+    expect(ROUTES.find((candidate) => candidate.id === "kcwt-seattle-vashon")).toMatchObject({
+      operatorId: "king-county-water-taxi",
+      terminalIds: ["seattle-colman-dock", "vashon-north"],
+      mode: "passenger",
+      status: "active",
+    });
+  });
+
+  // The builder wraps the vendored OSM way in the two terminal coordinates, so
+  // a leg starts and ends on its docks with the sailed line in between. A leg
+  // whose interior is just its own endpoints would mean the vendored geometry
+  // was the terminal pair rather than the way.
+  it.each([
+    ["seattle-colman-dock", "west-seattle-seacrest"],
+    ["seattle-colman-dock", "vashon-north"],
+  ])("bakes OSM geometry for the %s to %s Water Taxi leg", (fromId, toId) => {
+    const geometry = ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS[`${fromId}\0${toId}`];
+    const from = TERMINALS_BY_ID.get(fromId)?.coordinates;
+    const to = TERMINALS_BY_ID.get(toId)?.coordinates;
+
+    expect(geometry?.source).toBe("osm");
+    expect(geometry?.coordinates[0]).toEqual(from);
+    expect(geometry?.coordinates.at(-1)).toEqual(to);
+    expect(geometry?.coordinates.length).toBeGreaterThan(2);
+    expect(geometry?.coordinates.slice(1, -1)).not.toEqual([]);
   });
 });
