@@ -71,6 +71,8 @@ const roundPoint = (point: LonLat): LonLat => [
   Math.round(point[0] * 1e5) / 1e5,
   Math.round(point[1] * 1e5) / 1e5,
 ];
+const roundsTo = (point: LonLat, node: LonLat): boolean =>
+  key(roundPoint(point)) === key(node);
 
 /**
  * Indexes the mesh once, so many legs can be walked without rebuilding it.
@@ -239,8 +241,8 @@ export const meshPathCoordinates = (
     return node.at;
   });
 
-  if (graph.byKey.get(key(roundPoint(from))) !== start) coordinates.unshift(from);
-  if (graph.byKey.get(key(roundPoint(to))) !== goal) {
+  if (!roundsTo(from, (graph.nodes[start] as MeshNode).at)) coordinates.unshift(from);
+  if (!roundsTo(to, (graph.nodes[goal] as MeshNode).at)) {
     coordinates.push(to);
   }
   return coordinates;
