@@ -16,8 +16,8 @@
     "postinstall": "node scripts/copy-maplibre-worker.mjs",
     "lint": "eslint .",
     "typecheck": "panda codegen --silent && tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "panda codegen --silent && vitest run",
+    "test:watch": "panda codegen --silent && vitest"
   },
   "dependencies": {
     "@ark-ui/react": "^5.38.1",

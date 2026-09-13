@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Checkbox } from "@ark-ui/react/checkbox";
 import { css } from "styled-system/css";
@@ -55,13 +56,27 @@ export function AppShell() {
         })}
       >
         <div>
-          <h1 className={css({ fontSize: "lg", fontWeight: "bold", lineHeight: "short" })}>
+          <h1 className={css({ fontSize: "lg", fontWeight: "bold", lineHeight: "tight" })}>
             Salish Sea Ferry Map
           </h1>
           <p className={css({ fontSize: "xs", color: "fg.muted", mt: "1" })}>
             {visibleRouteCount} route{visibleRouteCount === 1 ? "" : "s"} shown · Puget Sound, the
             Strait of Georgia &amp; the Strait of Juan de Fuca
           </p>
+          <Link
+            href="/about"
+            className={css({
+              display: "inline-flex",
+              mt: "2",
+              fontSize: "sm",
+              fontWeight: "medium",
+              color: "colorPalette.9",
+              textDecoration: "underline",
+              textUnderlineOffset: "2px",
+            })}
+          >
+            About this map
+          </Link>
         </div>
 
         <div>
