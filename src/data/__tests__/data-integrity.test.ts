@@ -122,6 +122,7 @@ describe("ferry dataset integrity", () => {
     const seattle = TERMINALS_BY_ID.get("seattle-colman-dock")?.coordinates;
     const seacrest = TERMINALS_BY_ID.get("west-seattle-seacrest")?.coordinates;
     expect(geometry).toBeDefined();
+    expect(geometry?.source).toBe("osm");
     expect(geometry?.coordinates[0]).toEqual(seattle);
     expect(geometry?.coordinates.at(-1)).toEqual(seacrest);
     expect(geometry?.coordinates).toEqual([seattle, seacrest]);

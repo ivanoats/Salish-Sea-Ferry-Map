@@ -64,7 +64,7 @@ sailing lines, both mapped as ferries rather than inferred from open water.
 Check a terminal against OSM, not against this mesh.
 
 Since the OSM ferry routes landed, the mesh is a fallback rather than the
-primary source: 48 of 49 route legs use OSM geometry and 1 uses the mesh
+primary source: 49 of 50 route legs use OSM geometry and 1 uses the mesh
 (`friday-harbor`–`sidney-bc`, suspended since 2020, whose Sidney end has
 no OSM ferry route within `MAX_OSM_ENDPOINT_NM`). No leg falls back to a
 straight line.
@@ -95,11 +95,12 @@ Kitsap Transit fast ferries and the Gambier–Keats crossing fell back to the
 mesh long after every terminal they touch had real geometry nearby.
 
 The third source query subtracts relation member ways from all ferry ways
-in the region, leaving 66 standalone ones. Only three are vendored: the
+in the region, leaving 66 standalone ones. Only four are vendored: the
 ones carrying a route leg no relation reaches. The rest are either the same
 crossing a relation already covers — and a duplicate can only displace
 better geometry, since the builder breaks ties on snap distance — or berth
-approaches, freight barges and water taxis this dataset does not model.
+approaches, freight barges and water taxis this dataset does not model
+beyond Seattle–West Seattle.
 
 Adding a way here is therefore a deliberate act, not a sweep: check that
 the leg has no relation coverage first.
