@@ -37,6 +37,13 @@ export const OPERATORS: readonly Operator[] = [
     website: "https://www.kitsaptransit.com",
   },
   {
+    id: "pierce-county",
+    name: "Pierce County Ferry",
+    shortName: "Pierce County",
+    color: "#db2777",
+    website: "https://www.piercecountywa.gov/1793/Ferry",
+  },
+  {
     id: "victoria-clipper",
     name: "Victoria Clipper",
     shortName: "Victoria Clipper",

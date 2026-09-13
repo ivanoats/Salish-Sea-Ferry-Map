@@ -35,4 +35,12 @@ describe("ferry dataset integrity", () => {
     const ids = [...TERMINALS_BY_ID.keys()];
     expect(new Set(ids).size).toBe(ids.length);
   });
+
+  it("the Pierce County Anderson Island route progresses westward without doubling back", () => {
+    const route = ROUTES.find((candidate) => candidate.id === "pierce-county-steilacoom-anderson");
+    expect(route).toBeDefined();
+
+    const longitudes = route!.terminalIds.map((terminalId) => TERMINALS_BY_ID.get(terminalId)?.coordinates[0]);
+    expect(longitudes).toEqual([...longitudes].sort((a, b) => b! - a!));
+  });
 });

@@ -18,6 +18,7 @@ An interactive map of every ferry route across the Salish Sea — Puget Sound, t
 - **BC Ferries** — every route within the Salish Sea proper: the three major Strait of Georgia crossings, the Sunshine Coast/Howe Sound routes, the Southern Gulf Islands, and the smaller central-Vancouver-Island crossings
 - **Black Ball Ferry Line** — the MV *Coho*, Port Angeles ↔ Victoria
 - **Kitsap Transit** — the Bremerton, Kingston, and Southworth fast passenger ferries to Seattle
+- **Pierce County** — the Steilacoom ↔ Anderson Island car ferry, with the Ketron Island stop by request
 - **Victoria Clipper** — Seattle ↔ Victoria, passenger only
 - **Skagit County** — the Guemes Island ferry
 - **Whatcom County** — the *Whatcom Chief*, Gooseberry Point ↔ Lummi Island
@@ -72,8 +73,6 @@ Without a key, the toggle still works — it just shows a note that live data is
 
 - **PDF export** — the project brief calls for a printable map alongside the web app; this v1 ships the web app first (see the parent project notes).
 - **Schedules/fares** — intentionally out of scope for v1, which is a route map, not a trip planner.
-
-- **Pierce County's Anderson Island ferry** — missing from the dataset, and it shouldn't be: Steilacoom – Ketron Island – Anderson Island is a scheduled car ferry in south Puget Sound, which puts it squarely inside what this map claims to cover. Needs a new `pierce-county` operator id and color, three terminals (the Ketron Island call is by arrangement rather than every sailing — worth a `note`), and a line in "What it covers" above. Smallest of the three items here and the only one that's a straight coverage bug rather than a feature.
 
 - **Route geometry over water** — routes are drawn as straight lines today, which is honest for an open-water crossing and wrong for anything threading islands. `~/code/salish-nav-planner` has already solved this: `public/data/salish-mesh.json` is a single connected network of deep-water corridors, tidal passes, and a per-harbour entrance spur (211 corridors, 968 edges), generated offline by rasterising the OSM coastline at 80 m and flood-filling from the open Pacific — see that repo's ADR 0002 for why it's built from data rather than hand-typed control points. `src/domain/mesh-route.ts` there exposes `buildMeshGraph` and `buildMeshRouteLineCoordinates`, which is most of the port.
 

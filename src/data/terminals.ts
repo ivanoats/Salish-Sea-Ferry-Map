@@ -34,6 +34,11 @@ export const TERMINALS: readonly Terminal[] = [
   { id: "victoria-belleville", name: "Victoria, BC (Belleville St. Terminal)", coordinates: [-123.3719, 48.4229], jurisdiction: "BC" },
   { id: "seattle-pier-69", name: "Seattle (Pier 69)", coordinates: [-122.3406, 47.6086], jurisdiction: "WA" },
 
+  // --- Pierce County ---
+  { id: "steilacoom-landing", name: "Steilacoom Landing", coordinates: [-122.6031, 47.17315], jurisdiction: "WA" },
+  { id: "ketron-island", name: "Ketron Island", coordinates: [-122.6292, 47.16223], jurisdiction: "WA" },
+  { id: "anderson-island-yoman", name: "Anderson Island (Yoman)", coordinates: [-122.67726, 47.17855], jurisdiction: "WA" },
+
   // --- Skagit County / Whatcom County ---
   { id: "anacortes-guemes-dock", name: "Anacortes (6th St. dock)", coordinates: [-122.6156, 48.5136], jurisdiction: "WA" },
   { id: "guemes-island", name: "Guemes Island", coordinates: [-122.6304, 48.5218], jurisdiction: "WA" },
