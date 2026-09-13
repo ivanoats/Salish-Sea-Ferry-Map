@@ -130,7 +130,16 @@ export const ROUTES: readonly FerryRoute[] = [
     mode: "passenger",
     status: "active",
     terminalIds: ["seattle-colman-dock", "west-seattle-seacrest"],
-    note: "Also called the Alki route",
+    note: "~10 min crossing",
+  },
+  {
+    id: "kcwt-seattle-vashon",
+    name: "Seattle – Vashon Island",
+    operatorId: "king-county-water-taxi",
+    mode: "passenger",
+    status: "active",
+    terminalIds: ["seattle-colman-dock", "vashon-north"],
+    note: "~22 min crossing",
   },
 
   // --- Black Ball Ferry Line ---

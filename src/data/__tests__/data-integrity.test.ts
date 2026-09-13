@@ -105,27 +105,37 @@ describe("ferry dataset integrity", () => {
     expect(longitudes).toEqual([...longitudes].sort((a, b) => b - a));
   });
 
-  it("includes the King County Water Taxi Seattle–West Seattle (Alki) route", () => {
-    const route = ROUTES.find((candidate) => candidate.id === "kcwt-seattle-west-seattle");
-    expect(route).toMatchObject({
+  it("includes both King County Water Taxi routes", () => {
+    expect(ROUTES.find((candidate) => candidate.id === "kcwt-seattle-west-seattle")).toMatchObject({
       operatorId: "king-county-water-taxi",
       terminalIds: ["seattle-colman-dock", "west-seattle-seacrest"],
       mode: "passenger",
       status: "active",
     });
+    expect(ROUTES.find((candidate) => candidate.id === "kcwt-seattle-vashon")).toMatchObject({
+      operatorId: "king-county-water-taxi",
+      terminalIds: ["seattle-colman-dock", "vashon-north"],
+      mode: "passenger",
+      status: "active",
+    });
   });
 
-  it("includes baked geometry for the Seattle–West Seattle Water Taxi leg", () => {
-    const geometry = ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS["seattle-colman-dock\0west-seattle-seacrest"];
-    const reverseGeometry =
-      ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS["west-seattle-seacrest\0seattle-colman-dock"];
-    const seattle = TERMINALS_BY_ID.get("seattle-colman-dock")?.coordinates;
-    const seacrest = TERMINALS_BY_ID.get("west-seattle-seacrest")?.coordinates;
-    expect(geometry).toBeDefined();
+  // The builder wraps the vendored OSM way in the two terminal coordinates, so
+  // a leg starts and ends on its docks with the sailed line in between. A leg
+  // whose interior is just its own endpoints would mean the vendored geometry
+  // was the terminal pair rather than the way.
+  it.each([
+    ["seattle-colman-dock", "west-seattle-seacrest"],
+    ["seattle-colman-dock", "vashon-north"],
+  ])("bakes OSM geometry for the %s to %s Water Taxi leg", (fromId, toId) => {
+    const geometry = ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS[`${fromId}\0${toId}`];
+    const from = TERMINALS_BY_ID.get(fromId)?.coordinates;
+    const to = TERMINALS_BY_ID.get(toId)?.coordinates;
+
     expect(geometry?.source).toBe("osm");
-    expect(geometry?.coordinates[0]).toEqual(seattle);
-    expect(geometry?.coordinates.at(-1)).toEqual(seacrest);
-    expect(geometry?.coordinates).toEqual([seattle, seacrest]);
-    expect(reverseGeometry).toBeUndefined();
+    expect(geometry?.coordinates[0]).toEqual(from);
+    expect(geometry?.coordinates.at(-1)).toEqual(to);
+    expect(geometry?.coordinates.length).toBeGreaterThan(2);
+    expect(geometry?.coordinates.slice(1, -1)).not.toEqual([]);
   });
 });

@@ -64,7 +64,7 @@ sailing lines, both mapped as ferries rather than inferred from open water.
 Check a terminal against OSM, not against this mesh.
 
 Since the OSM ferry routes landed, the mesh is a fallback rather than the
-primary source: 49 of 50 route legs use OSM geometry and 1 uses the mesh
+primary source: 50 of 51 route legs use OSM geometry and 1 uses the mesh
 (`friday-harbor`–`sidney-bc`, suspended since 2020, whose Sidney end has
 no OSM ferry route within `MAX_OSM_ENDPOINT_NM`). No leg falls back to a
 straight line.
@@ -83,7 +83,7 @@ it for a leg only when **both** of the leg's terminals sit within
 `MAX_OSM_ENDPOINT_NM` (1.25 nm) of that one route's vertices. So a leg
 either gets the line a ferry actually sails or it gets none — two
 terminals covered by two different routes are never stitched together.
-Geometry beats the mesh where it exists, which is 49 of the 50 legs.
+Geometry beats the mesh where it exists, which is 50 of the 51 legs.
 
 ### Relations first, bare ways only to fill gaps
 

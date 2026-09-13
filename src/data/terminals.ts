@@ -30,7 +30,7 @@ export const TERMINALS: readonly Terminal[] = [
   { id: "sidney-bc", name: "Sidney, BC", coordinates: [-123.3956, 48.6497], jurisdiction: "BC" },
 
   // --- King County Water Taxi ---
-  { id: "west-seattle-seacrest", name: "West Seattle (Seacrest)", coordinates: [-122.37653, 47.59217], jurisdiction: "WA" },
+  { id: "west-seattle-seacrest", name: "West Seattle (Seacrest Dock)", coordinates: [-122.3796, 47.5894], jurisdiction: "WA" },
 
   // --- Black Ball Ferry Line / Victoria Clipper ---
   { id: "port-angeles", name: "Port Angeles", coordinates: [-123.4307, 48.1176], jurisdiction: "WA" },
