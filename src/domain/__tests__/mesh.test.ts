@@ -37,9 +37,21 @@ describe("salish mesh graph", () => {
     expect(graph.byKey.size).toBe(graph.nodes.length);
   });
 
-  it("gives every node at least one neighbour", () => {
-    const orphans = graph.nodes.filter((n) => n.edges.length === 0);
-    expect(orphans).toHaveLength(0);
+  it("keeps the vendored mesh graph fully connected", () => {
+    const seen = new Set<number>([0]);
+    const frontier = [0];
+
+    while (frontier.length > 0) {
+      const at = frontier.pop();
+      if (at === undefined) continue;
+      for (const edge of graph.nodes[at]?.edges ?? []) {
+        if (seen.has(edge.to)) continue;
+        seen.add(edge.to);
+        frontier.push(edge.to);
+      }
+    }
+
+    expect(seen.size).toBe(graph.nodes.length);
   });
 
   it("routes Anacortes to Friday Harbor around the islands, not through them", () => {
@@ -66,6 +78,8 @@ describe("salish mesh graph", () => {
     };
 
     expect(path.length).toBeGreaterThan(2);
+    expect(path[0]).toEqual(anacortes);
+    expect(path.at(-1)).toEqual(fridayHarbor);
     expect(along(path)).toBeGreaterThan(haversineNm(anacortes, fridayHarbor));
   });
 
@@ -78,8 +92,16 @@ describe("salish mesh graph", () => {
   it("snaps all but four terminals to the network", () => {
     const unreachable = TERMINALS.filter(
       (t) => nearestNode(graph, t.coordinates) === null
-    ).map((t) => t.id);
+    )
+      .map((t) => t.id)
+      .sort();
 
     expect(unreachable).toHaveLength(4);
+    expect(unreachable).toEqual([
+      "comox",
+      "cortes-island",
+      "gambier-island",
+      "lasqueti-island",
+    ]);
   });
 });

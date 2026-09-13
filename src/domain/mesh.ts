@@ -67,6 +67,8 @@ export interface MeshGraph {
 }
 
 const key = (point: LonLat): string => `${point[0]},${point[1]}`;
+const samePoint = (a: LonLat, b: LonLat): boolean =>
+  a[0] === b[0] && a[1] === b[1];
 
 /**
  * Indexes the mesh once, so many legs can be walked without rebuilding it.
@@ -229,10 +231,16 @@ export const meshPathCoordinates = (
   if (start === null || goal === null || start === goal) return null;
 
   const path = shortestNodePath(graph, start, goal);
-  return (
-    path?.map((index) => {
-      const node = graph.nodes[index] as MeshNode;
-      return node.at;
-    }) ?? null
-  );
+  if (path === null) return null;
+
+  const coordinates = path.map((index) => {
+    const node = graph.nodes[index] as MeshNode;
+    return node.at;
+  });
+
+  if (!samePoint(from, coordinates[0] as LonLat)) coordinates.unshift(from);
+  if (!samePoint(to, coordinates[coordinates.length - 1] as LonLat)) {
+    coordinates.push(to);
+  }
+  return coordinates;
 };
