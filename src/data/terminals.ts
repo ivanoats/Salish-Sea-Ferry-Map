@@ -1,4 +1,4 @@
-import type { Terminal } from "../domain/ferry";
+import type { Terminal } from "@/domain/ferry";
 
 /**
  * Terminal coordinates are compiled from operator route pages, Wikipedia,
