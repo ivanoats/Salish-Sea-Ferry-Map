@@ -190,9 +190,11 @@ describe("salish mesh graph", () => {
    * one of these within range fails loudly and gets the table in
    * data/README.md updated rather than left stale.
    *
-   * Most out-of-range terminals in issue #16 were bad coordinates; these
-   * two remain outside the snap radius even after being corrected to the
-   * ferry terminal itself. See data/README.md.
+   * Not a correctness check on the terminals: this network maps sailing
+   * routes, so a correctly placed dock can sit outside it simply because
+   * no sailing route passes that way — which is why these two remain out
+   * of range after being corrected to the terminal itself. OSM is the
+   * authority on where a ferry dock is. See data/README.md.
    */
   it("snaps all but two terminals to the network", () => {
     const unreachable = TERMINALS.filter(

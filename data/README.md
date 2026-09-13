@@ -44,9 +44,29 @@ fall within `MAX_SNAP_NM` (2 nm) of a mesh vertex. Two do not:
 `meshPathCoordinates` returns `null` for legs touching these, which callers
 must treat as "keep the straight line" rather than as an error.
 
-`comox` and `gambier-island` are both now verified at the ferry terminal
-itself and still sit beyond `MAX_SNAP_NM`, so these two look like genuine
-mesh-coverage gaps rather than remaining coordinate errors.
+**Reaching the mesh is not a test of whether a coordinate is right.** This
+network was built for sailing — deep-water corridors and tidal passes for a
+boat picking its way through, with an entrance spur per harbour in *that*
+project's list. It is not a ferry network and has no authority over where a
+ferry dock is. A correctly placed terminal can sit outside `MAX_SNAP_NM`
+simply because no sailing route happens to pass that way, which is exactly
+what `comox` and `gambier-island` show: both verified at the ferry terminal
+itself, both still out of range.
+
+So don't read the table above as a defect list. Don't patch the mesh to
+reach one of these, don't hand-place an approach point, and don't widen
+`MAX_SNAP_NM` — that last would draw a confident line from somewhere the
+ferry never was, the exact failure the constant exists to prevent.
+
+**OpenStreetMap is the authority for ferry terminals and ferry routes.**
+`amenity=ferry_terminal` gives the docks and `route=ferry` gives the
+sailing lines, both mapped as ferries rather than inferred from open water.
+Check a terminal against OSM, not against this mesh.
+
+Since the OSM ferry routes landed, the mesh is a fallback rather than the
+primary source: 45 of 49 route legs use OSM geometry, 3 use the mesh
+(`friday-harbor`–`sidney-bc` and the two Kitsap fast-ferry runs into
+Seattle), and 1 falls back to a straight line.
 
 ### Licensing
 
