@@ -63,15 +63,17 @@ describe("ferry dataset integrity", () => {
     const terminals = [...TERMINALS_BY_ID.values()];
     const tooClose: string[] = [];
 
-    for (let i = 0; i < terminals.length; i++) {
-      for (let j = i + 1; j < terminals.length; j++) {
-        const a = terminals[i];
-        const b = terminals[j];
-        if (a === undefined || b === undefined) continue;
+    for (let at = 0; at < terminals.length; at++) {
+      for (let against = at + 1; against < terminals.length; against++) {
+        const terminal = terminals[at];
+        const other = terminals[against];
+        if (terminal === undefined || other === undefined) continue;
 
-        const separationNm = haversineNm(a.coordinates, b.coordinates);
+        const separationNm = haversineNm(terminal.coordinates, other.coordinates);
         if (separationNm < minimumSeparationNm) {
-          tooClose.push(`${a.id} <-> ${b.id} (${separationNm.toFixed(3)} nm)`);
+          tooClose.push(
+            `${terminal.id} <-> ${other.id} (${separationNm.toFixed(3)} nm)`
+          );
         }
       }
     }
