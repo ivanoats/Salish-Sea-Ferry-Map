@@ -117,12 +117,12 @@ function WhoIAm() {
       <p className={proseClassName}>
         I&rsquo;m Ivan Storck. I build software in Seattle and spend as much time as I can on the
         water around it, sailing and paddling the Salish Sea and flying a camera drone over
-        places like Guemes Channel and Point Robinson. Most of the terminals on this map are
+        interesting places. Most of the terminals on this map are
         ones I have waited at.
       </p>
       <p className={proseClassName}>
-        By day I am a Senior Solutions Architect at lululemon, working on content management and
-        design systems. The rest of the time I take a small number of fractional CTO engagements
+        By day I am a Senior Solutions Architect at lululemon, working on content management,
+        design systems, and brand technology. The rest of the time I take a small number of fractional CTO engagements
         and work on sustainability tooling for the web, including{" "}
         <a
           href="https://www.npmjs.com/package/wsg-check"
