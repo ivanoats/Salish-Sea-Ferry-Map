@@ -46,7 +46,7 @@ export const TERMINALS: readonly Terminal[] = [
   { id: "anacortes-guemes-dock", name: "Anacortes (6th St. dock)", coordinates: [-122.6156, 48.5136], jurisdiction: "WA" },
   { id: "guemes-island", name: "Guemes Island", coordinates: [-122.6304, 48.5218], jurisdiction: "WA" },
   { id: "gooseberry-point", name: "Gooseberry Point", coordinates: [-122.6702, 48.73123], jurisdiction: "WA" },
-  { id: "lummi-island", name: "Lummi Island", coordinates: [-122.6698, 48.7318], jurisdiction: "WA" },
+  { id: "lummi-island", name: "Lummi Island", coordinates: [-122.68131, 48.72044], jurisdiction: "WA" },
 
   // --- Everett-based passenger ferries (Harbor Hopper, Hat Island) ---
   // One Everett terminal, not two. OSM ends the Harbor Hopper and the Hat

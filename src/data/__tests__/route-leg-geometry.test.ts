@@ -130,6 +130,24 @@ describe("baked route-leg geometry", () => {
     ).toBeLessThan(10);
   });
 
+  /**
+   * The vendored relation for this crossing was correct the whole time; the
+   * terminal was not. `lummi-island` sat 70 m from `gooseberry-point` on the
+   * mainland side, so clipping the way between the two terminals left a
+   * 0.04 nm stub at the Gooseberry dock instead of the 0.79 nm the Whatcom
+   * Chief sails across Hale Passage.
+   */
+  it("draws the Whatcom Chief the full way across Hale Passage", () => {
+    const fresh = buildRouteLegGeometryByDirectedTerminalIds();
+    const gooseberryToLummi = fresh["gooseberry-point\0lummi-island"];
+
+    expect(gooseberryToLummi?.source).toBe("osm");
+    expect(gooseberryToLummi?.coordinates.length).toBeGreaterThan(2);
+    expect(
+      lineDistanceNm(gooseberryToLummi?.coordinates ?? [])
+    ).toBeGreaterThan(0.7);
+  });
+
   it("covers substantially more than the single Seattle–Bainbridge leg with vendored OSM geometry", () => {
     const fresh = buildRouteLegGeometryByDirectedTerminalIds();
     const osmLegs = Object.values(fresh).filter(
