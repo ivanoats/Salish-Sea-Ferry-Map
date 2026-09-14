@@ -71,6 +71,27 @@ export const OPERATORS: readonly Operator[] = [
     color: "#57534e",
     website: "https://www.whatcomcounty.us/382/Lummi-Island-Ferry",
   },
+  {
+    id: "harbor-hopper",
+    name: "Harbor Hopper (Ports of Everett and South Whidbey)",
+    shortName: "Harbor Hopper",
+    color: "#0891b2",
+    website: "https://www.portofeverett.com/visit_the_waterfront/harbor_hopper.php",
+  },
+  {
+    id: "hat-island-ferry",
+    name: "Hat Island Community Association",
+    shortName: "Hat Island Ferry",
+    color: "#65a30d",
+    website: "https://hatisland.org/ferry/",
+  },
+  {
+    id: "puget-sound-express",
+    name: "Puget Sound Express",
+    shortName: "Puget Sound Express",
+    color: "#a21caf",
+    website: "https://www.pugetsoundexpress.com",
+  },
 ];
 
 export const OPERATORS_BY_ID = new Map(OPERATORS.map((o) => [o.id, o] as const));

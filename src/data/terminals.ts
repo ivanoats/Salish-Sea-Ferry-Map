@@ -48,6 +48,24 @@ export const TERMINALS: readonly Terminal[] = [
   { id: "gooseberry-point", name: "Gooseberry Point", coordinates: [-122.6702, 48.73123], jurisdiction: "WA" },
   { id: "lummi-island", name: "Lummi Island", coordinates: [-122.6698, 48.7318], jurisdiction: "WA" },
 
+  // --- Everett-based passenger ferries (Harbor Hopper, Hat Island) ---
+  // One Everett terminal, not two. OSM ends the Harbor Hopper and the Hat
+  // Island Ferry 57 m apart, and both operators describe the same place —
+  // the Port of Everett's south docks behind Anthony's. Two markers that
+  // close render as one smudge at every zoom this map uses, so they share
+  // a terminal; the OSM endpoint of each route is well inside the 1.25 nm
+  // the geometry builder allows, so both legs still get real geometry.
+  { id: "everett-marina", name: "Everett (Port of Everett Marina)", coordinates: [-122.22372, 47.99666], jurisdiction: "WA" },
+  { id: "langley", name: "Langley (Whidbey Island)", coordinates: [-122.40197, 48.03864], jurisdiction: "WA" },
+  { id: "hat-island", name: "Hat Island (Gedney Island)", coordinates: [-122.32259, 48.02016], jurisdiction: "WA" },
+
+  // --- Puget Sound Express ---
+  // Both ends are the operator's own dock rather than the WSF one nearby:
+  // Point Hudson is a mile up the shore from the Port Townsend slip, and
+  // Spring Street Landing sits just west of the Friday Harbor terminal.
+  { id: "port-townsend-point-hudson", name: "Port Townsend (Point Hudson)", coordinates: [-122.75166, 48.11704], jurisdiction: "WA" },
+  { id: "friday-harbor-spring-street", name: "Friday Harbor (Spring Street Landing)", coordinates: [-123.01441, 48.53626], jurisdiction: "WA" },
+
   // --- BC Ferries ---
   { id: "tsawwassen", name: "Tsawwassen", coordinates: [-123.1306, 49.0062], jurisdiction: "BC" },
   { id: "swartz-bay", name: "Swartz Bay", coordinates: [-123.4106, 48.6889], jurisdiction: "BC" },

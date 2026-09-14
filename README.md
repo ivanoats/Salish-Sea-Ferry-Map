@@ -25,6 +25,9 @@ An interactive map of every ferry route across the Salish Sea — Puget Sound, t
 - **Victoria Clipper** — Seattle ↔ Victoria, passenger only
 - **Skagit County** — the Guemes Island ferry
 - **Whatcom County** — the *Whatcom Chief*, Gooseberry Point ↔ Lummi Island
+- **Puget Sound Express** — Port Townsend ↔ Friday Harbor, passenger only, seasonal
+- **Harbor Hopper** — the Ports of Everett and South Whidbey's summer foot ferry, Everett ↔ Langley
+- **Hat Island Ferry** — the *Another Holiday*, Everett ↔ Hat Island (Gedney)
 
 ## Stack
 
