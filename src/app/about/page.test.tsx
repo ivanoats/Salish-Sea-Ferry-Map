@@ -19,6 +19,14 @@ describe("AboutPage", () => {
       screen.getByText(/show Washington State Ferries, BC Ferries, Black Ball/i)
     ).toBeInTheDocument();
     expect(screen.getByText(/This is a route map, not a trip planner/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Who I am" })
+    ).toBeInTheDocument();
+    expect(screen.getByText(/I.m Ivan Storck/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "ivanstorck.com" })).toHaveAttribute(
+      "href",
+      "https://ivanstorck.com"
+    );
     expect(screen.getByRole("link", { name: /back to the map/i })).toHaveAttribute("href", "/");
   });
 });
