@@ -110,6 +110,51 @@ function WhatItCovers() {
   );
 }
 
+function WhoIAm() {
+  return (
+    <section className={sectionClassName}>
+      <h2 className={sectionHeadingClassName}>Who I am</h2>
+      <p className={proseClassName}>
+        I&rsquo;m Ivan Storck. I build software in Seattle and spend as much time as I can on the
+        water around it, sailing and paddling the Salish Sea and flying a camera drone over
+        places like Guemes Channel and Point Robinson. Most of the terminals on this map are
+        ones I have waited at.
+      </p>
+      <p className={proseClassName}>
+        By day I am a Senior Solutions Architect at lululemon, working on content management and
+        design systems. The rest of the time I take a small number of fractional CTO engagements
+        and work on sustainability tooling for the web, including{" "}
+        <a
+          href="https://www.npmjs.com/package/wsg-check"
+          className={linkClassName}
+          target="_blank"
+          rel="noreferrer"
+        >
+          wsg-check
+        </a>
+        , a checker for the W3C Web Sustainability Guidelines. Before that I co-founded Code
+        Fellows, taught Ruby and JavaScript to several hundred bootcamp students, and spent six
+        years on the teaching faculty of the University of Washington&rsquo;s Rails certificate
+        program.
+      </p>
+      <p className={proseClassName}>
+        This map sits where those two halves meet: geospatial data, a region I know well, and a
+        small page that tries not to ask much of the network it travels over. More of my work is
+        at{" "}
+        <a
+          href="https://ivanstorck.com"
+          className={linkClassName}
+          target="_blank"
+          rel="noreferrer"
+        >
+          ivanstorck.com
+        </a>
+        .
+      </p>
+    </section>
+  );
+}
+
 export default function AboutPage() {
   return (
     <main
@@ -132,6 +177,7 @@ export default function AboutPage() {
         <AboutHeader />
         <WhyThisExists />
         <WhatItCovers />
+        <WhoIAm />
       </div>
     </main>
   );
