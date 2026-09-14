@@ -57,7 +57,7 @@ export function AppShell() {
       >
         <div>
           <h1 className={css({ fontSize: "lg", fontWeight: "bold", lineHeight: "tight" })}>
-            Salish Sea Ferry Map
+            ⛴ Salish Sea Ferry Map
           </h1>
           <p className={css({ fontSize: "xs", color: "fg.muted", mt: "1" })}>
             {visibleRouteCount} route{visibleRouteCount === 1 ? "" : "s"} shown · Puget Sound, the
