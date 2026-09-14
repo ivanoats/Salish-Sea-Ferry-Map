@@ -1,0 +1,53 @@
+@startuml
+title <size:24>Component View: Salish Sea Ferry Map - Next.js web app</size>\n<size:24>Component view — Next.js web app</size>
+
+set separator none
+left to right direction
+
+<style>
+  root {
+    BackgroundColor: #ffffff
+    FontColor: #444444
+  }
+</style>
+
+!include <C4/C4>
+!include <C4/C4_Context>
+!include <C4/C4_Container>
+!include <C4/C4_Component>
+
+AddElementTag("Element", $bgColor="#ffffff", $borderColor="#444444", $fontColor="#444444", $sprite="", $shadowing="", $borderStyle="solid")
+
+AddRelTag("Relationship", $textColor="#444444", $lineColor="#444444", $lineStyle = DashedLine())
+
+AddBoundaryTag("Element", $bgColor="#ffffff", $borderColor="#444444", $fontColor="#444444", $shadowing="", $borderStyle="solid")
+
+Person(Mapuser, "Map user", $descr="Browses and filters ferry routes.", $tags="Element", $link="")
+Person(Maintainer, "Maintainer", $descr="Curates operators, terminals, routes, and geometry inputs.", $tags="Element", $link="")
+
+System_Boundary("SalishSeaFerryMap_boundary", "Salish Sea Ferry Map", $tags="Element") {
+  Container_Boundary("SalishSeaFerryMap.Nextjswebapp_boundary", "Next.js web app", $tags="Element") {
+    Component(SalishSeaFerryMap.Nextjswebapp.Staticferrydataset, "Static ferry dataset", $techn="src/data/", $descr="Curated operators, terminals, routes, and generated route-leg geometry.", $tags="Element", $link="")
+    Component(SalishSeaFerryMap.Nextjswebapp.AppRouterpages, "App Router pages", $techn="src/app/", $descr="Route entries and layout for the map and About pages.", $tags="Element", $link="")
+    Component(SalishSeaFerryMap.Nextjswebapp.GeoJSONderivation, "GeoJSON derivation", $techn="src/domain/geojson.ts", $descr="Builds route lines and terminal points, including shared-leg offsets.", $tags="Element", $link="")
+    Component(SalishSeaFerryMap.Nextjswebapp.Domainmodel, "Domain model", $techn="src/domain/", $descr="Shared ferry and vessel types plus pure helpers.", $tags="Element", $link="")
+  }
+
+  Container(SalishSeaFerryMap.Livevesselproxy, "Live vessel proxy", $techn="Next.js route handler, TypeScript", $descr="Fetches WSDOT vessel positions without exposing the API key to the browser.", $tags="Element", $link="")
+  Container(SalishSeaFerryMap.BrowsermapUI, "Browser map UI", $techn="MapLibre GL JS, React", $descr="Renders routes, terminals, filters, and optional vessels over the basemap.", $tags="Element", $link="")
+}
+
+Rel(Mapuser, SalishSeaFerryMap.Nextjswebapp.AppRouterpages, "Requests pages", $techn="", $tags="Relationship", $link="")
+Rel(Mapuser, SalishSeaFerryMap.BrowsermapUI, "Views and filters ferry routes", $techn="", $tags="Relationship", $link="")
+Rel(Maintainer, SalishSeaFerryMap.Nextjswebapp.Staticferrydataset, "Curates operators, terminals, routes, and geometry", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.Nextjswebapp.AppRouterpages, SalishSeaFerryMap.BrowsermapUI, "Delivers to the browser", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.Nextjswebapp.GeoJSONderivation, SalishSeaFerryMap.Nextjswebapp.Domainmodel, "Core types", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.Nextjswebapp.GeoJSONderivation, SalishSeaFerryMap.Nextjswebapp.Staticferrydataset, "Leg geometry", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.Livevesselproxy, SalishSeaFerryMap.Nextjswebapp.Domainmodel, "Parses payloads", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI, SalishSeaFerryMap.Nextjswebapp.Staticferrydataset, "Operators, routes", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI, SalishSeaFerryMap.Nextjswebapp.GeoJSONderivation, "Feature collections", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI, SalishSeaFerryMap.Livevesselproxy, "GET /api/vessels", $techn="", $tags="Relationship", $link="")
+
+SHOW_LEGEND(true)
+hide stereotypes
+@enduml

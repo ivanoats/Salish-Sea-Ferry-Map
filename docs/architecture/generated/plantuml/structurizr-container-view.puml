@@ -1,0 +1,48 @@
+@startuml
+title <size:24>Container View: Salish Sea Ferry Map</size>\n<size:24>Container view</size>
+
+set separator none
+left to right direction
+
+<style>
+  root {
+    BackgroundColor: #ffffff
+    FontColor: #444444
+  }
+</style>
+
+!include <C4/C4>
+!include <C4/C4_Context>
+!include <C4/C4_Container>
+
+AddElementTag("Element", $bgColor="#ffffff", $borderColor="#444444", $fontColor="#444444", $sprite="", $shadowing="", $borderStyle="solid")
+AddElementTag("External", $bgColor="#999999", $borderColor="#6b6b6b", $fontColor="#ffffff", $sprite="", $shadowing="", $borderStyle="solid")
+
+AddRelTag("Relationship", $textColor="#444444", $lineColor="#444444", $lineStyle = DashedLine())
+
+AddBoundaryTag("Element", $bgColor="#ffffff", $borderColor="#444444", $fontColor="#444444", $shadowing="", $borderStyle="solid")
+
+Person(Mapuser, "Map user", $descr="Browses and filters ferry routes.", $tags="Element", $link="")
+Person(Maintainer, "Maintainer", $descr="Curates operators, terminals, routes, and geometry inputs.", $tags="Element", $link="")
+System(OpenStreetMap, "OpenStreetMap", $descr="Raster tiles for the basemap.", $tags="External", $link="")
+System(WSDOTVesselLocationsAPI, "WSDOT Vessel Locations API", $descr="Optional live vessel positions.", $tags="External", $link="")
+
+System_Boundary("SalishSeaFerryMap_boundary", "Salish Sea Ferry Map", $tags="Element") {
+  Container(SalishSeaFerryMap.Livevesselproxy, "Live vessel proxy", $techn="Next.js route handler, TypeScript", $descr="Fetches WSDOT vessel positions without exposing the API key to the browser.", $tags="Element", $link="")
+  Container(SalishSeaFerryMap.BrowsermapUI, "Browser map UI", $techn="MapLibre GL JS, React", $descr="Renders routes, terminals, filters, and optional vessels over the basemap.", $tags="Element", $link="")
+  Container(SalishSeaFerryMap.Nextjswebapp, "Next.js web app", $techn="Next.js App Router, React, TypeScript", $descr="Serves the site and bundles the shared application modules.", $tags="Element", $link="")
+}
+
+Rel(Mapuser, SalishSeaFerryMap.Nextjswebapp, "Requests pages", $techn="", $tags="Relationship", $link="")
+Rel(Mapuser, SalishSeaFerryMap.BrowsermapUI, "Views and filters ferry routes", $techn="", $tags="Relationship", $link="")
+Rel(Maintainer, SalishSeaFerryMap.Nextjswebapp, "Curates operators, terminals, routes, and geometry", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.Nextjswebapp, SalishSeaFerryMap.BrowsermapUI, "Delivers to the browser", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.Livevesselproxy, SalishSeaFerryMap.Nextjswebapp, "Parses payloads", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.Livevesselproxy, WSDOTVesselLocationsAPI, "Vessel locations", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI, SalishSeaFerryMap.Nextjswebapp, "Operators, routes", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI, OpenStreetMap, "Basemap tiles", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI, SalishSeaFerryMap.Livevesselproxy, "GET /api/vessels", $techn="", $tags="Relationship", $link="")
+
+SHOW_LEGEND(true)
+hide stereotypes
+@enduml
