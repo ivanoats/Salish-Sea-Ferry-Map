@@ -11,22 +11,30 @@ workspace "Salish Sea Ferry Map" "C4 model for the static-first ferry route map.
         user = person "Map user" "Browses and filters ferry routes."
         maintainer = person "Maintainer" "Curates operators, terminals, routes, and geometry inputs."
 
-        osm = softwareSystem "OpenStreetMap" "Raster tiles for the basemap." "External"
-        wsdot = softwareSystem "WSDOT Vessel Locations API" "Optional live vessel positions." "External"
+        osm = softwareSystem "OpenStreetMap" "Raster tiles for the basemap." {
+            tags "External"
+        }
+        wsdot = softwareSystem "WSDOT Vessel Locations API" "Optional live vessel positions." {
+            tags "External"
+        }
 
         ferryMap = softwareSystem "Salish Sea Ferry Map" "Interactive route map spanning multiple ferry operators." {
 
-            // Server side. The vessel route handler lives here rather than as
-            // its own container: it runs inside the same Next.js application
-            // and is not a separate runtime boundary. Dataset, domain, and
-            // GeoJSON derivation are the shared modules the app bundles, and
-            // they execute both when prerendering and in the browser.
-            webApp = container "Next.js web app" "Serves the site, exposes the vessel proxy, and bundles the curated dataset and domain logic." "Next.js App Router, React, TypeScript" {
+            // Server-rendered entry points live here, alongside the shared
+            // dataset, domain, and GeoJSON modules the browser bundle imports.
+            // At runtime, GeoJSON derivation is currently called from the
+            // browser map UI, while route-leg geometry is precomputed at build time.
+            webApp = container "Next.js web app" "Serves the site and bundles the shared application modules." "Next.js App Router, React, TypeScript" {
                 pages = component "App Router pages" "Route entries and layout for the map and About pages." "src/app/"
-                proxyRoute = component "Vessel proxy route" "Server-side WSDOT call that keeps the API key off the client." "src/app/api/vessels/route.ts"
                 geojson = component "GeoJSON derivation" "Builds route lines and terminal points, including shared-leg offsets." "src/domain/geojson.ts"
-                domain = component "Domain model" "Operator, Terminal, FerryRoute, vessel parsing, and pure helpers." "src/domain/"
+                domain = component "Domain model" "Shared ferry and vessel types plus pure helpers." "src/domain/"
                 dataset = component "Static ferry dataset" "Curated operators, terminals, routes, and generated route-leg geometry." "src/data/"
+            }
+
+            // This route is modelled as its own server-side boundary because
+            // the browser calls it separately for live vessel data.
+            vesselProxy = container "Live vessel proxy" "Fetches WSDOT vessel positions without exposing the API key to the browser." "Next.js route handler, TypeScript" {
+                proxyRoute = component "Vessel proxy route" "Server-side WSDOT call that keeps the API key off the client and parses the response." "src/app/api/vessels/route.ts"
             }
 
             // Client side. A browser application is a container in its own
@@ -46,8 +54,8 @@ workspace "Salish Sea Ferry Map" "C4 model for the static-first ferry route map.
         ferryMap.webApp.pages -> ferryMap.browserMap.shell "Delivers to the browser"
         ferryMap.webApp.geojson -> ferryMap.webApp.domain "Core types"
         ferryMap.webApp.geojson -> ferryMap.webApp.dataset "Leg geometry"
-        ferryMap.webApp.proxyRoute -> ferryMap.webApp.domain "Parses payloads"
-        ferryMap.webApp.proxyRoute -> wsdot "Vessel locations"
+        ferryMap.vesselProxy.proxyRoute -> ferryMap.webApp.domain "Parses payloads"
+        ferryMap.vesselProxy.proxyRoute -> wsdot "Vessel locations"
 
         ferryMap.browserMap.shell -> ferryMap.browserMap.filter "Filter state"
         ferryMap.browserMap.shell -> ferryMap.browserMap.ferryMapUi "Visible routes"
@@ -56,10 +64,21 @@ workspace "Salish Sea Ferry Map" "C4 model for the static-first ferry route map.
         ferryMap.browserMap.ferryMapUi -> ferryMap.webApp.geojson "Feature collections"
         ferryMap.browserMap.ferryMapUi -> ferryMap.webApp.dataset "Routes, terminals"
         ferryMap.browserMap.ferryMapUi -> osm "Basemap tiles"
-        ferryMap.browserMap.vesselHook -> ferryMap.webApp.proxyRoute "GET /api/vessels"
+        ferryMap.browserMap.vesselHook -> ferryMap.vesselProxy.proxyRoute "GET /api/vessels"
     }
 
     views {
+        properties {
+            "c4plantuml.tags" "true"
+        }
+
+        styles {
+            element "External" {
+                background "#999999"
+                color "#ffffff"
+            }
+        }
+
         systemContext ferryMap "system-context" "System context" {
             include *
             autoLayout lr
@@ -76,6 +95,11 @@ workspace "Salish Sea Ferry Map" "C4 model for the static-first ferry route map.
         }
 
         component ferryMap.browserMap "component-view-browser-map" "Component view — browser map UI" {
+            include *
+            autoLayout lr
+        }
+
+        component ferryMap.vesselProxy "component-view-vessel-proxy" "Component view — live vessel proxy" {
             include *
             autoLayout lr
         }

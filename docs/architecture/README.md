@@ -16,6 +16,14 @@ Following the [C4 model](https://c4model.com/), zooming in one level at a time.
 The source of truth is [`workspace.dsl`](./workspace.dsl); everything below is
 generated from it, so the levels cannot disagree with each other.
 
+| Level | View | Scope |
+| --- | --- | --- |
+| 1 | [System context](./generated/plantuml/structurizr-system-context.svg) | Map user, maintainer, the map itself, and its external dependencies |
+| 2 | [Container view](./generated/plantuml/structurizr-container-view.svg) | The Next.js app, the browser map UI, and the live vessel proxy |
+| 3 | [Component view — Next.js web app](./generated/plantuml/structurizr-component-view-web-app.svg) | Page entry points plus the shared dataset, domain, and GeoJSON modules |
+| 3 | [Component view — browser map UI](./generated/plantuml/structurizr-component-view-browser-map.svg) | The client-side shell, operator filter, map, and live-vessel polling |
+| 3 | [Component view — live vessel proxy](./generated/plantuml/structurizr-component-view-vessel-proxy.svg) | The server-side route that fetches WSDOT vessel positions |
+
 ### Level 1 — System context
 
 ![System context](./generated/plantuml/structurizr-system-context.svg)
@@ -27,14 +35,17 @@ depends on.
 
 ![Container view](./generated/plantuml/structurizr-container-view.svg)
 
-Two runtime pieces: the Next.js app that serves the site and the vessel proxy,
-and the browser-side map UI it delivers.
+Three runtime pieces: the Next.js app that serves the site, the browser-side
+map UI it delivers, and the live vessel proxy the browser calls for optional
+WSF positions.
 
 ### Level 3 — Components
 
 ![Component view, Next.js web app](./generated/plantuml/structurizr-component-view-web-app.svg)
 
 ![Component view, browser map UI](./generated/plantuml/structurizr-component-view-browser-map.svg)
+
+![Component view, live vessel proxy](./generated/plantuml/structurizr-component-view-vessel-proxy.svg)
 
 Level 4 (code) is deliberately omitted — the type definitions in `src/domain/`
 already serve that purpose and would only go stale if duplicated here.
@@ -47,9 +58,14 @@ stored". Two placements follow from that and are easy to get wrong:
 
 - The **curated dataset** is a component, not a container. It compiles into the
   application bundle and starts nothing.
-- The **vessel proxy route** is likewise a component of the Next.js app rather
-  than a container of its own. It is a route handler in that same application,
-  not a separate runtime boundary.
+- The **live vessel proxy** is a container in the runtime view because the
+  browser calls a distinct server-side boundary for WSDOT data; at level 3,
+  that boundary has a single `Vessel proxy route` component.
+
+The current runtime split is narrower than the directory layout suggests:
+`src/domain/geojson.ts` is called from `FerryMap` in the browser, the proxy
+parses WSDOT responses server-side, and route-leg geometry is pre-generated at
+build time.
 
 `src/domain/mesh.ts` appears in no view at all: it is reached only by
 `scripts/build-route-geometry.ts` at build time.
@@ -68,14 +84,22 @@ that no local Java install is required:
 
 ```bash
 # from the repository root
-docker run --rm -v "$PWD":/work -w /work structurizr/cli:2025.11.09 \
+rm -rf docs/architecture/generated/plantuml
+mkdir -p docs/architecture/generated/plantuml
+
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/work -w /work structurizr/cli:2025.11.09 \
   export -workspace docs/architecture/workspace.dsl \
   -format plantuml/c4plantuml \
   -output docs/architecture/generated/plantuml
 
-docker run --rm -v "$PWD":/work -w /work plantuml/plantuml:1.2026.8 \
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/work -w /work plantuml/plantuml:1.2026.8 \
   -tsvg docs/architecture/generated/plantuml/*.puml
+
+perl -0pi -e 's/<\?plantuml [^?]+\?>//g' docs/architecture/generated/plantuml/*.svg
 ```
+
+The final pass removes PlantUML's processing instruction so the committed SVGs
+render inline on GitHub.
 
 Commit the regenerated `.puml` and `.svg` files alongside the DSL change.
 
