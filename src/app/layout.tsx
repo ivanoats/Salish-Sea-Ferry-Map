@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Salish Sea Ferry Map",
   description:
-    "An interactive map of every ferry route across the Salish Sea — Washington State Ferries, BC Ferries, Black Ball Ferry Line, Kitsap Transit, Victoria Clipper, and regional county ferries.",
+    "An interactive map of every ferry route across the Salish Sea — Washington State Ferries, BC Ferries, Black Ball Ferry Line, Kitsap Transit, Victoria Clipper, Puget Sound Express, and regional county and community ferries.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

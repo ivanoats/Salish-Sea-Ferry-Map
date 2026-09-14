@@ -6,8 +6,10 @@ import type { FerryRoute } from "@/domain/ferry";
  * Cortes, the Sunshine Coast north of Powell River, and every Vancouver
  * Island west-coast / north-coast / Haida Gwaii route), Black Ball Ferry
  * Line, Kitsap Transit's passenger-only fast ferries, King County Water
- * Taxi, Victoria Clipper, and the three county-run ferries (Guemes Island,
- * Lummi Island, Anderson Island).
+ * Taxi, Victoria Clipper, the three county-run ferries (Guemes Island,
+ * Lummi Island, Anderson Island), Puget Sound Express, and the two
+ * Everett-based passenger runs (the seasonal Harbor Hopper to Langley and
+ * the Hat Island Ferry).
  *
  * Route legs prefer vendored OSM ferry-route geometry, fall back to the
  * navigable-water mesh where that can serve the terminal pair, and fall
@@ -190,6 +192,39 @@ export const ROUTES: readonly FerryRoute[] = [
     mode: "vehicle",
     status: "active",
     terminalIds: ["gooseberry-point", "lummi-island"],
+  },
+
+  // --- Harbor Hopper ---
+  {
+    id: "harbor-hopper-everett-langley",
+    name: "Everett – Langley (Harbor Hopper)",
+    operatorId: "harbor-hopper",
+    mode: "passenger",
+    status: "seasonal",
+    terminalIds: ["everett-marina", "langley"],
+    note: "~30–45 min; Thursdays and Saturdays, June–August. Foot passengers only, no bicycles",
+  },
+
+  // --- Hat Island Community Association ---
+  {
+    id: "hat-island-everett",
+    name: "Everett – Hat Island",
+    operatorId: "hat-island-ferry",
+    mode: "passenger",
+    status: "active",
+    terminalIds: ["everett-marina", "hat-island"],
+    note: "MV Another Holiday — passengers and freight, no vehicles. Reservations required, island members and their guests",
+  },
+
+  // --- Puget Sound Express ---
+  {
+    id: "pse-port-townsend-friday-harbor",
+    name: "Port Townsend – Friday Harbor (passenger only)",
+    operatorId: "puget-sound-express",
+    mode: "passenger",
+    status: "seasonal",
+    terminalIds: ["port-townsend-point-hudson", "friday-harbor-spring-street"],
+    note: "Seasonal May–September; sails as a whale-watching trip, so ~3 hr rather than a direct crossing. Bicycles carried, no vehicles",
   },
 
   // --- BC Ferries: major Strait of Georgia routes ---

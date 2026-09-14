@@ -17,7 +17,10 @@ export type OperatorId =
   | "pierce-county"
   | "victoria-clipper"
   | "skagit-county"
-  | "whatcom-county";
+  | "whatcom-county"
+  | "harbor-hopper"
+  | "hat-island-ferry"
+  | "puget-sound-express";
 
 export interface Operator {
   readonly id: OperatorId;

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Interactive map of every ferry route across the Salish Sea — Puget Sound, the Strait of Georgia, and the Strait of Juan de Fuca — spanning Washington State Ferries, BC Ferries, Black Ball Ferry Line, Kitsap Transit, Victoria Clipper, and regional county ferries.",
+  "description": "Interactive map of every ferry route across the Salish Sea — Puget Sound, the Strait of Georgia, and the Strait of Juan de Fuca — spanning Washington State Ferries, BC Ferries, Black Ball Ferry Line, Kitsap Transit, Victoria Clipper, Puget Sound Express, and regional county and community ferries.",
   "engines": {
     "node": ">=24"
   },

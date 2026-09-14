@@ -17,6 +17,9 @@ const operatorCoverage = [
   "Victoria Clipper — passenger-only service between Seattle and Victoria",
   "Skagit County — the Guemes Island ferry",
   "Whatcom County — the Whatcom Chief between Gooseberry Point and Lummi Island",
+  "Puget Sound Express — seasonal passenger service between Port Townsend and Friday Harbor",
+  "Harbor Hopper — the Ports of Everett and South Whidbey's summer foot ferry between Everett and Langley",
+  "Hat Island Ferry — the Another Holiday between Everett and Hat Island",
 ] as const;
 
 const proseClassName = css({
@@ -80,8 +83,8 @@ function WhyThisExists() {
       <p className={proseClassName}>
         Good ferry maps around the Salish Sea usually stop at a single operator. This project
         exists to show Washington State Ferries, BC Ferries, Black Ball, Kitsap Transit,
-        Victoria Clipper, and the county ferries together on one map so visitors can see the
-        whole network at a glance.
+        Victoria Clipper, Puget Sound Express, and the county and community ferries together on
+        one map so visitors can see the whole network at a glance.
       </p>
       <p className={proseClassName}>
         It is especially meant for trip ideas that mix bikes, foot passengers, and multiple

@@ -33,7 +33,7 @@ that caveat and must keep it visible.
 
 ### Terminal coverage
 
-Measured against the current `src/data/terminals.ts`, 66 of 68 terminals
+Measured against the current `src/data/terminals.ts`, 71 of 73 terminals
 fall within `MAX_SNAP_NM` (2 nm) of a mesh vertex. Two do not:
 
 | Terminal | Nearest vertex |
@@ -64,7 +64,7 @@ sailing lines, both mapped as ferries rather than inferred from open water.
 Check a terminal against OSM, not against this mesh.
 
 Since the OSM ferry routes landed, the mesh is a fallback rather than the
-primary source: 50 of 51 route legs use OSM geometry and 1 uses the mesh
+primary source: 53 of 54 route legs use OSM geometry and 1 uses the mesh
 (`friday-harbor`–`sidney-bc`, suspended since 2020, whose Sidney end has
 no OSM ferry route within `MAX_OSM_ENDPOINT_NM`). No leg falls back to a
 straight line.
@@ -83,7 +83,7 @@ it for a leg only when **both** of the leg's terminals sit within
 `MAX_OSM_ENDPOINT_NM` (1.25 nm) of that one route's vertices. So a leg
 either gets the line a ferry actually sails or it gets none — two
 terminals covered by two different routes are never stitched together.
-Geometry beats the mesh where it exists, which is 50 of the 51 legs.
+Geometry beats the mesh where it exists, which is 53 of the 54 legs.
 
 ### Relations first, bare ways only to fill gaps
 
@@ -95,15 +95,31 @@ Kitsap Transit fast ferries and the Gambier–Keats crossing fell back to the
 mesh long after every terminal they touch had real geometry nearby.
 
 The third source query subtracts relation member ways from all ferry ways
-in the region, leaving 66 standalone ones. Only four are vendored: the
-ones carrying a route leg no relation reaches. The rest are either the same
-crossing a relation already covers — and a duplicate can only displace
-better geometry, since the builder breaks ties on snap distance — or berth
-approaches, freight barges and water taxis this dataset does not model
-beyond Seattle–West Seattle.
+in the region, leaving 66 standalone ones. Only six are vendored: the
+ones carrying a route leg no relation reaches — the two Kitsap Transit
+fast ferries, the Gambier–Keats crossing, Seattle–West Seattle, the Hat
+Island Ferry and the Puget Sound Express Port Townsend–Friday Harbor run.
+The rest are either the same crossing a relation already covers — and a
+duplicate can only displace better geometry, since the builder breaks ties
+on snap distance — or berth approaches, freight barges and water taxis this
+dataset does not model beyond Seattle–West Seattle.
 
 Adding a way here is therefore a deliberate act, not a sweep: check that
 the leg has no relation coverage first.
+
+### A bounding box is a source too
+
+The fourth source query exists because a relation can also be missed for
+having been mapped *south* of where anyone looked. The Harbor Hopper
+(Everett Marina ↔ Langley) is a proper `route=ferry` relation, and both
+earlier queries still went past it: the relation query started at 48.3°N,
+a third of a degree north of Possession Sound, and the bare-way query
+subtracts relation members, so the relation's own member way was excluded
+as well. Nothing about the tagging was unusual; the box was simply drawn
+above it.
+
+So when a route is missing, check the coverage of the queries in
+`metadata.sources` before concluding OSM does not have it.
 
 ### Licensing
 
