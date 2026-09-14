@@ -64,7 +64,7 @@ function AboutHeader() {
         ← Back to the map
       </Link>
       <h1 className={css({ fontSize: { base: "2xl", md: "3xl" }, fontWeight: "bold", lineHeight: "tight" })}>
-        ⛴ About this map
+        <span aria-hidden="true">⛴</span> About this map
       </h1>
       <p className={proseClassName}>
         A reference map of ferry routes across the Salish Sea, gathered into one place.
