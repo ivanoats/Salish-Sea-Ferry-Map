@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    .ferry { fill: #fffef8; }
+    .window { fill: #176b4a; }
+    .wave { fill: none; stroke: #fffef8; stroke-linecap: round; stroke-width: 1.6; }
+  </style>
+  <rect width="32" height="32" fill="#176b4a"/>
+  <g class="ferry" transform="translate(16 16) scale(0.66) translate(-16.5 -19.3)">
+    <path d="M4 20.5h24l-3 5H8l-4-5Z"/><path d="M9 18V10h11l4 8H9Z"/><path class="window" d="M12 13h4v3h-4zm6 0h2.8l1.4 3H18z"/><path class="wave" d="M6 28c3-1.2 5.2-1.2 8 0s5 1.2 8 0 5-1.2 7 0"/>
+  </g>
+</svg>
