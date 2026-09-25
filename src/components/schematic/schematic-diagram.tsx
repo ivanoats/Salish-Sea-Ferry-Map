@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import type { FerryRoute } from "@/domain/ferry";
 import { buildSchematicDiagram, strokeToPixels, type GridPoint, type LabelSide } from "@/domain/schematic";
-import { OPERATORS_BY_ID } from "@/data/operators";
+import { OPERATORS, OPERATORS_BY_ID } from "@/data/operators";
 import { TERMINALS_BY_ID } from "@/data/terminals";
 import {
   SCHEMATIC_BORDER,
@@ -187,6 +187,28 @@ function DiagramSvg({ routes, style }: { routes: readonly FerryRoute[]; style: R
   );
 }
 
+/** Which color is which operator, for the operators currently drawn. */
+function RouteLegend({ routes }: { routes: readonly FerryRoute[] }) {
+  const drawn = new Set(routes.map((route) => route.operatorId));
+  const operators = OPERATORS.filter((operator) => drawn.has(operator.id));
+  if (operators.length === 0) return null;
+  return (
+    <details className="schematic-legend" open>
+      <summary>Operators</summary>
+      <ul>
+        {operators.map((operator) => (
+          <li key={operator.id}>
+            <svg viewBox="0 0 24 8" aria-hidden="true">
+              <path d="M3 4h18" stroke={operator.color} strokeWidth={LINE_WIDTH} />
+            </svg>
+            {operator.shortName}
+          </li>
+        ))}
+      </ul>
+    </details>
+  );
+}
+
 export function SchematicDiagram({ routes }: { routes: readonly FerryRoute[] }) {
   // "fit" is as wide as the panel, but never below 80% of natural size,
   // past which the labels stop being readable.
@@ -209,6 +231,7 @@ export function SchematicDiagram({ routes }: { routes: readonly FerryRoute[] }) 
         <button type="button" onClick={() => zoomBy(-1)} aria-label="Zoom out" disabled={zoom === ZOOM_STEPS[0]}>−</button>
         <button type="button" onClick={() => setZoom("fit")} aria-pressed={zoom === "fit"}>Fit</button>
       </div>
+      <RouteLegend routes={routes} />
       <div className="schematic-scroller">
         <DiagramSvg routes={routes} style={style} />
       </div>
