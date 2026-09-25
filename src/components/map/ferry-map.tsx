@@ -315,7 +315,7 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
   // Live vessel positions — pushed independently since they refresh on their own poll cadence.
   useEffect(() => {
     const map = mapRef.current;
-    if (map === null || !map.getSource(ROUTES_SOURCE_ID)) return;
+    if (map === null || !map.getSource(VESSELS_SOURCE_ID)) return;
     const vesselsSource = map.getSource<GeoJSONSource>(VESSELS_SOURCE_ID);
     vesselsSource?.setData(vesselsToFeatureCollection(vessels));
   }, [vessels, styleRevision]);
