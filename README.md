@@ -35,6 +35,15 @@ An interactive map of every ferry route across the Salish Sea — Puget Sound, t
 
 It reads the same route records as the map. The only extra data is `src/data/schematic-layout.ts`. It gives each terminal a grid position, a short label, and which side the label sits on, and it holds the land: hand-drawn 45° coastlines with softened corners, the way Beck drew the Thames. When you add a terminal, place it there as well: `src/data/__tests__/schematic-layout.test.ts` fails until every terminal has a place, and it also fails if a leg leaves the 45° grid, runs through a terminal it doesn't stop at, or crosses land, or if a terminal ends up away from the coast. Lane order through shared corridors is worked out in `src/domain/schematic.ts`: each pair of routes is followed to where they part, so lines don't cross inside a bundle. See [ADR 0006](./docs/adr/0006-octolinear-diagram-as-separate-page.md).
 
+### Print files
+
+`npm run print-files` renders the diagram for two Printful products into `print-files/` (gitignored). Each one comes as a transparent 300 DPI sRGB PNG plus the SVG it was drawn from, in a light theme for white or natural fabric and a dark theme for black:
+
+- **Tee** (Stanley/Stella STTU169): the whole diagram, centered in the 12″ × 16″ front print area (3600 × 4800 px). There's also an `-outline` version that draws only the coastlines instead of filling the land, which puts much less ink on the shirt.
+- **Tote** (Econscious EC8000): cropped to Central and South Puget Sound for the 9.5″ × 9.5″ print area (2850 × 2850 px). The whole diagram at that size would print its labels at about 4 pt, which is too small for DTG.
+
+`--dpi` changes the resolution (Printful's minimum is 150). The script draws with the same geometry as the page (`src/components/schematic/schematic-geometry.ts`), but it drops semi-transparency, which DTG handles badly, and on dark fabric it also drops the label halo.
+
 ## Stack
 
 Next.js 16 (App Router) · TypeScript · [PandaCSS](https://panda-css.com) with the [Park UI](https://park-ui.com) preset · [Ark UI](https://ark-ui.com) for accessible primitives (the operator filter checkboxes) · [MapLibre GL JS](https://maplibre.org) for the map.

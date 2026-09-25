@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { FerryRoute } from "@/domain/ferry";
-import { buildSchematicDiagram, strokeToPixels, type GridPoint, type LabelSide } from "@/domain/schematic";
+import { buildSchematicDiagram, strokeToPixels } from "@/domain/schematic";
 import { OPERATORS_BY_ID } from "@/data/operators";
 import { TERMINALS_BY_ID } from "@/data/terminals";
 import {
@@ -12,53 +12,17 @@ import {
   SCHEMATIC_LAYOUT,
   SCHEMATIC_WATER_LABELS,
 } from "@/data/schematic-layout";
-
-/** Pixels per grid unit. */
-const CELL = 26;
-/** Center-to-center distance between parallel lanes. */
-const LANE_WIDTH = 5;
-const LINE_WIDTH = 4;
-/** Room around the outermost terminals for their labels. */
-const MARGIN = { top: 36, right: 150, bottom: 36, left: 150 };
-
-const LABEL_DIRECTIONS: Record<LabelSide, { dx: number; dy: number; anchor: "start" | "middle" | "end" }> = {
-  n: { dx: 0, dy: -1, anchor: "middle" },
-  ne: { dx: 0.7, dy: -0.7, anchor: "start" },
-  e: { dx: 1, dy: 0, anchor: "start" },
-  se: { dx: 0.7, dy: 0.7, anchor: "start" },
-  s: { dx: 0, dy: 1, anchor: "middle" },
-  sw: { dx: -0.7, dy: 0.7, anchor: "end" },
-  w: { dx: -1, dy: 0, anchor: "end" },
-  nw: { dx: -0.7, dy: -0.7, anchor: "end" },
-};
-
-const px = ([x, y]: GridPoint): [number, number] => [x * CELL, y * CELL];
-
-const pathData = (points: readonly (readonly [number, number])[]): string =>
-  points.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
-
-/** How far back from each corner a coastline starts to curve, in pixels. */
-const COAST_CORNER_RADIUS = 11;
-
-/**
- * A closed outline with every corner eased into a curve, the way Beck
- * softened the Thames. The curve never eats more than half of either edge,
- * so short edges still meet cleanly.
- */
-const roundedOutline = (points: readonly (readonly [number, number])[]): string => {
-  const toward = (from: readonly [number, number], to: readonly [number, number], distance: number) => {
-    const length = Math.hypot(to[0] - from[0], to[1] - from[1]) || 1;
-    const fraction = Math.min(distance, length / 2) / length;
-    return `${(from[0] + (to[0] - from[0]) * fraction).toFixed(1)} ${(from[1] + (to[1] - from[1]) * fraction).toFixed(1)}`;
-  };
-  const corners = points.map((corner, i) => {
-    const previous = points[(i + points.length - 1) % points.length] ?? corner;
-    const next = points[(i + 1) % points.length] ?? corner;
-    const at = `${corner[0].toFixed(1)} ${corner[1].toFixed(1)}`;
-    return `${toward(corner, previous, COAST_CORNER_RADIUS)} Q ${at} ${toward(corner, next, COAST_CORNER_RADIUS)}`;
-  });
-  return `M ${corners.join(" L ")} Z`;
-};
+import {
+  CELL,
+  LABEL_DIRECTIONS,
+  LANE_WIDTH,
+  LINE_WIDTH,
+  diagramView,
+  pathData,
+  px,
+  roundedOutline,
+  terminalRadius,
+} from "@/components/schematic/schematic-geometry";
 
 const routeTitle = (route: FerryRoute): string => {
   const operator = OPERATORS_BY_ID.get(route.operatorId)?.name ?? route.operatorId;
@@ -69,20 +33,7 @@ const routeTitle = (route: FerryRoute): string => {
 /** Zoom steps, as a fraction of the diagram's natural size. */
 const ZOOM_STEPS = [0.5, 0.65, 0.8, 1, 1.25, 1.5, 2] as const;
 
-/** The diagram's extent in pixels: every terminal, plus room for labels. */
-const VIEW = (() => {
-  const points = Object.values(SCHEMATIC_LAYOUT.terminals).map((t) => t.position);
-  const xs = points.map((p) => p[0]);
-  const ys = points.map((p) => p[1]);
-  const minX = Math.min(...xs) * CELL - MARGIN.left;
-  const minY = Math.min(...ys) * CELL - MARGIN.top;
-  return {
-    minX,
-    minY,
-    width: Math.max(...xs) * CELL + MARGIN.right - minX,
-    height: Math.max(...ys) * CELL + MARGIN.bottom - minY,
-  };
-})();
+const VIEW = diagramView(SCHEMATIC_LAYOUT);
 
 function DiagramSvg({ routes, style }: { routes: readonly FerryRoute[]; style: React.CSSProperties }) {
   const diagram = useMemo(() => buildSchematicDiagram(routes, SCHEMATIC_LAYOUT), [routes]);
@@ -162,7 +113,7 @@ function DiagramSvg({ routes, style }: { routes: readonly FerryRoute[]; style: R
         {diagram.terminals.map(({ terminalId, terminal, routeCount, maxLane }) => {
           const [x, y] = px(terminal.position);
           const interchange = routeCount > 1 || landLinked.has(terminalId);
-          const radius = Math.max(interchange ? 5.5 : 4.5, maxLane * LANE_WIDTH + LINE_WIDTH / 2 + 2);
+          const radius = terminalRadius(interchange, maxLane);
           const soleRoute = interchange ? undefined : routes.find((r) => r.terminalIds.includes(terminalId));
           const ring = soleRoute === undefined ? undefined : OPERATORS_BY_ID.get(soleRoute.operatorId)?.color;
           const label = LABEL_DIRECTIONS[terminal.labelSide];
