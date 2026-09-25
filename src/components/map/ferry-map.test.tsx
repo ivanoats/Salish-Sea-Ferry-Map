@@ -13,6 +13,7 @@ const mock = vi.hoisted(() => {
     on: vi.fn((event: string, ...args: unknown[]) => {
       if (args.length === 1) handlers.set(event, args[0] as () => void);
     }),
+    once: vi.fn((event: string, handler: () => void) => handlers.set(event, handler)),
     isStyleLoaded: vi.fn(() => false),
     getSource: vi.fn((id: string) => sources.get(id)),
     addSource: vi.fn((id: string) => sources.set(id, { setData: vi.fn() })),

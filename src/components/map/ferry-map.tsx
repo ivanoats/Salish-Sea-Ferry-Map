@@ -125,8 +125,9 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const popupRef = useRef<Popup | null>(null);
+  const restoreStyleLayersWhenReadyRef = useRef<((requestedBasemapId: BasemapId) => void) | null>(null);
   const [styleRevision, setStyleRevision] = useState(0);
-  const initialBasemapId = useRef(basemapId);
+  const requestedBasemapId = useRef(basemapId);
 
   // Map creation — runs once.
   useEffect(() => {
@@ -195,7 +196,7 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
       container: containerRef.current,
       center: [SALISH_SEA_CENTER[0], SALISH_SEA_CENTER[1]],
       zoom: SALISH_SEA_ZOOM,
-      style: BASEMAPS[initialBasemapId.current].style,
+      style: BASEMAPS[requestedBasemapId.current].style,
     });
     map.addControl(new NavigationControl(), "top-right");
 
@@ -259,14 +260,25 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
       }
       setStyleRevision((revision) => revision + 1);
     };
+    const restoreStyleLayersWhenReady = (nextBasemapId: BasemapId) => {
+      let restored = false;
+      const handleStyleLoad = () => {
+        if (restored || nextBasemapId !== requestedBasemapId.current) return;
+        restored = true;
+        restoreStyleLayers();
+      };
+      map.once("style.load", handleStyleLoad);
+      if (map.isStyleLoaded()) handleStyleLoad();
+    };
 
+    restoreStyleLayersWhenReadyRef.current = restoreStyleLayersWhenReady;
     mapRef.current = map;
     // setStyle removes custom sources and layers. Rebuild them above each basemap,
     // then trigger data effects with the latest filters and vessel positions.
-    map.on("style.load", restoreStyleLayers);
-    if (map.isStyleLoaded()) restoreStyleLayers();
+    restoreStyleLayersWhenReady(requestedBasemapId.current);
 
     return () => {
+      restoreStyleLayersWhenReadyRef.current = null;
       popupRef.current?.remove();
       popupRef.current = null;
       map.remove();
@@ -275,10 +287,11 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
   }, []);
 
   useEffect(() => {
-    if (basemapId === initialBasemapId.current) return;
-    initialBasemapId.current = basemapId;
+    if (basemapId === requestedBasemapId.current) return;
+    requestedBasemapId.current = basemapId;
     popupRef.current?.remove();
     mapRef.current?.setStyle(BASEMAPS[basemapId].style, { diff: false });
+    restoreStyleLayersWhenReadyRef.current?.(basemapId);
   }, [basemapId]);
 
   // Push filtered data into the sources whenever the filter changes.
