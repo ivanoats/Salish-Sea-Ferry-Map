@@ -25,7 +25,9 @@ complicated.
 - It reads the same `ROUTES`, `TERMINALS`, and `OPERATORS` records. The only
   new data is `src/data/schematic-layout.ts`: a hand-placed grid position and
   a short label for each terminal, bend points for the few legs that need
-  them, the land links between docks in the same town, and the border line.
+  them, the land links between docks in the same town, the border line, and
+  simplified 45° land outlines drawn in light green behind the routes, in the
+  way Beck stylized the Thames.
   Positions are hand-placed rather than solved for, since octolinear layout is
   NP-hard in general and this dataset is small.
 - It renders as plain SVG, not MapLibre. A diagram has no basemap and no
@@ -39,9 +41,9 @@ complicated.
 ## Consequences
 
 - Adding a terminal now also means placing it in `schematic-layout.ts`.
-  `src/data/__tests__/schematic-layout.test.ts` fails until you do, and it also
-  fails if a leg leaves the 45° grid or runs through a terminal it doesn't
-  call at.
+  `src/data/__tests__/schematic-layout.test.ts` fails until you do. It also
+  fails if a leg leaves the 45° grid, runs through a terminal it doesn't call
+  at, or crosses land, or if a terminal is placed away from the coast.
 - The map page keeps its current shape. Filter state is not shared between
   the pages; each starts from all operators visible.
 - The geographic map's `routesToLineFeatureCollection` still assigns lanes by

@@ -1,10 +1,40 @@
 import { describe, expect, it } from "vitest";
 import { ROUTES } from "@/data/routes";
 import { TERMINALS } from "@/data/terminals";
-import { SCHEMATIC_LAND_LINKS, SCHEMATIC_LAYOUT } from "@/data/schematic-layout";
-import { isOctolinear, legVertices, unitSteps } from "@/domain/schematic";
+import { SCHEMATIC_LAND, SCHEMATIC_LAND_LINKS, SCHEMATIC_LAYOUT } from "@/data/schematic-layout";
+import { isOctolinear, legVertices, unitSteps, type GridPoint } from "@/domain/schematic";
 
 const key = (point: readonly [number, number]) => `${point[0]},${point[1]}`;
+
+/** Even-odd ray cast; points exactly on an edge may land either way. */
+const insidePolygon = ([x, y]: GridPoint, outline: readonly GridPoint[]): boolean => {
+  let inside = false;
+  outline.forEach(([xi, yi], i) => {
+    const [xj, yj] = outline[(i + outline.length - 1) % outline.length] ?? [xi, yi];
+    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
+  });
+  return inside;
+};
+
+const distanceToSegment = ([x, y]: GridPoint, [ax, ay]: GridPoint, [bx, by]: GridPoint): number => {
+  const [dx, dy] = [bx - ax, by - ay];
+  const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy)));
+  return Math.hypot(x - (ax + t * dx), y - (ay + t * dy));
+};
+
+const distanceToCoast = (point: GridPoint): number =>
+  Math.min(
+    ...SCHEMATIC_LAND.flatMap(({ outline }) =>
+      outline.map((a, i) => distanceToSegment(point, a, outline[(i + 1) % outline.length] ?? a))
+    )
+  );
+
+/** isOctolinear, allowing for the float error in fractional coastline points. */
+const isOctolinearEdge = ([ax, ay]: GridPoint, [bx, by]: GridPoint): boolean => {
+  const [dx, dy] = [Math.abs(bx - ax), Math.abs(by - ay)];
+  const near = (a: number, b: number) => Math.abs(a - b) < 1e-9;
+  return !(near(dx, 0) && near(dy, 0)) && (near(dx, 0) || near(dy, 0) || near(dx, dy));
+};
 
 const legs = ROUTES.flatMap((route) =>
   route.terminalIds.slice(1).map((toId, i) => ({
@@ -67,5 +97,35 @@ describe("schematic layout", () => {
       expect(SCHEMATIC_LAYOUT.terminals[a], a).toBeDefined();
       expect(SCHEMATIC_LAYOUT.terminals[b], b).toBeDefined();
     }
+  });
+
+  it("draws every coastline with horizontal, vertical, and 45° edges", () => {
+    const skewed = SCHEMATIC_LAND.flatMap(({ name, outline }) =>
+      outline
+        .map((a, i) => [a, outline[(i + 1) % outline.length] ?? a] as const)
+        .filter(([a, b]) => !isOctolinearEdge(a, b))
+        .map(([a, b]) => `${name}: ${a} → ${b}`)
+    );
+    expect(skewed).toEqual([]);
+  });
+
+  it("keeps every route on the water", () => {
+    const aground = legs.flatMap(({ route, fromId, toId }) => {
+      const points = unitSteps(legVertices(fromId, toId, SCHEMATIC_LAYOUT) ?? []);
+      return points.slice(1).flatMap((b, i) => {
+        const a = points[i] ?? b;
+        const middle: GridPoint = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+        const land = SCHEMATIC_LAND.find(({ outline }) => insidePolygon(middle, outline));
+        return land === undefined ? [] : [`${route.id} crosses ${land.name} at ${middle}`];
+      });
+    });
+    expect(aground).toEqual([]);
+  });
+
+  it("puts every terminal on a coast", () => {
+    const inland = Object.entries(SCHEMATIC_LAYOUT.terminals)
+      .filter(([, terminal]) => distanceToCoast(terminal.position) > 0.5)
+      .map(([id, terminal]) => `${id} is ${distanceToCoast(terminal.position).toFixed(2)} from the coast`);
+    expect(inland).toEqual([]);
   });
 });

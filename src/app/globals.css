@@ -11,6 +11,7 @@
   --accent: #176b4a;
   --accent-strong: #0c5237;
   --accent-soft: #dceadd;
+  --land: #dde9d2;
   --focus: #e6a817;
   --shadow: 0 12px 36px rgba(25, 55, 45, 0.14);
 }
@@ -26,6 +27,7 @@
     --accent: #72c99d;
     --accent-strong: #a0dfbd;
     --accent-soft: #203d31;
+    --land: #1a3128;
     --focus: #f0bd45;
     --shadow: 0 14px 40px rgba(0, 0, 0, 0.36);
   }
@@ -107,19 +109,20 @@ button, input, select { font: inherit; }
 .key-border, .schematic-border { fill: none; stroke: var(--ink-muted); stroke-width: 1.25; stroke-dasharray: 2 4; stroke-linecap: round; }
 .schematic-panel { position: relative; min-width: 0; flex: 1; background: var(--canvas); }
 .schematic-viewport, .schematic-scroller { height: 100%; }
-.schematic-scroller { overflow: auto; }
+.schematic-scroller { overflow: auto; padding: 16px; }
 .schematic-zoom { position: absolute; top: 16px; right: 16px; z-index: 2; display: inline-flex; flex-direction: column; border: 1px solid var(--line); border-radius: 4px; background: var(--surface-raised); box-shadow: var(--shadow); overflow: hidden; }
 .schematic-zoom button { width: 36px; height: 32px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; font-size: 15px; font-weight: 700; }
 .schematic-zoom button:last-child { border-bottom: 0; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
 .schematic-zoom button:hover:not(:disabled) { background: var(--accent-soft); }
 .schematic-zoom button:disabled { color: var(--ink-muted); cursor: default; opacity: .5; }
 .schematic-zoom button[aria-pressed='true'] { color: var(--accent); }
-.schematic-svg { display: block; margin: 0 auto; padding: 0 16px; font-family: Arial, Helvetica, sans-serif; }
+.schematic-svg { display: block; margin: 0 auto; border: 1px solid var(--line); border-radius: 6px; background: var(--canvas); font-family: Arial, Helvetica, sans-serif; }
+.schematic-land path { fill: var(--land); }
 .schematic-routes path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .schematic-route[data-status='suspended'] path { stroke-dasharray: 7 5; opacity: .7; }
 .schematic-route:hover path { stroke-width: 6; }
 .schematic-terminal circle { fill: var(--surface); stroke: var(--ink); stroke-width: 2; }
-.schematic-terminal text { fill: var(--ink); font-size: 11px; font-weight: 700; paint-order: stroke; stroke: var(--canvas); stroke-width: 3px; stroke-linejoin: round; }
+.schematic-terminal text { fill: var(--ink); font-size: 11px; font-weight: 700; paint-order: stroke; stroke: color-mix(in srgb, var(--canvas) 70%, transparent); stroke-width: 3px; stroke-linejoin: round; }
 .schematic-terminal:not(.interchange) text { font-weight: 400; }
 .schematic-water-labels text { fill: var(--ink-muted); font-family: Georgia, 'Times New Roman', serif; font-size: 12px; font-style: italic; letter-spacing: .04em; opacity: .75; }
 .schematic-border-label { fill: var(--ink-muted); font-size: 9px; font-weight: 800; letter-spacing: .18em; }

@@ -7,6 +7,7 @@ import { OPERATORS_BY_ID } from "@/data/operators";
 import { TERMINALS_BY_ID } from "@/data/terminals";
 import {
   SCHEMATIC_BORDER,
+  SCHEMATIC_LAND,
   SCHEMATIC_LAND_LINKS,
   SCHEMATIC_LAYOUT,
   SCHEMATIC_WATER_LABELS,
@@ -35,6 +36,29 @@ const px = ([x, y]: GridPoint): [number, number] => [x * CELL, y * CELL];
 
 const pathData = (points: readonly (readonly [number, number])[]): string =>
   points.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
+
+/** How far back from each corner a coastline starts to curve, in pixels. */
+const COAST_CORNER_RADIUS = 11;
+
+/**
+ * A closed outline with every corner eased into a curve, the way Beck
+ * softened the Thames. The curve never eats more than half of either edge,
+ * so short edges still meet cleanly.
+ */
+const roundedOutline = (points: readonly (readonly [number, number])[]): string => {
+  const toward = (from: readonly [number, number], to: readonly [number, number], distance: number) => {
+    const length = Math.hypot(to[0] - from[0], to[1] - from[1]) || 1;
+    const t = Math.min(distance, length / 2) / length;
+    return `${(from[0] + (to[0] - from[0]) * t).toFixed(1)} ${(from[1] + (to[1] - from[1]) * t).toFixed(1)}`;
+  };
+  const corners = points.map((corner, i) => {
+    const previous = points[(i + points.length - 1) % points.length] ?? corner;
+    const next = points[(i + 1) % points.length] ?? corner;
+    const at = `${corner[0].toFixed(1)} ${corner[1].toFixed(1)}`;
+    return `${toward(corner, previous, COAST_CORNER_RADIUS)} Q ${at} ${toward(corner, next, COAST_CORNER_RADIUS)}`;
+  });
+  return `M ${corners.join(" L ")} Z`;
+};
 
 const routeTitle = (route: FerryRoute): string => {
   const operator = OPERATORS_BY_ID.get(route.operatorId)?.name ?? route.operatorId;
@@ -81,6 +105,12 @@ function DiagramSvg({ routes, style }: { routes: readonly FerryRoute[]; style: R
       <desc id="schematic-desc">
         {`A schematic, not-to-scale diagram of ${diagram.lines.length} ferry routes and the ${diagram.terminals.length} terminals they serve, with every route drawn at 45° angles.`}
       </desc>
+
+      <g className="schematic-land" aria-hidden="true">
+        {SCHEMATIC_LAND.map(({ name, outline }) => (
+          <path key={name} d={roundedOutline(outline.map(px))} />
+        ))}
+      </g>
 
       <g className="schematic-water-labels" aria-hidden="true">
         {SCHEMATIC_WATER_LABELS.map(({ text, position }) => {
