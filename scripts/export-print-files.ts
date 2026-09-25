@@ -7,8 +7,9 @@
 //
 // Each comes in a light theme (white or natural fabric) and a dark one
 // (black fabric), as a transparent PNG plus the SVG it was rasterized from.
-// The tee also gets a version with the land drawn as a coastline rather
-// than filled, which puts far less ink on the shirt.
+// The tee also gets versions with the land drawn as a coastline rather
+// than filled, which puts far less ink on the shirt: one with the coast
+// alone, and one water-lined like an old chart.
 // Printful wants PNG, sRGB, at least 150 DPI; the default here is 300.
 //
 //   node scripts/export-print-files.ts [--dpi 300] [--out print-files]
@@ -53,11 +54,40 @@ type Theme = (typeof THEMES)[keyof typeof THEMES];
 /**
  * "fill" is the land as the page draws it. "outline" traces only the
  * coasts: the land polygons run past the edge of the view, so their
- * outer sides are clipped away and never print as a frame.
+ * outer sides are clipped away and never print as a frame. "waterline"
+ * adds thinner lines following the coast out into the water, the way
+ * engraved charts told sea from land without any fill.
  */
-type LandStyle = "fill" | "outline";
+type LandStyle = "fill" | "outline" | "waterline";
 /** Coastline weight in diagram pixels: about 0.6 mm on the tee. */
 const COAST_WIDTH = 2.5;
+/**
+ * Water lines as distance offshore and weight, in diagram pixels. 1.25 is
+ * about 0.3 mm on the tee, around the finest line DTG holds reliably.
+ */
+const WATERLINES = [
+  { offset: 6, width: 1.25 },
+  { offset: 12, width: 1.25 },
+] as const;
+
+/**
+ * Water lines as a mask over a coast-colored rect. Each line is the ring
+ * between two strokes of the coastline, one a line-width wider than twice
+ * its offset and one narrower. That ring runs on both sides of the coast,
+ * so the land is masked out last, leaving only the half out on the water.
+ * Outermost first, or a nearer line's inner stroke would erase it.
+ */
+const waterlineMarkup = (coasts: readonly string[], view: DiagramView): string => {
+  const strokes = (color: string, width: number) =>
+    coasts.map((d) => `<path d="${d}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linejoin="round"/>`).join("");
+  const rings = [...WATERLINES]
+    .sort((a, b) => b.offset - a.offset)
+    .map(({ offset, width }) => strokes("white", 2 * offset + width) + strokes("black", 2 * offset - width));
+  const land = coasts.map((d) => `<path d="${d}" fill="black"/>`).join("");
+  const box = `x="${view.minX}" y="${view.minY}" width="${view.width}" height="${view.height}"`;
+  return `<mask id="waterlines" maskUnits="userSpaceOnUse" ${box}>${rings.join("")}${land}</mask>`
+    + `<rect class="waterline" ${box} mask="url(#waterlines)"/>`;
+};
 
 /** A region of the diagram in grid units, labels included, shaped like the print area it fills. */
 interface GridBox { readonly x: readonly [number, number]; readonly y: readonly [number, number] }
@@ -66,7 +96,7 @@ interface GridBox { readonly x: readonly [number, number]; readonly y: readonly 
 const PUGET_SOUND: GridBox = { x: [13, 42], y: [37.2, 66.2] };
 
 const PRODUCTS = [
-  { id: "tee", printArea: { width: 12, height: 16 }, crop: undefined, landStyles: ["fill", "outline"] },
+  { id: "tee", printArea: { width: 12, height: 16 }, crop: undefined, landStyles: ["fill", "outline", "waterline"] },
   { id: "tote", printArea: { width: 9.5, height: 9.5 }, crop: PUGET_SOUND, landStyles: ["fill"] },
 ] as const;
 
@@ -103,6 +133,7 @@ const styles = (theme: Theme, landStyle: LandStyle): string => {
     .land { ${landStyle === "fill"
     ? `fill: ${theme.land};`
     : `fill: none; stroke: ${theme.coast}; stroke-width: ${COAST_WIDTH}; stroke-linejoin: round;`} }
+    .waterline { fill: ${theme.coast}; }
     .water { fill: ${theme.inkMuted}; font-family: Georgia, 'Times New Roman', serif; font-size: 12px; font-style: italic; letter-spacing: .04em; }
     .border { fill: none; stroke: ${theme.inkMuted}; stroke-width: 1.25; stroke-dasharray: 2 4; stroke-linecap: round; }
     .border-label { fill: ${theme.inkMuted}; font-family: Arial, Helvetica, sans-serif; font-size: 9px; font-weight: 800; letter-spacing: .18em; }
@@ -134,7 +165,9 @@ function diagramSvg(
   const landLinks = SCHEMATIC_LAND_LINKS.filter(([a, b]) => shownTerminalIds.has(a) && shownTerminalIds.has(b));
   const landLinked = new Set(landLinks.flat());
 
-  const land = SCHEMATIC_LAND.map(({ outline }) => `<path class="land" d="${roundedOutline(outline.map(px))}"/>`);
+  const coasts = SCHEMATIC_LAND.map(({ outline }) => roundedOutline(outline.map(px)));
+  const land = coasts.map((d) => `<path class="land" d="${d}"/>`);
+  if (landStyle === "waterline") land.unshift(waterlineMarkup(coasts, view));
 
   const waterLabels = SCHEMATIC_WATER_LABELS.map(({ text, position }) => {
     const [x, y] = px(position);
@@ -159,8 +192,8 @@ function diagramSvg(
     const from = SCHEMATIC_LAYOUT.terminals[a]?.position;
     const to = SCHEMATIC_LAYOUT.terminals[b]?.position;
     if (from === undefined || to === undefined) return [];
-    const d = pathData([px(from), px(to)]);
-    return [`<path class="link-outer" d="${d}"/>`, `<path class="link-inner" d="${d}"/>`];
+    const linkPath = pathData([px(from), px(to)]);
+    return [`<path class="link-outer" d="${linkPath}"/>`, `<path class="link-inner" d="${linkPath}"/>`];
   });
 
   const terminals = diagram.terminals.map(({ terminalId, terminal, routeCount, maxLane }) => {
@@ -171,7 +204,7 @@ function diagramSvg(
     const ring = soleRoute === undefined ? undefined : OPERATORS_BY_ID.get(soleRoute.operatorId)?.color;
     const label = LABEL_DIRECTIONS[terminal.labelSide];
     const gap = radius + 5;
-    const ringStyle = ring === undefined ? "" : ' style="stroke: ' + ring + '"';
+    const ringStyle = ring === undefined ? "" : ` style="stroke: ${ring}"`;
     // librsvg ignores dominant-baseline, so center the label with dy instead.
     return [
       `<circle class="terminal" cx="${x}" cy="${y}" r="${radius}"${ringStyle}/>`,
@@ -206,7 +239,7 @@ for (const product of PRODUCTS) {
   for (const [themeName, theme] of Object.entries(THEMES)) {
     for (const landStyle of product.landStyles) {
       const svg = diagramSvg(theme, landStyle, view, product.printArea);
-      const variant = landStyle === "fill" ? themeName : `${themeName}-outline`;
+      const variant = landStyle === "fill" ? themeName : `${themeName}-${landStyle}`;
       const base = join(outDir, `${product.id}-front-${variant}-${size}`);
       // sharp scales an SVG by density / 72 *after* librsvg has already
       // applied the density to inch units, so the copy that gets rasterized

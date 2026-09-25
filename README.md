@@ -39,7 +39,7 @@ It reads the same route records as the map. The only extra data is `src/data/sch
 
 `npm run print-files` renders the diagram for two Printful products into `print-files/` (gitignored). Each one comes as a transparent 300 DPI sRGB PNG plus the SVG it was drawn from, in a light theme for white or natural fabric and a dark theme for black:
 
-- **Tee** (Stanley/Stella STTU169): the whole diagram, centered in the 12″ × 16″ front print area (3600 × 4800 px). There's also an `-outline` version that draws only the coastlines instead of filling the land, which puts much less ink on the shirt.
+- **Tee** (Stanley/Stella STTU169): the whole diagram, centered in the 12″ × 16″ front print area (3600 × 4800 px). There are also two lower-ink versions that don't fill the land: `-outline` draws only the coastlines, and `-waterline` adds two thin lines following the coast out into the water, the way engraved charts showed land and sea without fills.
 - **Tote** (Econscious EC8000): cropped to Central and South Puget Sound for the 9.5″ × 9.5″ print area (2850 × 2850 px). The whole diagram at that size would print its labels at about 4 pt, which is too small for DTG.
 
 `--dpi` changes the resolution (Printful's minimum is 150). The script draws with the same geometry as the page (`src/components/schematic/schematic-geometry.ts`), but it drops semi-transparency, which DTG handles badly, and on dark fabric it also drops the label halo.
