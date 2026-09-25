@@ -33,4 +33,11 @@ describe("AppShell", () => {
       "/about"
     );
   });
+
+  it("links to the route diagram", () => {
+    render(<AppShell />);
+
+    expect(screen.getByRole("link", { name: "Route diagram" })).toHaveAttribute("href", "/schematic");
+    expect(screen.getByRole("link", { name: "Map" })).toHaveAttribute("aria-current", "page");
+  });
 });

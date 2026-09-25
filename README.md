@@ -29,6 +29,12 @@ An interactive map of every ferry route across the Salish Sea — Puget Sound, t
 - **Harbor Hopper** — the Ports of Everett and South Whidbey's summer foot ferry, Everett ↔ Langley
 - **Hat Island Ferry** — the *Another Holiday*, Everett ↔ Hat Island (Gedney)
 
+## Route diagram
+
+[`/schematic`](https://salishseaferrymap.com/schematic) draws the same routes as an octolinear diagram, in the spirit of Beck's London Underground map. Every leg runs at a multiple of 45°, the terminals are spaced out by hand, and routes that share a corridor run side by side in parallel lanes. For "what connects to what, on whose boats, and where do I change," true geography is mostly noise. The places where that question is hardest to answer on the real map are the San Juans, the Southern Gulf Islands, and Seattle's six-route waterfront, and the diagram gives each of them room.
+
+It reads the same route records as the map. The only extra data is `src/data/schematic-layout.ts`. It gives each terminal a grid position, a short label, and which side the label sits on, and it holds the land: hand-drawn 45° coastlines with softened corners, the way Beck drew the Thames. When you add a terminal, place it there as well: `src/data/__tests__/schematic-layout.test.ts` fails until every terminal has a place, and it also fails if a leg leaves the 45° grid, runs through a terminal it doesn't stop at, or crosses land, or if a terminal ends up away from the coast. Lane order through shared corridors is worked out in `src/domain/schematic.ts`: each pair of routes is followed to where they part, so lines don't cross inside a bundle. See [ADR 0006](./docs/adr/0006-octolinear-diagram-as-separate-page.md).
+
 ## Stack
 
 Next.js 16 (App Router) · TypeScript · [PandaCSS](https://panda-css.com) with the [Park UI](https://park-ui.com) preset · [Ark UI](https://ark-ui.com) for accessible primitives (the operator filter checkboxes) · [MapLibre GL JS](https://maplibre.org) for the map.
@@ -36,12 +42,13 @@ Next.js 16 (App Router) · TypeScript · [PandaCSS](https://panda-css.com) with 
 The codebase follows a light hexagonal layout, consistent with this author's other Salish Sea projects (`salish-nav-planner`, `reciprocal-clubs`):
 
 ```
-src/domain/    — types (Operator, Terminal, FerryRoute) and pure helpers (GeoJSON builders)
-src/data/      — the static dataset: operators.ts, terminals.ts, routes.ts
+src/domain/    — types (Operator, Terminal, FerryRoute) and pure helpers (GeoJSON builders, schematic layout)
+src/data/      — the static dataset: operators.ts, terminals.ts, routes.ts, schematic-layout.ts
 src/components/
   map/         — the MapLibre component and its constants
+  schematic/   — the SVG route diagram and its page shell
   panels/      — the operator filter
-  layout/      — the app shell that wires state, filter, and map together
+  layout/      — the app shell and the sidebar pieces both pages share
 src/app/       — Next.js routes
 ```
 
@@ -81,10 +88,6 @@ Without a key, the toggle still works — it just shows a note that live data is
 
 - **PDF export** — the project brief calls for a printable map alongside the web app; this v1 ships the web app first (see the parent project notes).
 - **Schedules/fares** — intentionally out of scope for v1, which is a route map, not a trip planner.
-
-- **Octolinear route display** — a second, schematic rendering mode in the spirit of Beck's London Underground map: every leg locked to 45° increments, terminal spacing evened out, geography abandoned in favour of legibility. The case for it is the same one Beck made — for the question this map actually answers (what connects to what, on whose boats, and where do I change), true geography is mostly noise, and the dense clusters where it matters most are precisely where the geographic map is least readable: the San Juans, the Southern Gulf Islands, the three Kitsap crossings into Seattle.
-
-  This wants to be a view toggle over the same dataset rather than a fork of it — the operator filter, colors, and route records all carry over. Two pieces don't: terminals need schematic positions alongside their real coordinates (hand-placed is fine and probably better than solving for them), and the renderer is likely SVG rather than MapLibre, since an octolinear diagram has no basemap and no meaningful zoom-to-geography. The per-leg lane offsetting already in `routesToLineFeatureCollection` becomes much more load-bearing here: an octolinear map deliberately collapses routes onto shared corridors, so bundled legs go from a handful of cases to most of the map, and lane *ordering* — which route sits outermost through a bundle, so lines cross as rarely as possible — turns into a real problem rather than the stable-input-order approximation that suffices today.
 
 ## Testing
 

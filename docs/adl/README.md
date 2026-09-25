@@ -14,3 +14,4 @@ Add a row here whenever an ADR is accepted, superseded, deprecated, or rejected.
 | 2026-09-13 | [0002](../adr/0002-small-domain-derived-views.md) | Accepted — small core domain with map views derived from it |
 | 2026-09-13 | [0003](../adr/0003-nextjs-maplibre-and-server-proxy.md) | Accepted — Next.js App Router, client-side MapLibre, server-side vessel proxy |
 | 2026-09-13 | [0004](../adr/0004-route-map-scope.md) | Accepted — route mapping only, not trip planning or navigation |
+| 2026-09-24 | [0006](../adr/0006-octolinear-diagram-as-separate-page.md) | Accepted — octolinear route diagram as a separate SVG page over the same dataset |
