@@ -13,7 +13,7 @@
 //
 //   node scripts/export-print-files.ts [--dpi 300] [--out print-files]
 import { mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { join, relative, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import sharp from "sharp";
 import {
@@ -78,6 +78,12 @@ const { values } = parseArgs({
 });
 const dpi = Number(values.dpi);
 if (!Number.isFinite(dpi) || dpi < 150) throw new Error("--dpi must be at least 150, Printful's minimum");
+// Keep output inside the project, so a stray --out can't write elsewhere.
+const outDir = resolve(values.out);
+const fromRoot = relative(process.cwd(), outDir);
+if (fromRoot === "" || fromRoot.startsWith("..") || resolve(fromRoot) !== outDir) {
+  throw new Error("--out must be a folder inside the project");
+}
 
 const escapeXml = (text: string): string =>
   text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -165,9 +171,10 @@ function diagramSvg(
     const ring = soleRoute === undefined ? undefined : OPERATORS_BY_ID.get(soleRoute.operatorId)?.color;
     const label = LABEL_DIRECTIONS[terminal.labelSide];
     const gap = radius + 5;
+    const ringStyle = ring === undefined ? "" : ' style="stroke: ' + ring + '"';
     // librsvg ignores dominant-baseline, so center the label with dy instead.
     return [
-      `<circle class="terminal" cx="${x}" cy="${y}" r="${radius}"${ring === undefined ? "" : ` style="stroke: ${ring}"`}/>`,
+      `<circle class="terminal" cx="${x}" cy="${y}" r="${radius}"${ringStyle}/>`,
       `<text class="label${interchange ? " interchange" : ""}" x="${(x + label.dx * gap).toFixed(1)}" y="${(y + label.dy * gap).toFixed(1)}" dy="0.35em" text-anchor="${label.anchor}">${escapeXml(terminal.label)}</text>`,
     ].join("");
   });
@@ -191,7 +198,7 @@ function diagramSvg(
 `;
 }
 
-await mkdir(values.out, { recursive: true });
+await mkdir(outDir, { recursive: true });
 
 for (const product of PRODUCTS) {
   const view = product.crop === undefined ? diagramView(SCHEMATIC_LAYOUT) : cropView(product.crop);
@@ -200,7 +207,7 @@ for (const product of PRODUCTS) {
     for (const landStyle of product.landStyles) {
       const svg = diagramSvg(theme, landStyle, view, product.printArea);
       const variant = landStyle === "fill" ? themeName : `${themeName}-outline`;
-      const base = join(values.out, `${product.id}-front-${variant}-${size}`);
+      const base = join(outDir, `${product.id}-front-${variant}-${size}`);
       // sharp scales an SVG by density / 72 *after* librsvg has already
       // applied the density to inch units, so the copy that gets rasterized
       // is sized in unitless 72-per-inch pixels instead.
@@ -215,7 +222,7 @@ for (const product of PRODUCTS) {
         .toBuffer({ resolveWithObject: true });
       await writeFile(`${base}.svg`, svg);
       await writeFile(`${base}-${dpi}dpi.png`, png.data);
-      console.log(`${base}-${dpi}dpi.png  ${png.info.width} × ${png.info.height} px`);
+      console.log(`${relative(process.cwd(), base)}-${dpi}dpi.png  ${png.info.width} × ${png.info.height} px`);
     }
   }
 }
