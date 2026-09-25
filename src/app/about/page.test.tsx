@@ -23,15 +23,10 @@ describe("AboutPage", () => {
       screen.getByRole("heading", { level: 2, name: "Who I am" })
     ).toBeInTheDocument();
     expect(screen.getByText(/I.m Ivan Storck/)).toBeInTheDocument();
-    const homepageLink = screen.getByRole("link", { name: /^ivanstorck\.com/ });
-    expect(homepageLink).toHaveAttribute("href", "https://www.ivanstorck.com");
-expect(homepageLink).toHaveAttribute("rel", "me noreferrer");
-    expect(homepageLink).toHaveAttribute("target", "_blank");
-    expect(homepageLink).toHaveAccessibleName(expect.stringMatching(/\(opens in a new tab\)$/));
     expect(screen.getByRole("link", { name: /back to the map/i })).toHaveAttribute("href", "/");
   });
 
-  it("links the sustainability work and marks external links as opening in a new tab", () => {
+  it("links external sites in a new tab with an announced accessible name", () => {
     render(<AboutPage />);
 
     const externalLinks: Array<[RegExp, string]> = [
@@ -39,6 +34,7 @@ expect(homepageLink).toHaveAttribute("rel", "me noreferrer");
       [/^wsg-check/, "https://wsg-check.com"],
       [/^W3C Web Sustainability Guidelines/, "https://w3c.github.io/sustainableweb-wsg/"],
       [/^Code Fellows/, "https://www.codefellows.org"],
+      [/^ivanstorck\.com/, "https://www.ivanstorck.com"],
     ];
 
     for (const [name, href] of externalLinks) {
@@ -47,5 +43,10 @@ expect(homepageLink).toHaveAttribute("rel", "me noreferrer");
       expect(link).toHaveAttribute("target", "_blank");
       expect(link).toHaveAccessibleName(expect.stringMatching(/\(opens in a new tab\)$/));
     }
+
+    expect(screen.getByRole("link", { name: /^ivanstorck\.com/ })).toHaveAttribute(
+      "rel",
+      "me noreferrer"
+    );
   });
 });

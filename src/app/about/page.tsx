@@ -114,13 +114,20 @@ function WhatItCovers() {
   );
 }
 
-function ExternalLink({ href, rel, children }: { href: string; rel?: string; children: ReactNode }) {
+type ExternalLinkProps = Readonly<{
+  href: string;
+  /** Adds rel="me" to claim the linked site as the author's own. */
+  isMe?: boolean;
+  children: ReactNode;
+}>;
+
+function ExternalLink({ href, isMe = false, children }: ExternalLinkProps) {
   return (
     <a
       href={href}
       className={linkClassName}
       target="_blank"
-      rel={rel ? `${rel} noreferrer` : "noreferrer"}
+      rel={isMe ? "me noreferrer" : "noreferrer"}
     >
       {children}
       <span className={css({ srOnly: true })}> (opens in a new tab)</span>
@@ -159,7 +166,7 @@ function WhoIAm() {
         This map sits where those two halves meet: geospatial data, a region I know well, and a
         small page that tries not to ask much of the network it travels over. More of my work is
         at{" "}
-        <ExternalLink href="https://www.ivanstorck.com" rel="me">
+        <ExternalLink href="https://www.ivanstorck.com" isMe>
           ivanstorck.com
         </ExternalLink>
         .
