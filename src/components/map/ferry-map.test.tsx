@@ -7,22 +7,31 @@ import { BASEMAPS } from "./basemaps";
 const mock = vi.hoisted(() => {
   const sources = new Map<string, { setData: ReturnType<typeof vi.fn> }>();
   const layers = new Map<string, unknown>();
-  const handlers = new Map<string, () => void>();
+  const handlers = new Map<string, Array<() => void>>();
+  const queueHandler = (event: string, handler: () => void) => {
+    handlers.set(event, [...(handlers.get(event) ?? []), handler]);
+  };
+  const emitNext = (event: string) => {
+    const [handler, ...rest] = handlers.get(event) ?? [];
+    handlers.set(event, rest);
+    handler?.();
+  };
   const map = {
     addControl: vi.fn(),
     on: vi.fn((event: string, ...args: unknown[]) => {
-      if (args.length === 1) handlers.set(event, args[0] as () => void);
+      if (args.length === 1) queueHandler(event, args[0] as () => void);
     }),
-    once: vi.fn((event: string, handler: () => void) => handlers.set(event, handler)),
+    once: vi.fn((event: string, handler: () => void) => queueHandler(event, handler)),
     isStyleLoaded: vi.fn(() => false),
     getSource: vi.fn((id: string) => sources.get(id)),
     addSource: vi.fn((id: string) => sources.set(id, { setData: vi.fn() })),
     getLayer: vi.fn((id: string) => layers.get(id)),
     addLayer: vi.fn((layer: { id: string }) => layers.set(layer.id, layer)),
     setStyle: vi.fn(() => { sources.clear(); layers.clear(); }),
+    off: vi.fn(),
     remove: vi.fn(),
   };
-  return { sources, layers, handlers, map };
+  return { emitNext, sources, layers, handlers, map };
 });
 
 vi.mock("maplibre-gl", () => ({
@@ -56,13 +65,34 @@ it("restores overlays and the latest filters after switching basemaps", () => {
   expect(mock.map.setStyle).toHaveBeenCalledWith(BASEMAPS.dark.style, { diff: false });
   // Filters may change while the new remote style is loading.
   rerender(<FerryMap {...props} basemapId="dark" visibleOperatorIds={new Set()} />);
-  act(() => mock.handlers.get("style.load")?.());
+  act(() => mock.emitNext("style.load"));
   expect(mock.layers.size).toBe(3);
   for (const id of ["ferry-routes", "ferry-terminals", "wsf-vessels"]) {
     expect(mock.sources.get(id)?.setData).toHaveBeenLastCalledWith({ type: "FeatureCollection", features: [] });
   }
 
   rerender(<FerryMap {...props} basemapId="osm" />);
-  act(() => mock.handlers.get("style.load")?.());
+  act(() => mock.emitNext("style.load"));
+  expect(mock.sources.get("ferry-routes")?.setData.mock.lastCall?.[0].features.length).toBeGreaterThan(0);
+});
+
+it("ignores superseded basemap style loads", () => {
+  const props = {
+    visibleOperatorIds: new Set(OPERATORS.map((operator) => operator.id)),
+    showInactiveRoutes: false,
+    vessels: [],
+  };
+  const { rerender } = render(<FerryMap {...props} basemapId="osm" />);
+  act(() => mock.emitNext("style.load"));
+  expect(mock.sources.get("ferry-routes")?.setData.mock.lastCall?.[0].features.length).toBeGreaterThan(0);
+
+  rerender(<FerryMap {...props} basemapId="dark" visibleOperatorIds={new Set()} />);
+  rerender(<FerryMap {...props} basemapId="fiord" />);
+  act(() => mock.emitNext("style.load"));
+  expect(mock.layers.size).toBe(0);
+  expect(mock.sources.size).toBe(0);
+
+  act(() => mock.emitNext("style.load"));
+  expect(mock.layers.size).toBe(3);
   expect(mock.sources.get("ferry-routes")?.setData.mock.lastCall?.[0].features.length).toBeGreaterThan(0);
 });
