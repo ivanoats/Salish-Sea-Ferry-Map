@@ -25,7 +25,9 @@ describe("AboutPage", () => {
     expect(screen.getByText(/I.m Ivan Storck/)).toBeInTheDocument();
     const homepageLink = screen.getByRole("link", { name: /^ivanstorck\.com/ });
     expect(homepageLink).toHaveAttribute("href", "https://www.ivanstorck.com");
-    expect(homepageLink).toHaveAttribute("rel", "me noreferrer");
+expect(homepageLink).toHaveAttribute("rel", "me noreferrer");
+    expect(homepageLink).toHaveAttribute("target", "_blank");
+    expect(homepageLink).toHaveAccessibleName(expect.stringMatching(/\(opens in a new tab\)$/));
     expect(screen.getByRole("link", { name: /back to the map/i })).toHaveAttribute("href", "/");
   });
 
