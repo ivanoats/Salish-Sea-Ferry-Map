@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { css } from "styled-system/css";
 
 export const metadata: Metadata = {
@@ -113,6 +114,27 @@ function WhatItCovers() {
   );
 }
 
+type ExternalLinkProps = Readonly<{
+  href: string;
+  /** Adds rel="me" to claim the linked site as the author's own. */
+  isMe?: boolean;
+  children: ReactNode;
+}>;
+
+function ExternalLink({ href, isMe = false, children }: ExternalLinkProps) {
+  return (
+    <a
+      href={href}
+      className={linkClassName}
+      target="_blank"
+      rel={isMe ? "me noreferrer" : "noreferrer"}
+    >
+      {children}
+      <span className={css({ srOnly: true })}> (opens in a new tab)</span>
+    </a>
+  );
+}
+
 function WhoIAm() {
   return (
     <section className={sectionClassName}>
@@ -126,32 +148,27 @@ function WhoIAm() {
       <p className={proseClassName}>
         By day I am a Senior Solutions Architect at lululemon, working on content management,
         design systems, and brand technology. The rest of the time I take a small number of fractional CTO engagements
-        and work on sustainability tooling for the web, including{" "}
-        <a
-          href="https://www.npmjs.com/package/wsg-check"
-          className={linkClassName}
-          target="_blank"
-          rel="noreferrer"
-        >
-          wsg-check
-        </a>
-        , a checker for the W3C Web Sustainability Guidelines. Before that I co-founded Code
-        Fellows, taught Ruby and JavaScript to several hundred bootcamp students, and spent six
-        years on the teaching faculty of the University of Washington&rsquo;s Rails certificate
-        program.
+        and work on{" "}
+        <ExternalLink href="https://sustainablewebsites.com">
+          sustainability tooling for the web
+        </ExternalLink>
+        , including <ExternalLink href="https://wsg-check.com">wsg-check</ExternalLink>, a
+        checker for the{" "}
+        <ExternalLink href="https://w3c.github.io/sustainableweb-wsg/">
+          W3C Web Sustainability Guidelines
+        </ExternalLink>
+        . Before that I co-founded{" "}
+        <ExternalLink href="https://www.codefellows.org">Code Fellows</ExternalLink>, taught
+        Ruby and JavaScript to several hundred bootcamp students, and spent six years on the
+        teaching faculty of the University of Washington&rsquo;s Rails certificate program.
       </p>
       <p className={proseClassName}>
         This map sits where those two halves meet: geospatial data, a region I know well, and a
         small page that tries not to ask much of the network it travels over. More of my work is
         at{" "}
-        <a
-          href="https://ivanstorck.com"
-          className={linkClassName}
-          target="_blank"
-          rel="noreferrer"
-        >
+        <ExternalLink href="https://www.ivanstorck.com" isMe>
           ivanstorck.com
-        </a>
+        </ExternalLink>
         .
       </p>
     </section>
