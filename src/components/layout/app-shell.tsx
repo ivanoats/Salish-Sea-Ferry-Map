@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Checkbox } from "@ark-ui/react/checkbox";
-import { css } from "styled-system/css";
 import type { OperatorId } from "@/domain/ferry";
 import { OPERATORS } from "@/data/operators";
 import { ROUTES } from "@/data/routes";
@@ -12,7 +11,121 @@ import { FerryMap } from "@/components/map/ferry-map";
 import { OperatorFilter } from "@/components/panels/operator-filter";
 import { useVesselPositions } from "@/components/map/use-vessel-positions";
 
-const ALL_OPERATOR_IDS = new Set<OperatorId>(OPERATORS.map((o) => o.id));
+const ALL_OPERATOR_IDS = new Set<OperatorId>(OPERATORS.map((operator) => operator.id));
+
+function FerryMark() {
+  return (
+    <span className="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 32 32" role="img">
+        <path d="M4 20.5h24l-3 5H8l-4-5Z" />
+        <path d="M9 18V10h11l4 8H9Z" />
+        <path d="M12 13h4v3h-4zm6 0h2.8l1.4 3H18z" className="brand-mark-window" />
+        <path d="M6 28c3-1.2 5.2-1.2 8 0s5 1.2 8 0 5-1.2 7 0" className="brand-mark-wave" />
+      </svg>
+    </span>
+  );
+}
+
+function SidebarHeader() {
+  return (
+    <header className="sidebar-header">
+      <Link href="/" className="brand" aria-label="Salish Sea Ferry Map home">
+        <FerryMark />
+        <span>
+          <span className="brand-name">Salish Sea</span>
+          <span className="brand-subtitle">Ferry Map</span>
+        </span>
+      </Link>
+      <Link href="/about" className="about-link" aria-label="About this map">About <span aria-hidden="true">↗</span></Link>
+    </header>
+  );
+}
+
+function LiveLayers({ showLiveVessels, vesselsUnavailable, onToggle }: {
+  showLiveVessels: boolean;
+  vesselsUnavailable: boolean;
+  onToggle: (checked: boolean) => void;
+}) {
+  return (
+    <section className="filter-section live-section" aria-labelledby="live-heading">
+      <p className="eyebrow" id="live-heading">Live layers</p>
+      <Checkbox.Root className="toggle-row" checked={showLiveVessels}
+        onCheckedChange={(details) => onToggle(details.checked === true)}>
+        <Checkbox.HiddenInput />
+        <Checkbox.Label>WSF vessel positions <span className="beta-pill">Beta</span></Checkbox.Label>
+        <Checkbox.Control className="switch"><span className="switch-thumb" /></Checkbox.Control>
+      </Checkbox.Root>
+      {showLiveVessels && vesselsUnavailable ? <p className="helper-text">Live positions need a free WSDOT API key — see README.md.</p> : null}
+    </section>
+  );
+}
+
+function SidebarIntro({ visibleRouteCount }: { visibleRouteCount: number }) {
+  return (
+    <div className="sidebar-intro">
+      <p className="eyebrow">Explore the coast</p>
+      <h1>Find your way<br />across the water.</h1>
+      <p className="intro-copy">Ferry routes connecting the communities of the Salish Sea.</p>
+      <div className="route-count" aria-live="polite">
+        <span className="route-count-number">{visibleRouteCount}</span>
+        <span>routes visible</span>
+      </div>
+    </div>
+  );
+}
+
+function OperatorSection({ visibleOperatorIds, onToggle, showInactiveRoutes, onToggleInactive, onShowAll }: {
+  visibleOperatorIds: ReadonlySet<OperatorId>;
+  onToggle: (operatorId: OperatorId, checked: boolean) => void;
+  showInactiveRoutes: boolean;
+  onToggleInactive: (checked: boolean) => void;
+  onShowAll: () => void;
+}) {
+  return (
+    <section className="filter-section" aria-labelledby="operators-heading">
+      <div className="section-heading-row">
+        <h2 id="operators-heading">Operators</h2>
+        <button type="button" className="text-button" onClick={onShowAll}>Show all</button>
+      </div>
+      <OperatorFilter
+        visibleOperatorIds={visibleOperatorIds}
+        onToggle={onToggle}
+        showInactiveRoutes={showInactiveRoutes}
+        onToggleInactive={onToggleInactive}
+      />
+    </section>
+  );
+}
+
+function BasemapSection({ basemapId, onChange }: { basemapId: BasemapId; onChange: (id: BasemapId) => void }) {
+  return (
+    <section className="filter-section" aria-labelledby="basemap-label">
+      <label id="basemap-label" htmlFor="basemap" className="basemap-label">Basemap</label>
+      <select
+        id="basemap"
+        value={basemapId}
+        onChange={(event) => {
+          const id = event.target.value;
+          if (Object.hasOwn(BASEMAPS, id)) onChange(id as BasemapId);
+        }}
+        className="basemap-select"
+      >
+        {Object.entries(BASEMAPS).map(([id, basemap]) => (
+          <option key={id} value={id}>{basemap.label}</option>
+        ))}
+      </select>
+    </section>
+  );
+}
+
+function SidebarFooter() {
+  return (
+    <footer className="sidebar-footer">
+      <p>Approximate locations for reference only.<br /><strong>Not for navigation.</strong></p>
+      <span>Updated September 2026</span>
+    </footer>
+  );
+}
 
 export function AppShell() {
   const [visibleOperatorIds, setVisibleOperatorIds] = useState<ReadonlySet<OperatorId>>(ALL_OPERATOR_IDS);
@@ -31,134 +144,30 @@ export function AppShell() {
   };
 
   const visibleRouteCount = useMemo(
-    () =>
-      ROUTES.filter(
-        (route) =>
-          visibleOperatorIds.has(route.operatorId) && (showInactiveRoutes || route.status !== "suspended")
-      ).length,
+    () => ROUTES.filter((route) => visibleOperatorIds.has(route.operatorId) &&
+      (showInactiveRoutes || route.status !== "suspended")).length,
     [visibleOperatorIds, showInactiveRoutes]
   );
 
   return (
-    <div className={css({ display: "flex", flexDirection: { base: "column", md: "row" }, height: "100dvh", width: "100%" })}>
-      <aside
-        className={css({
-          width: { base: "full", md: "80" },
-          flexShrink: 0,
-          borderBottomWidth: { base: "1px", md: "0" },
-          borderRightWidth: { base: "0", md: "1px" },
-          borderColor: "border.default",
-          bg: "bg.default",
-          p: "4",
-          display: "flex",
-          flexDirection: "column",
-          gap: "4",
-          overflowY: "auto",
-          maxHeight: { base: "40dvh", md: "100dvh" },
-        })}
-      >
-        <div>
-          <h1 className={css({ fontSize: "lg", fontWeight: "bold", lineHeight: "tight" })}>
-            <span aria-hidden="true">⛴</span> Salish Sea Ferry Map
-          </h1>
-          <p className={css({ fontSize: "xs", color: "fg.muted", mt: "1" })}>
-            {visibleRouteCount} route{visibleRouteCount === 1 ? "" : "s"} shown · Puget Sound, the
-            Strait of Georgia &amp; the Strait of Juan de Fuca
-          </p>
-          <Link
-            href="/about"
-            className={css({
-              display: "inline-flex",
-              mt: "2",
-              fontSize: "sm",
-              fontWeight: "medium",
-              color: "colorPalette.9",
-              textDecoration: "underline",
-              textUnderlineOffset: "2px",
-            })}
-          >
-            About this map
-          </Link>
-        </div>
+    <div className="app-shell">
+      <aside className="sidebar">
+        <SidebarHeader />
 
-        <div>
-          <h2 className={css({ fontSize: "xs", fontWeight: "semibold", color: "fg.muted", textTransform: "uppercase", letterSpacing: "wide", mb: "2" })}>
-            Operators
-          </h2>
-          <OperatorFilter
-            visibleOperatorIds={visibleOperatorIds}
-            onToggle={handleToggleOperator}
-            showInactiveRoutes={showInactiveRoutes}
-            onToggleInactive={setShowInactiveRoutes}
-          />
-        </div>
+        <SidebarIntro visibleRouteCount={visibleRouteCount} />
 
-        <div>
-          <h2 className={css({ fontSize: "xs", fontWeight: "semibold", color: "fg.muted", textTransform: "uppercase", letterSpacing: "wide", mb: "2" })}>
-            Live
-          </h2>
-          <Checkbox.Root
-            className={css({ display: "flex", alignItems: "center", gap: "2", cursor: "pointer" })}
-            checked={showLiveVessels}
-            onCheckedChange={(details) => setShowLiveVessels(details.checked === true)}
-          >
-            <Checkbox.Control
-              className={css({
-                width: "4",
-                height: "4",
-                borderRadius: "sm",
-                borderWidth: "1.5px",
-                borderColor: "border.default",
-                flexShrink: 0,
-                _checked: { bg: "colorPalette.9", borderColor: "colorPalette.9" },
-              })}
-            />
-            <Checkbox.HiddenInput />
-            <Checkbox.Label className={css({ fontSize: "sm" })}>WSF vessel positions (beta)</Checkbox.Label>
-          </Checkbox.Root>
-          {showLiveVessels && vesselsUnavailable ? (
-            <p className={css({ fontSize: "xs", color: "fg.subtle", mt: "1" })}>
-              Live positions need a free WSDOT API key — see README.md.
-            </p>
-          ) : null}
-        </div>
-        <div>
-          <label htmlFor="basemap" className={css({ display: "block", fontSize: "xs", fontWeight: "semibold", color: "fg.muted", textTransform: "uppercase", letterSpacing: "wide", mb: "2" })}>
-            Basemap
-          </label>
-          <select
-            id="basemap"
-            value={basemapId}
-            onChange={(event) => {
-              const id = event.target.value;
-              if (Object.hasOwn(BASEMAPS, id)) setBasemapId(id as BasemapId);
-            }}
-            className={css({ width: "full", minHeight: "11", px: "3", borderWidth: "1px", borderColor: "border.default", borderRadius: "md", bg: "bg.default", color: "fg.default", fontSize: "sm" })}
-          >
-            {Object.entries(BASEMAPS).map(([id, basemap]) => (
-              <option key={id} value={id}>{basemap.label}</option>
-            ))}
-          </select>
-        </div>
+        <OperatorSection visibleOperatorIds={visibleOperatorIds} onToggle={handleToggleOperator} showInactiveRoutes={showInactiveRoutes} onToggleInactive={setShowInactiveRoutes} onShowAll={() => setVisibleOperatorIds(ALL_OPERATOR_IDS)} />
 
-        <p className={css({ fontSize: "xs", color: "fg.subtle" })}>
-          Route geometry prefers OSM ferry lines where they are vendored, then the navigable-water
-          mesh, then a straight-line fallback.
-        </p>
+        <LiveLayers showLiveVessels={showLiveVessels} vesselsUnavailable={vesselsUnavailable} onToggle={setShowLiveVessels} />
 
-        <p className={css({ fontSize: "xs", color: "fg.subtle", mt: "auto", pt: "4" })}>
-          Route lines and terminal locations are approximate and for reference only —{" "}
-          <strong>not for navigation.</strong> Data compiled from operator websites, September 2026.
-        </p>
+        <BasemapSection basemapId={basemapId} onChange={setBasemapId} />
+
+        <SidebarFooter />
       </aside>
 
-      <main className={css({ flex: "1", position: "relative", minHeight: { base: "60dvh", md: "auto" } })}>
-        <FerryMap
-          basemapId={basemapId}
-          visibleOperatorIds={visibleOperatorIds}
-          showInactiveRoutes={showInactiveRoutes}
-          vessels={vessels}
-        />
+      <main className="map-panel">
+        <FerryMap basemapId={basemapId} visibleOperatorIds={visibleOperatorIds} showInactiveRoutes={showInactiveRoutes} vessels={vessels} />
+        <div className="map-caption" aria-hidden="true"><span className="map-caption-dot" /> Salish Sea region</div>
       </main>
     </div>
   );
