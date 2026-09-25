@@ -25,7 +25,7 @@ const operatorCoverage = [
 const proseClassName = css({
   fontSize: "sm",
   lineHeight: "relaxed",
-  color: "fg.default",
+  color: "var(--ink)",
 });
 
 const sectionClassName = css({
@@ -34,7 +34,7 @@ const sectionClassName = css({
 });
 
 const linkClassName = css({
-  color: "colorPalette.9",
+  color: "var(--accent)",
   fontWeight: "medium",
   textDecoration: "underline",
   textUnderlineOffset: "2px",
@@ -163,8 +163,8 @@ export default function AboutPage() {
     <main
       className={css({
         minHeight: "100dvh",
-        bg: "bg.canvas",
-        color: "fg.default",
+        bg: "var(--canvas)",
+        color: "var(--ink)",
         px: "4",
         py: { base: "6", md: "10" },
       })}
