@@ -220,7 +220,7 @@ function diagramSvg(
 
 
 /** Every file the export writes: each product in each theme and land style. */
-export const printFileVariants = (): { product: Product; themeName: ThemeName; landStyle: LandStyle; name: string }[] =>
+export const printFileVariants = (): readonly { readonly product: Product; readonly themeName: ThemeName; readonly landStyle: LandStyle; readonly name: string }[] =>
   PRODUCTS.flatMap((product) =>
     (Object.keys(THEMES) as ThemeName[]).flatMap((themeName) =>
       product.landStyles.map((landStyle) => {
