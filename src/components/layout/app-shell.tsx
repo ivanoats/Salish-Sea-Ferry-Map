@@ -26,6 +26,107 @@ function FerryMark() {
   );
 }
 
+function SidebarHeader() {
+  return (
+    <header className="sidebar-header">
+      <Link href="/" className="brand" aria-label="Salish Sea Ferry Map home">
+        <FerryMark />
+        <span>
+          <span className="brand-name">Salish Sea</span>
+          <span className="brand-subtitle">Ferry Map</span>
+        </span>
+      </Link>
+      <Link href="/about" className="about-link" aria-label="About this map">About <span aria-hidden="true">↗</span></Link>
+    </header>
+  );
+}
+
+function LiveLayers({ showLiveVessels, vesselsUnavailable, onToggle }: {
+  showLiveVessels: boolean;
+  vesselsUnavailable: boolean;
+  onToggle: (checked: boolean) => void;
+}) {
+  return (
+    <section className="filter-section live-section" aria-labelledby="live-heading">
+      <p className="eyebrow" id="live-heading">Live layers</p>
+      <Checkbox.Root className="toggle-row" checked={showLiveVessels}
+        onCheckedChange={(details) => onToggle(details.checked === true)}>
+        <Checkbox.HiddenInput />
+        <Checkbox.Label>WSF vessel positions <span className="beta-pill">Beta</span></Checkbox.Label>
+        <Checkbox.Control className="switch"><span className="switch-thumb" /></Checkbox.Control>
+      </Checkbox.Root>
+      {showLiveVessels && vesselsUnavailable ? <p className="helper-text">Live positions need a free WSDOT API key — see README.md.</p> : null}
+    </section>
+  );
+}
+
+function SidebarIntro({ visibleRouteCount }: { visibleRouteCount: number }) {
+  return (
+    <div className="sidebar-intro">
+      <p className="eyebrow">Explore the coast</p>
+      <h1>Find your way<br />across the water.</h1>
+      <p className="intro-copy">Ferry routes connecting the communities of the Salish Sea.</p>
+      <div className="route-count" aria-live="polite">
+        <span className="route-count-number">{visibleRouteCount}</span>
+        <span>routes visible</span>
+      </div>
+    </div>
+  );
+}
+
+function OperatorSection({ visibleOperatorIds, onToggle, showInactiveRoutes, onToggleInactive, onShowAll }: {
+  visibleOperatorIds: ReadonlySet<OperatorId>;
+  onToggle: (operatorId: OperatorId, checked: boolean) => void;
+  showInactiveRoutes: boolean;
+  onToggleInactive: (checked: boolean) => void;
+  onShowAll: () => void;
+}) {
+  return (
+    <section className="filter-section" aria-labelledby="operators-heading">
+      <div className="section-heading-row">
+        <h2 id="operators-heading">Operators</h2>
+        <button type="button" className="text-button" onClick={onShowAll}>Show all</button>
+      </div>
+      <OperatorFilter
+        visibleOperatorIds={visibleOperatorIds}
+        onToggle={onToggle}
+        showInactiveRoutes={showInactiveRoutes}
+        onToggleInactive={onToggleInactive}
+      />
+    </section>
+  );
+}
+
+function BasemapSection({ basemapId, onChange }: { basemapId: BasemapId; onChange: (id: BasemapId) => void }) {
+  return (
+    <section className="filter-section" aria-labelledby="basemap-label">
+      <label id="basemap-label" htmlFor="basemap" className="basemap-label">Basemap</label>
+      <select
+        id="basemap"
+        value={basemapId}
+        onChange={(event) => {
+          const id = event.target.value;
+          if (Object.hasOwn(BASEMAPS, id)) onChange(id as BasemapId);
+        }}
+        className="basemap-select"
+      >
+        {Object.entries(BASEMAPS).map(([id, basemap]) => (
+          <option key={id} value={id}>{basemap.label}</option>
+        ))}
+      </select>
+    </section>
+  );
+}
+
+function SidebarFooter() {
+  return (
+    <footer className="sidebar-footer">
+      <p>Approximate locations for reference only.<br /><strong>Not for navigation.</strong></p>
+      <span>Updated September 2026</span>
+    </footer>
+  );
+}
+
 export function AppShell() {
   const [visibleOperatorIds, setVisibleOperatorIds] = useState<ReadonlySet<OperatorId>>(ALL_OPERATOR_IDS);
   const [basemapId, setBasemapId] = useState<BasemapId>("positron");
@@ -51,72 +152,17 @@ export function AppShell() {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <header className="sidebar-header">
-          <Link href="/" className="brand" aria-label="Salish Sea Ferry Map home">
-            <FerryMark />
-            <span>
-              <span className="brand-name">Salish Sea</span>
-              <span className="brand-subtitle">Ferry Map</span>
-            </span>
-          </Link>
-          <Link href="/about" className="about-link" aria-label="About this map">About <span aria-hidden="true">↗</span></Link>
-        </header>
+        <SidebarHeader />
 
-        <div className="sidebar-intro">
-          <p className="eyebrow">Explore the coast</p>
-          <h1>Find your way<br />across the water.</h1>
-          <p className="intro-copy">Ferry routes connecting the communities of the Salish Sea.</p>
-          <div className="route-count" aria-live="polite">
-            <span className="route-count-number">{visibleRouteCount}</span>
-            <span>routes visible</span>
-          </div>
-        </div>
+        <SidebarIntro visibleRouteCount={visibleRouteCount} />
 
-        <section className="filter-section" aria-labelledby="operators-heading">
-          <div className="section-heading-row">
-            <h2 id="operators-heading">Operators</h2>
-            <button type="button" className="text-button" onClick={() => setVisibleOperatorIds(ALL_OPERATOR_IDS)}>Show all</button>
-          </div>
-          <OperatorFilter
-            visibleOperatorIds={visibleOperatorIds}
-            onToggle={handleToggleOperator}
-            showInactiveRoutes={showInactiveRoutes}
-            onToggleInactive={setShowInactiveRoutes}
-          />
-        </section>
+        <OperatorSection visibleOperatorIds={visibleOperatorIds} onToggle={handleToggleOperator} showInactiveRoutes={showInactiveRoutes} onToggleInactive={setShowInactiveRoutes} onShowAll={() => setVisibleOperatorIds(ALL_OPERATOR_IDS)} />
 
-        <section className="filter-section live-section" aria-labelledby="live-heading">
-          <p className="eyebrow" id="live-heading">Live layers</p>
-          <Checkbox.Root className="toggle-row" checked={showLiveVessels}
-            onCheckedChange={(details) => setShowLiveVessels(details.checked === true)}>
-            <Checkbox.HiddenInput />
-            <Checkbox.Label>WSF vessel positions <span className="beta-pill">Beta</span></Checkbox.Label>
-            <Checkbox.Control className="switch"><span className="switch-thumb" /></Checkbox.Control>
-          </Checkbox.Root>
-          {showLiveVessels && vesselsUnavailable ? <p className="helper-text">Live positions need a free WSDOT API key — see README.md.</p> : null}
-        </section>
+        <LiveLayers showLiveVessels={showLiveVessels} vesselsUnavailable={vesselsUnavailable} onToggle={setShowLiveVessels} />
 
-        <section className="filter-section" aria-labelledby="basemap-label">
-          <label id="basemap-label" htmlFor="basemap" className="basemap-label">Basemap</label>
-          <select
-            id="basemap"
-            value={basemapId}
-            onChange={(event) => {
-              const id = event.target.value;
-              if (Object.hasOwn(BASEMAPS, id)) setBasemapId(id as BasemapId);
-            }}
-            className="basemap-select"
-          >
-            {Object.entries(BASEMAPS).map(([id, basemap]) => (
-              <option key={id} value={id}>{basemap.label}</option>
-            ))}
-          </select>
-        </section>
+        <BasemapSection basemapId={basemapId} onChange={setBasemapId} />
 
-        <footer className="sidebar-footer">
-          <p>Approximate locations for reference only.<br /><strong>Not for navigation.</strong></p>
-          <span>Updated September 2026</span>
-        </footer>
+        <SidebarFooter />
       </aside>
 
       <main className="map-panel">
