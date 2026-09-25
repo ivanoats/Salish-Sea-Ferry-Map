@@ -116,6 +116,12 @@ button, input, select { font: inherit; }
 .schematic-zoom button:hover:not(:disabled) { background: var(--accent-soft); }
 .schematic-zoom button:disabled { color: var(--ink-muted); cursor: default; opacity: .5; }
 .schematic-zoom button[aria-pressed='true'] { color: var(--accent); }
+.schematic-legend { position: absolute; bottom: 16px; left: 16px; z-index: 2; max-width: calc(100% - 32px); padding: 8px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface-raised); box-shadow: var(--shadow); color: var(--ink); font-size: 12px; }
+.schematic-legend summary { cursor: pointer; color: var(--ink-muted); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.schematic-legend ul { display: grid; gap: 4px; margin: 8px 0 0; padding: 0; list-style: none; }
+.schematic-legend li { display: flex; align-items: center; gap: 8px; }
+.schematic-legend svg { width: 24px; height: 8px; flex: 0 0 24px; }
+.schematic-legend path { stroke-linecap: round; }
 .schematic-svg { display: block; margin: 0 auto; border: 1px solid var(--line); border-radius: 6px; background: var(--canvas); font-family: Arial, Helvetica, sans-serif; }
 .schematic-land path { fill: var(--land); }
 .schematic-routes path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
