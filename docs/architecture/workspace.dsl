@@ -14,6 +14,12 @@ workspace "Salish Sea Ferry Map" "C4 model for the static-first ferry route map.
         osm = softwareSystem "OpenStreetMap" "Raster tiles for the basemap." {
             tags "External"
         }
+        openFreeMap = softwareSystem "OpenFreeMap" "Hosted no-key basemap styles and vector tiles." {
+            tags "External"
+        }
+        versaTiles = softwareSystem "VersaTiles" "Hosted no-key basemap style and vector tiles." {
+            tags "External"
+        }
         wsdot = softwareSystem "WSDOT Vessel Locations API" "Optional live vessel positions." {
             tags "External"
         }
@@ -64,6 +70,8 @@ workspace "Salish Sea Ferry Map" "C4 model for the static-first ferry route map.
         ferryMap.browserMap.ferryMapUi -> ferryMap.webApp.geojson "Feature collections"
         ferryMap.browserMap.ferryMapUi -> ferryMap.webApp.dataset "Routes, terminals"
         ferryMap.browserMap.ferryMapUi -> osm "Basemap tiles"
+        ferryMap.browserMap.ferryMapUi -> openFreeMap "Basemap styles and tiles"
+        ferryMap.browserMap.ferryMapUi -> versaTiles "Basemap styles and tiles"
         ferryMap.browserMap.vesselHook -> ferryMap.vesselProxy.proxyRoute "GET /api/vessels"
     }
 
