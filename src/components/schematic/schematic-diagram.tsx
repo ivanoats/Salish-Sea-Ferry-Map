@@ -188,7 +188,7 @@ function DiagramSvg({ routes, style }: { routes: readonly FerryRoute[]; style: R
 }
 
 /** Which color is which operator, for the operators currently drawn. */
-function RouteLegend({ routes }: { routes: readonly FerryRoute[] }) {
+function RouteLegend({ routes }: Readonly<{ routes: readonly FerryRoute[] }>) {
   const drawn = new Set(routes.map((route) => route.operatorId));
   const operators = OPERATORS.filter((operator) => drawn.has(operator.id));
   if (operators.length === 0) return null;
