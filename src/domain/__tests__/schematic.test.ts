@@ -51,15 +51,15 @@ describe("legVertices", () => {
   });
 
   it("bends other legs once, diagonal first from the western end, whichever way they're sailed", () => {
-    const l = layout({ a: [0, 0], b: [4, 2] });
-    expect(legVertices("a", "b", l)).toEqual([[0, 0], [2, 2], [4, 2]]);
-    expect(legVertices("b", "a", l)).toEqual([[4, 2], [2, 2], [0, 0]]);
+    const testLayout = layout({ a: [0, 0], b: [4, 2] });
+    expect(legVertices("a", "b", testLayout)).toEqual([[0, 0], [2, 2], [4, 2]]);
+    expect(legVertices("b", "a", testLayout)).toEqual([[4, 2], [2, 2], [0, 0]]);
   });
 
   it("follows hand-placed vias in either direction", () => {
-    const l = layout({ a: [0, 0], b: [4, 2] }, { "a>b": [[0, 2]] });
-    expect(legVertices("a", "b", l)).toEqual([[0, 0], [0, 2], [4, 2]]);
-    expect(legVertices("b", "a", l)).toEqual([[4, 2], [0, 2], [0, 0]]);
+    const testLayout = layout({ a: [0, 0], b: [4, 2] }, { "a>b": [[0, 2]] });
+    expect(legVertices("a", "b", testLayout)).toEqual([[0, 0], [0, 2], [4, 2]]);
+    expect(legVertices("b", "a", testLayout)).toEqual([[4, 2], [0, 2], [0, 0]]);
   });
 
   it("is undefined for a terminal the layout doesn't place", () => {
@@ -96,11 +96,11 @@ describe("buildSchematicDiagram", () => {
     //   a ── m ── n ─ ─ r (keeps east)
     //             │
     //             s (turns south, i.e. right)
-    const l = layout({ a: [0, 0], n: [2, 0], r: [4, 0], s: [2, 2] });
+    const testLayout = layout({ a: [0, 0], n: [2, 0], r: [4, 0], s: [2, 2] });
     const diagram = buildSchematicDiagram(
       // Listed so the fallback input order would put them the wrong way round.
       [route("turns-right", ["a", "n", "s"]), route("straight", ["a", "n", "r"])],
-      l
+      testLayout
     );
     // Heading east, right is south: positive lanes.
     expect(lanesOf(diagram, "turns-right")?.slice(0, 2)).toEqual([0.5, 0.5]);
@@ -112,10 +112,10 @@ describe("buildSchematicDiagram", () => {
     //        n
     //        │
     //   w ── g ── t
-    const l = layout({ w: [0, 0], g: [2, 0], t: [4, 0], n: [2, -2] });
+    const testLayout = layout({ w: [0, 0], g: [2, 0], t: [4, 0], n: [2, -2] });
     const diagram = buildSchematicDiagram(
       [route("from-west", ["w", "g", "t"]), route("from-north", ["n", "g", "t"])],
-      l
+      testLayout
     );
     // Heading east from g, the route that came down from the north should
     // sit on the north (left, negative) side so neither crosses the other.
@@ -126,9 +126,9 @@ describe("buildSchematicDiagram", () => {
   });
 
   it("recenters lanes on the routes it is given", () => {
-    const l = layout({ a: [0, 0], b: [2, 0] });
-    const both = buildSchematicDiagram([route("x", ["a", "b"]), route("y", ["a", "b"])], l);
-    const one = buildSchematicDiagram([route("x", ["a", "b"])], l);
+    const testLayout = layout({ a: [0, 0], b: [2, 0] });
+    const both = buildSchematicDiagram([route("x", ["a", "b"]), route("y", ["a", "b"])], testLayout);
+    const one = buildSchematicDiagram([route("x", ["a", "b"])], testLayout);
     expect(lanesOf(both, "x")?.[0]).not.toBe(0);
     expect(lanesOf(one, "x")).toEqual([0, 0]);
   });
@@ -148,8 +148,10 @@ describe("buildSchematicDiagram", () => {
   it("doesn't draw a leg twice when a route sails back over it", () => {
     const diagram = buildSchematicDiagram([route("r", ["a", "b", "a"])], layout({ a: [0, 0], b: [2, 0] }));
     const strokes = diagram.lines[0]?.strokes ?? [];
+    // One stroke covering the a → b leg once, as unit grid steps; the
+    // b → a return sails the same water and adds nothing to draw.
     expect(strokes).toHaveLength(1);
-    expect(strokes[0]?.points).toHaveLength(3);
+    expect(strokes[0]?.points).toEqual([[0, 0], [1, 0], [2, 0]]);
   });
 });
 

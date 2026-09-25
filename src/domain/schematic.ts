@@ -271,14 +271,14 @@ const assignLanes = (strokes: readonly RouteStrokePoints[]): number[][] => {
     // (none do today) keeps the lane of its first pass.
     const seen = new Set<string>();
     for (let index = 0; index < stroke.points.length - 1; index += 1) {
-      const a = stroke.points[index];
-      const b = stroke.points[index + 1];
-      if (a === undefined || b === undefined) continue;
-      const key = stepKey(a, b);
+      const from = stroke.points[index];
+      const to = stroke.points[index + 1];
+      if (from === undefined || to === undefined) continue;
+      const key = stepKey(from, to);
       if (seen.has(key)) continue;
       seen.add(key);
       const list = occurrences.get(key) ?? [];
-      list.push({ stroke: strokeIndex, index, reversed: !isCanonical(a, b) });
+      list.push({ stroke: strokeIndex, index, reversed: !isCanonical(from, to) });
       occurrences.set(key, list);
     }
   });
@@ -369,19 +369,19 @@ export function strokeToPixels(
   interface Segment { from: GridPoint; to: GridPoint; dir: [number, number]; offset: number }
   const segments: Segment[] = [];
   for (let i = 0; i < stroke.points.length - 1; i += 1) {
-    const a = stroke.points[i];
-    const b = stroke.points[i + 1];
-    if (a === undefined || b === undefined) continue;
-    const dx = b[0] - a[0];
-    const dy = b[1] - a[1];
+    const from = stroke.points[i];
+    const to = stroke.points[i + 1];
+    if (from === undefined || to === undefined) continue;
+    const dx = to[0] - from[0];
+    const dy = to[1] - from[1];
     const length = Math.hypot(dx, dy);
     const dir: [number, number] = [dx / length, dy / length];
     const offset = (stroke.lanes[i] ?? 0) * laneWidth;
     const last = segments.at(-1);
     if (last !== undefined && last.dir[0] === dir[0] && last.dir[1] === dir[1] && last.offset === offset) {
-      last.to = b;
+      last.to = to;
     } else {
-      segments.push({ from: a, to: b, dir, offset });
+      segments.push({ from, to, dir, offset });
     }
   }
 
@@ -397,25 +397,25 @@ export function strokeToPixels(
   const result: [number, number][] = [shifted(first.from, first.dir, first.offset)];
 
   for (let i = 0; i < segments.length - 1; i += 1) {
-    const a = segments[i];
-    const b = segments[i + 1];
-    if (a === undefined || b === undefined) continue;
-    const cross = a.dir[0] * b.dir[1] - a.dir[1] * b.dir[0];
+    const current = segments[i];
+    const next = segments[i + 1];
+    if (current === undefined || next === undefined) continue;
+    const cross = current.dir[0] * next.dir[1] - current.dir[1] * next.dir[0];
     if (Math.abs(cross) < 1e-9) {
       // Same heading, new lane: slide across at 45°.
-      const half = Math.abs(b.offset - a.offset) / 2;
-      const [cx, cy] = px(a.to);
+      const half = Math.abs(next.offset - current.offset) / 2;
+      const [cx, cy] = px(current.to);
       result.push(
-        [cx - a.dir[0] * half - a.dir[1] * a.offset, cy - a.dir[1] * half + a.dir[0] * a.offset],
-        [cx + b.dir[0] * half - b.dir[1] * b.offset, cy + b.dir[1] * half + b.dir[0] * b.offset]
+        [cx - current.dir[0] * half - current.dir[1] * current.offset, cy - current.dir[1] * half + current.dir[0] * current.offset],
+        [cx + next.dir[0] * half - next.dir[1] * next.offset, cy + next.dir[1] * half + next.dir[0] * next.offset]
       );
       continue;
     }
-    // Intersect the two offset lines: pa + t·da = pb + u·db.
-    const pa = shifted(a.to, a.dir, a.offset);
-    const pb = shifted(a.to, b.dir, b.offset);
-    const t = ((pb[0] - pa[0]) * b.dir[1] - (pb[1] - pa[1]) * b.dir[0]) / cross;
-    result.push([pa[0] + t * a.dir[0], pa[1] + t * a.dir[1]]);
+    // Intersect the two offset lines: pa + along·da = pb + u·db.
+    const pa = shifted(current.to, current.dir, current.offset);
+    const pb = shifted(current.to, next.dir, next.offset);
+    const along = ((pb[0] - pa[0]) * next.dir[1] - (pb[1] - pa[1]) * next.dir[0]) / cross;
+    result.push([pa[0] + along * current.dir[0], pa[1] + along * current.dir[1]]);
   }
 
   const last = segments.at(-1) ?? first;

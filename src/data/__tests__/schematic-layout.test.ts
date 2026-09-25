@@ -18,8 +18,8 @@ const insidePolygon = ([x, y]: GridPoint, outline: readonly GridPoint[]): boolea
 
 const distanceToSegment = ([x, y]: GridPoint, [ax, ay]: GridPoint, [bx, by]: GridPoint): number => {
   const [dx, dy] = [bx - ax, by - ay];
-  const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy)));
-  return Math.hypot(x - (ax + t * dx), y - (ay + t * dy));
+  const along = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy)));
+  return Math.hypot(x - (ax + along * dx), y - (ay + along * dy));
 };
 
 const distanceToCoast = (point: GridPoint): number =>
@@ -112,9 +112,9 @@ describe("schematic layout", () => {
   it("keeps every route on the water", () => {
     const aground = legs.flatMap(({ route, fromId, toId }) => {
       const points = unitSteps(legVertices(fromId, toId, SCHEMATIC_LAYOUT) ?? []);
-      return points.slice(1).flatMap((b, i) => {
-        const a = points[i] ?? b;
-        const middle: GridPoint = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+      return points.slice(1).flatMap((end, i) => {
+        const start = points[i] ?? end;
+        const middle: GridPoint = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
         const land = SCHEMATIC_LAND.find(({ outline }) => insidePolygon(middle, outline));
         return land === undefined ? [] : [`${route.id} crosses ${land.name} at ${middle}`];
       });

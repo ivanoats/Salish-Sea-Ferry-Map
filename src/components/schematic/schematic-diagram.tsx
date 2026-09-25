@@ -48,8 +48,8 @@ const COAST_CORNER_RADIUS = 11;
 const roundedOutline = (points: readonly (readonly [number, number])[]): string => {
   const toward = (from: readonly [number, number], to: readonly [number, number], distance: number) => {
     const length = Math.hypot(to[0] - from[0], to[1] - from[1]) || 1;
-    const t = Math.min(distance, length / 2) / length;
-    return `${(from[0] + (to[0] - from[0]) * t).toFixed(1)} ${(from[1] + (to[1] - from[1]) * t).toFixed(1)}`;
+    const fraction = Math.min(distance, length / 2) / length;
+    return `${(from[0] + (to[0] - from[0]) * fraction).toFixed(1)} ${(from[1] + (to[1] - from[1]) * fraction).toFixed(1)}`;
   };
   const corners = points.map((corner, i) => {
     const previous = points[(i + points.length - 1) % points.length] ?? corner;
@@ -131,9 +131,9 @@ function DiagramSvg({ routes, style }: { routes: readonly FerryRoute[]; style: R
         {diagram.lines.map((line) => (
           <g key={line.route.id} className="schematic-route" data-route-id={line.route.id} data-status={line.route.status}>
             <title>{routeTitle(line.route)}</title>
-            {line.strokes.map((stroke, i) => (
+            {line.strokes.map((stroke) => (
               <path
-                key={i}
+                key={`${stroke.points[0]}-${stroke.points.at(-1)}`}
                 d={pathData(strokeToPixels(stroke, CELL, LANE_WIDTH))}
                 stroke={OPERATORS_BY_ID.get(line.route.operatorId)?.color}
                 strokeWidth={LINE_WIDTH}
@@ -148,11 +148,11 @@ function DiagramSvg({ routes, style }: { routes: readonly FerryRoute[]; style: R
           const from = SCHEMATIC_LAYOUT.terminals[a]?.position;
           const to = SCHEMATIC_LAYOUT.terminals[b]?.position;
           if (from === undefined || to === undefined) return null;
-          const d = pathData([px(from), px(to)]);
+          const linkPath = pathData([px(from), px(to)]);
           return (
             <g key={`${a}-${b}`}>
-              <path className="schematic-land-link-outer" d={d} />
-              <path className="schematic-land-link-inner" d={d} />
+              <path className="schematic-land-link-outer" d={linkPath} />
+              <path className="schematic-land-link-inner" d={linkPath} />
             </g>
           );
         })}
@@ -188,17 +188,17 @@ function DiagramSvg({ routes, style }: { routes: readonly FerryRoute[]; style: R
 }
 
 export function SchematicDiagram({ routes }: { routes: readonly FerryRoute[] }) {
-  // Undefined means "fit": as wide as the panel, but never below 80% of
-  // natural size, past which the labels stop being readable.
-  const [zoom, setZoom] = useState<number | undefined>(undefined);
+  // "fit" is as wide as the panel, but never below 80% of natural size,
+  // past which the labels stop being readable.
+  const [zoom, setZoom] = useState<number | "fit">("fit");
   const zoomBy = (direction: 1 | -1) => {
-    const current = zoom ?? 1;
+    const current = zoom === "fit" ? 1 : zoom;
     const next = direction === 1
       ? ZOOM_STEPS.find((step) => step > current + 1e-6)
       : [...ZOOM_STEPS].reverse().find((step) => step < current - 1e-6);
     if (next !== undefined) setZoom(next);
   };
-  const style = zoom === undefined
+  const style = zoom === "fit"
     ? { width: "100%", minWidth: VIEW.width * 0.8, maxWidth: VIEW.width, height: "auto" }
     : { width: VIEW.width * zoom, height: "auto" };
 
@@ -207,7 +207,7 @@ export function SchematicDiagram({ routes }: { routes: readonly FerryRoute[] }) 
       <div className="schematic-zoom" role="group" aria-label="Zoom">
         <button type="button" onClick={() => zoomBy(1)} aria-label="Zoom in" disabled={zoom === ZOOM_STEPS.at(-1)}>+</button>
         <button type="button" onClick={() => zoomBy(-1)} aria-label="Zoom out" disabled={zoom === ZOOM_STEPS[0]}>−</button>
-        <button type="button" onClick={() => setZoom(undefined)} aria-pressed={zoom === undefined}>Fit</button>
+        <button type="button" onClick={() => setZoom("fit")} aria-pressed={zoom === "fit"}>Fit</button>
       </div>
       <div className="schematic-scroller">
         <DiagramSvg routes={routes} style={style} />
