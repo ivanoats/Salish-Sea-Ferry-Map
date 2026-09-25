@@ -125,7 +125,7 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const popupRef = useRef<Popup | null>(null);
-  const restoreStyleLayersWhenReadyRef = useRef<((requestedBasemapId: BasemapId) => void) | null>(null);
+  const restoreStyleLayersWhenReadyRef = useRef<((requestedBasemapId: BasemapId, loadStyle?: () => void) => void) | null>(null);
   const [styleRevision, setStyleRevision] = useState(0);
   const requestedBasemapId = useRef(basemapId);
 
@@ -260,7 +260,7 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
       }
       setStyleRevision((revision) => revision + 1);
     };
-    const restoreStyleLayersWhenReady = (nextBasemapId: BasemapId) => {
+    const restoreStyleLayersWhenReady = (nextBasemapId: BasemapId, loadStyle?: () => void) => {
       let restored = false;
       const handleStyleLoad = () => {
         if (restored || nextBasemapId !== requestedBasemapId.current) return;
@@ -268,6 +268,7 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
         restoreStyleLayers();
       };
       map.once("style.load", handleStyleLoad);
+      loadStyle?.();
       if (map.isStyleLoaded()) handleStyleLoad();
     };
 
@@ -290,8 +291,11 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
     if (basemapId === requestedBasemapId.current) return;
     requestedBasemapId.current = basemapId;
     popupRef.current?.remove();
-    mapRef.current?.setStyle(BASEMAPS[basemapId].style, { diff: false });
-    restoreStyleLayersWhenReadyRef.current?.(basemapId);
+    const map = mapRef.current;
+    if (map === null) return;
+    restoreStyleLayersWhenReadyRef.current?.(basemapId, () => {
+      map.setStyle(BASEMAPS[basemapId].style, { diff: false });
+    });
   }, [basemapId]);
 
   // Push filtered data into the sources whenever the filter changes.
