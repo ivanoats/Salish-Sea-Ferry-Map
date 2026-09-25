@@ -18,7 +18,8 @@
     "typecheck": "panda codegen --silent && tsc --noEmit",
     "test": "panda codegen --silent && vitest run",
     "test:watch": "panda codegen --silent && vitest",
-    "favicons": "node scripts/generate-favicons.mjs"
+    "favicons": "node scripts/generate-favicons.mjs",
+    "print-files": "node scripts/export-print-files.ts"
   },
   "dependencies": {
     "@ark-ui/react": "^5.38.1",
