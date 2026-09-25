@@ -12,6 +12,7 @@ import {
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
+import { BASEMAPS, type BasemapId } from "./basemaps";
 import type { OperatorId } from "@/domain/ferry";
 import { routesToLineFeatureCollection, terminalsToPointFeatureCollection } from "@/domain/geojson";
 import type { RouteLegGeometrySource } from "@/data/route-leg-geometry";
@@ -66,6 +67,7 @@ const vesselsToFeatureCollection = (
 });
 
 interface FerryMapProps {
+  readonly basemapId: BasemapId;
   /** Operator ids currently switched on in the filter panel. */
   readonly visibleOperatorIds: ReadonlySet<OperatorId>;
   /** Whether suspended/seasonal-inactive routes should still be drawn (faded). */
@@ -119,11 +121,12 @@ for (const operator of OPERATORS) {
 }
 operatorColorExpression.push("#64748b"); // fallback
 
-export function FerryMap({ visibleOperatorIds, showInactiveRoutes, vessels }: FerryMapProps) {
+export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, vessels }: FerryMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const popupRef = useRef<Popup | null>(null);
-  const [styleLoaded, setStyleLoaded] = useState(false);
+  const [styleRevision, setStyleRevision] = useState(0);
+  const initialBasemapId = useRef(basemapId);
 
   // Map creation — runs once.
   useEffect(() => {
@@ -131,19 +134,12 @@ export function FerryMap({ visibleOperatorIds, showInactiveRoutes, vessels }: Fe
     ensureWorkerUrl();
 
     const sources: Record<string, SourceSpecification> = {
-      basemap: {
-        type: "raster",
-        tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
-        tileSize: 256,
-        attribution: "© OpenStreetMap contributors",
-      },
       [ROUTES_SOURCE_ID]: { type: "geojson", data: emptyFeatureCollection() },
       [TERMINALS_SOURCE_ID]: { type: "geojson", data: emptyFeatureCollection() },
       [VESSELS_SOURCE_ID]: { type: "geojson", data: emptyFeatureCollection() },
     };
 
     const layers: LayerSpecification[] = [
-      { id: "basemap", type: "raster", source: "basemap" },
       {
         id: ROUTES_LAYER_ID,
         type: "line",
@@ -199,7 +195,7 @@ export function FerryMap({ visibleOperatorIds, showInactiveRoutes, vessels }: Fe
       container: containerRef.current,
       center: [SALISH_SEA_CENTER[0], SALISH_SEA_CENTER[1]],
       zoom: SALISH_SEA_ZOOM,
-      style: { version: 8, sources, layers },
+      style: BASEMAPS[initialBasemapId.current].style,
     });
     map.addControl(new NavigationControl(), "top-right");
 
@@ -255,22 +251,37 @@ export function FerryMap({ visibleOperatorIds, showInactiveRoutes, vessels }: Fe
     }
 
     mapRef.current = map;
-    setStyleLoaded(Boolean(map.isStyleLoaded()));
-    map.on("style.load", () => setStyleLoaded(true));
+    // setStyle removes custom sources and layers. Rebuild them above each basemap,
+    // then trigger data effects with the latest filters and vessel positions.
+    map.on("style.load", () => {
+      for (const [id, source] of Object.entries(sources)) {
+        if (!map.getSource(id)) map.addSource(id, source);
+      }
+      for (const layer of layers) {
+        if (!map.getLayer(layer.id)) map.addLayer(layer);
+      }
+      setStyleRevision((revision) => revision + 1);
+    });
 
     return () => {
       popupRef.current?.remove();
       popupRef.current = null;
       map.remove();
       mapRef.current = null;
-      setStyleLoaded(false);
     };
   }, []);
+
+  useEffect(() => {
+    if (basemapId === initialBasemapId.current) return;
+    initialBasemapId.current = basemapId;
+    popupRef.current?.remove();
+    mapRef.current?.setStyle(BASEMAPS[basemapId].style, { diff: false });
+  }, [basemapId]);
 
   // Push filtered data into the sources whenever the filter changes.
   useEffect(() => {
     const map = mapRef.current;
-    if (map === null || !styleLoaded) return;
+    if (map === null || !map.getSource(ROUTES_SOURCE_ID)) return;
 
     const visibleRoutes = ROUTES.filter((route) => {
       if (!visibleOperatorIds.has(route.operatorId)) return false;
@@ -283,15 +294,15 @@ export function FerryMap({ visibleOperatorIds, showInactiveRoutes, vessels }: Fe
 
     const terminalsSource = map.getSource<GeoJSONSource>(TERMINALS_SOURCE_ID);
     terminalsSource?.setData(terminalsToPointFeatureCollection(visibleRoutes, TERMINALS_BY_ID));
-  }, [visibleOperatorIds, showInactiveRoutes, styleLoaded]);
+  }, [visibleOperatorIds, showInactiveRoutes, styleRevision]);
 
   // Live vessel positions — pushed independently since they refresh on their own poll cadence.
   useEffect(() => {
     const map = mapRef.current;
-    if (map === null || !styleLoaded) return;
+    if (map === null || !map.getSource(ROUTES_SOURCE_ID)) return;
     const vesselsSource = map.getSource<GeoJSONSource>(VESSELS_SOURCE_ID);
     vesselsSource?.setData(vesselsToFeatureCollection(vessels));
-  }, [vessels, styleLoaded]);
+  }, [vessels, styleRevision]);
 
   return <div aria-label="Salish Sea ferry route map" role="region" ref={containerRef} style={{ width: "100%", height: "100%" }} />;
 }

@@ -7,6 +7,7 @@ import { css } from "styled-system/css";
 import type { OperatorId } from "@/domain/ferry";
 import { OPERATORS } from "@/data/operators";
 import { ROUTES } from "@/data/routes";
+import { BASEMAPS, type BasemapId } from "@/components/map/basemaps";
 import { FerryMap } from "@/components/map/ferry-map";
 import { OperatorFilter } from "@/components/panels/operator-filter";
 import { useVesselPositions } from "@/components/map/use-vessel-positions";
@@ -15,6 +16,7 @@ const ALL_OPERATOR_IDS = new Set<OperatorId>(OPERATORS.map((o) => o.id));
 
 export function AppShell() {
   const [visibleOperatorIds, setVisibleOperatorIds] = useState<ReadonlySet<OperatorId>>(ALL_OPERATOR_IDS);
+  const [basemapId, setBasemapId] = useState<BasemapId>("positron");
   const [showInactiveRoutes, setShowInactiveRoutes] = useState(false);
   const [showLiveVessels, setShowLiveVessels] = useState(false);
   const { vessels, unavailable: vesselsUnavailable } = useVesselPositions(showLiveVessels);
@@ -120,6 +122,24 @@ export function AppShell() {
             </p>
           ) : null}
         </div>
+        <div>
+          <label htmlFor="basemap" className={css({ display: "block", fontSize: "xs", fontWeight: "semibold", color: "fg.muted", textTransform: "uppercase", letterSpacing: "wide", mb: "2" })}>
+            Basemap
+          </label>
+          <select
+            id="basemap"
+            value={basemapId}
+            onChange={(event) => {
+              const id = event.target.value;
+              if (Object.hasOwn(BASEMAPS, id)) setBasemapId(id as BasemapId);
+            }}
+            className={css({ width: "full", minHeight: "11", px: "3", borderWidth: "1px", borderColor: "border.default", borderRadius: "md", bg: "bg.default", color: "fg.default", fontSize: "sm" })}
+          >
+            {Object.entries(BASEMAPS).map(([id, basemap]) => (
+              <option key={id} value={id}>{basemap.label}</option>
+            ))}
+          </select>
+        </div>
 
         <p className={css({ fontSize: "xs", color: "fg.subtle" })}>
           Route geometry prefers OSM ferry lines where they are vendored, then the navigable-water
@@ -134,6 +154,7 @@ export function AppShell() {
 
       <main className={css({ flex: "1", position: "relative", minHeight: { base: "60dvh", md: "auto" } })}>
         <FerryMap
+          basemapId={basemapId}
           visibleOperatorIds={visibleOperatorIds}
           showInactiveRoutes={showInactiveRoutes}
           vessels={vessels}
