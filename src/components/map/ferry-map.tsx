@@ -267,9 +267,16 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
         restored = true;
         restoreStyleLayers();
       };
+      if (loadStyle === undefined && map.isStyleLoaded()) {
+        handleStyleLoad();
+        return;
+      }
       map.once("style.load", handleStyleLoad);
       loadStyle?.();
-      if (map.isStyleLoaded()) handleStyleLoad();
+      if (map.isStyleLoaded()) {
+        map.off("style.load", handleStyleLoad);
+        handleStyleLoad();
+      }
     };
 
     restoreStyleLayersWhenReadyRef.current = restoreStyleLayersWhenReady;
