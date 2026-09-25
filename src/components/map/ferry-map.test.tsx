@@ -24,9 +24,11 @@ const mock = vi.hoisted(() => {
 });
 
 vi.mock("maplibre-gl", () => ({
-  Map: class { constructor() { return mock.map; } },
-  NavigationControl: class {},
-  Popup: class {},
+  Map: vi.fn(function (this: typeof mock.map) {
+    Object.assign(this, mock.map);
+  }),
+  NavigationControl: vi.fn(),
+  Popup: vi.fn(),
   setWorkerUrl: vi.fn(),
 }));
 
