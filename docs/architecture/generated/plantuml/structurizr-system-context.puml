@@ -22,6 +22,8 @@ AddRelTag("Relationship", $textColor="#444444", $lineColor="#444444", $lineStyle
 Person(Mapuser, "Map user", $descr="Browses and filters ferry routes.", $tags="Element", $link="")
 Person(Maintainer, "Maintainer", $descr="Curates operators, terminals, routes, and geometry inputs.", $tags="Element", $link="")
 System(OpenStreetMap, "OpenStreetMap", $descr="Raster tiles for the basemap.", $tags="External", $link="")
+System(OpenFreeMap, "OpenFreeMap", $descr="Hosted no-key basemap styles and vector tiles.", $tags="External", $link="")
+System(VersaTiles, "VersaTiles", $descr="Hosted no-key basemap style and vector tiles.", $tags="External", $link="")
 System(WSDOTVesselLocationsAPI, "WSDOT Vessel Locations API", $descr="Optional live vessel positions.", $tags="External", $link="")
 System(SalishSeaFerryMap, "Salish Sea Ferry Map", $descr="Interactive route map spanning multiple ferry operators.", $tags="Element", $link="")
 
@@ -29,6 +31,8 @@ Rel(Mapuser, SalishSeaFerryMap, "Requests pages", $techn="", $tags="Relationship
 Rel(Maintainer, SalishSeaFerryMap, "Curates operators, terminals, routes, and geometry", $techn="", $tags="Relationship", $link="")
 Rel(SalishSeaFerryMap, WSDOTVesselLocationsAPI, "Vessel locations", $techn="", $tags="Relationship", $link="")
 Rel(SalishSeaFerryMap, OpenStreetMap, "Basemap tiles", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap, OpenFreeMap, "Basemap styles and tiles", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap, VersaTiles, "Basemap styles and tiles", $techn="", $tags="Relationship", $link="")
 
 SHOW_LEGEND(true)
 hide stereotypes

@@ -26,6 +26,8 @@ AddBoundaryTag("Element", $bgColor="#ffffff", $borderColor="#444444", $fontColor
 Person(Mapuser, "Map user", $descr="Browses and filters ferry routes.", $tags="Element", $link="")
 
 System(OpenStreetMap, "OpenStreetMap", $descr="Raster tiles for the basemap.", $tags="External", $link="")
+System(OpenFreeMap, "OpenFreeMap", $descr="Hosted no-key basemap styles and vector tiles.", $tags="External", $link="")
+System(VersaTiles, "VersaTiles", $descr="Hosted no-key basemap style and vector tiles.", $tags="External", $link="")
 
 System_Boundary("SalishSeaFerryMap_boundary", "Salish Sea Ferry Map", $tags="Element") {
   Container_Boundary("SalishSeaFerryMap.BrowsermapUI_boundary", "Browser map UI", $tags="Element") {
@@ -49,6 +51,8 @@ Rel(SalishSeaFerryMap.BrowsermapUI.Appshell, SalishSeaFerryMap.BrowsermapUI.Vess
 Rel(SalishSeaFerryMap.BrowsermapUI.Appshell, SalishSeaFerryMap.Nextjswebapp, "Operators, routes", $techn="", $tags="Relationship", $link="")
 Rel(SalishSeaFerryMap.BrowsermapUI.Ferrymap, SalishSeaFerryMap.Nextjswebapp, "Feature collections", $techn="", $tags="Relationship", $link="")
 Rel(SalishSeaFerryMap.BrowsermapUI.Ferrymap, OpenStreetMap, "Basemap tiles", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI.Ferrymap, OpenFreeMap, "Basemap styles and tiles", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowsermapUI.Ferrymap, VersaTiles, "Basemap styles and tiles", $techn="", $tags="Relationship", $link="")
 Rel(SalishSeaFerryMap.BrowsermapUI.Vesselpositionshook, SalishSeaFerryMap.Livevesselproxy, "GET /api/vessels", $techn="", $tags="Relationship", $link="")
 
 SHOW_LEGEND(true)

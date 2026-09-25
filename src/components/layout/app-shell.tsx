@@ -6,6 +6,7 @@ import { Checkbox } from "@ark-ui/react/checkbox";
 import type { OperatorId } from "@/domain/ferry";
 import { OPERATORS } from "@/data/operators";
 import { ROUTES } from "@/data/routes";
+import { BASEMAPS, type BasemapId } from "@/components/map/basemaps";
 import { FerryMap } from "@/components/map/ferry-map";
 import { OperatorFilter } from "@/components/panels/operator-filter";
 import { useVesselPositions } from "@/components/map/use-vessel-positions";
@@ -27,6 +28,7 @@ function FerryMark() {
 
 export function AppShell() {
   const [visibleOperatorIds, setVisibleOperatorIds] = useState<ReadonlySet<OperatorId>>(ALL_OPERATOR_IDS);
+  const [basemapId, setBasemapId] = useState<BasemapId>("positron");
   const [showInactiveRoutes, setShowInactiveRoutes] = useState(false);
   const [showLiveVessels, setShowLiveVessels] = useState(false);
   const { vessels, unavailable: vesselsUnavailable } = useVesselPositions(showLiveVessels);
@@ -94,6 +96,23 @@ export function AppShell() {
           {showLiveVessels && vesselsUnavailable ? <p className="helper-text">Live positions need a free WSDOT API key — see README.md.</p> : null}
         </section>
 
+        <section className="filter-section" aria-labelledby="basemap-label">
+          <label id="basemap-label" htmlFor="basemap" className="basemap-label">Basemap</label>
+          <select
+            id="basemap"
+            value={basemapId}
+            onChange={(event) => {
+              const id = event.target.value;
+              if (Object.hasOwn(BASEMAPS, id)) setBasemapId(id as BasemapId);
+            }}
+            className="basemap-select"
+          >
+            {Object.entries(BASEMAPS).map(([id, basemap]) => (
+              <option key={id} value={id}>{basemap.label}</option>
+            ))}
+          </select>
+        </section>
+
         <footer className="sidebar-footer">
           <p>Approximate locations for reference only.<br /><strong>Not for navigation.</strong></p>
           <span>Updated September 2026</span>
@@ -101,7 +120,7 @@ export function AppShell() {
       </aside>
 
       <main className="map-panel">
-        <FerryMap visibleOperatorIds={visibleOperatorIds} showInactiveRoutes={showInactiveRoutes} vessels={vessels} />
+        <FerryMap basemapId={basemapId} visibleOperatorIds={visibleOperatorIds} showInactiveRoutes={showInactiveRoutes} vessels={vessels} />
         <div className="map-caption" aria-hidden="true"><span className="map-caption-dot" /> Salish Sea region</div>
       </main>
     </div>
