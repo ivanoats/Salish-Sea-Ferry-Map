@@ -13,6 +13,7 @@ const mock = vi.hoisted(() => {
     on: vi.fn((event: string, ...args: unknown[]) => {
       if (args.length === 1) handlers.set(event, args[0] as () => void);
     }),
+    isStyleLoaded: vi.fn(() => false),
     getSource: vi.fn((id: string) => sources.get(id)),
     addSource: vi.fn((id: string) => sources.set(id, { setData: vi.fn() })),
     getLayer: vi.fn((id: string) => layers.get(id)),
@@ -37,6 +38,7 @@ beforeEach(() => {
   mock.sources.clear();
   mock.layers.clear();
   mock.handlers.clear();
+  mock.map.isStyleLoaded.mockReturnValue(false);
 });
 
 it("restores overlays and the latest filters after switching basemaps", () => {
@@ -45,8 +47,8 @@ it("restores overlays and the latest filters after switching basemaps", () => {
     showInactiveRoutes: false,
     vessels: [],
   };
+  mock.map.isStyleLoaded.mockReturnValue(true);
   const { rerender } = render(<FerryMap {...props} basemapId="osm" />);
-  act(() => mock.handlers.get("style.load")?.());
   expect(mock.sources.get("ferry-routes")?.setData.mock.lastCall?.[0].features.length).toBeGreaterThan(0);
 
   rerender(<FerryMap {...props} basemapId="dark" />);

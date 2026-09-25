@@ -27,10 +27,10 @@ Person(Maintainer, "Maintainer", $descr="Curates operators, terminals, routes, a
 
 System_Boundary("SalishSeaFerryMap_boundary", "Salish Sea Ferry Map", $tags="Element") {
   Container_Boundary("SalishSeaFerryMap.Nextjswebapp_boundary", "Next.js web app", $tags="Element") {
-    Component(SalishSeaFerryMap.Nextjswebapp.Staticferrydataset, "Static ferry dataset", $techn="src/data/", $descr="Curated operators, terminals, routes, and generated route-leg geometry.", $tags="Element", $link="")
-    Component(SalishSeaFerryMap.Nextjswebapp.AppRouterpages, "App Router pages", $techn="src/app/", $descr="Route entries and layout for the map and About pages.", $tags="Element", $link="")
     Component(SalishSeaFerryMap.Nextjswebapp.GeoJSONderivation, "GeoJSON derivation", $techn="src/domain/geojson.ts", $descr="Builds route lines and terminal points, including shared-leg offsets.", $tags="Element", $link="")
     Component(SalishSeaFerryMap.Nextjswebapp.Domainmodel, "Domain model", $techn="src/domain/", $descr="Shared ferry and vessel types plus pure helpers.", $tags="Element", $link="")
+    Component(SalishSeaFerryMap.Nextjswebapp.Staticferrydataset, "Static ferry dataset", $techn="src/data/", $descr="Curated operators, terminals, routes, and generated route-leg geometry.", $tags="Element", $link="")
+    Component(SalishSeaFerryMap.Nextjswebapp.AppRouterpages, "App Router pages", $techn="src/app/", $descr="Route entries and layout for the map and About pages.", $tags="Element", $link="")
   }
 
   Container(SalishSeaFerryMap.Livevesselproxy, "Live vessel proxy", $techn="Next.js route handler, TypeScript", $descr="Fetches WSDOT vessel positions without exposing the API key to the browser.", $tags="Element", $link="")

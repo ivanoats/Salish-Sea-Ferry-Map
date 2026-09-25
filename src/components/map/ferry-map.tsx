@@ -250,10 +250,7 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
       });
     }
 
-    mapRef.current = map;
-    // setStyle removes custom sources and layers. Rebuild them above each basemap,
-    // then trigger data effects with the latest filters and vessel positions.
-    map.on("style.load", () => {
+    const restoreStyleLayers = () => {
       for (const [id, source] of Object.entries(sources)) {
         if (!map.getSource(id)) map.addSource(id, source);
       }
@@ -261,7 +258,13 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
         if (!map.getLayer(layer.id)) map.addLayer(layer);
       }
       setStyleRevision((revision) => revision + 1);
-    });
+    };
+
+    mapRef.current = map;
+    // setStyle removes custom sources and layers. Rebuild them above each basemap,
+    // then trigger data effects with the latest filters and vessel positions.
+    map.on("style.load", restoreStyleLayers);
+    if (map.isStyleLoaded()) restoreStyleLayers();
 
     return () => {
       popupRef.current?.remove();
