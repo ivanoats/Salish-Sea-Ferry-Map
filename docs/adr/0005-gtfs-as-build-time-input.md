@@ -110,7 +110,9 @@ published window, but its seasonal classification remains manually verified:
 a short schedule cannot establish a year-round operating pattern.
 
 `data/gtfs/mappings.json` pins route and stop identifiers explicitly, including
-many-to-one and one-to-many route correspondences. Coordinates use a 1 km
+many-to-one and one-to-many route correspondences. Mapped stops must belong
+to a matched route, with named exceptions for missing publisher stop_times;
+those exceptions fail when membership evidence returns. Coordinates use a 1 km
 terminal-area tolerance because feed points may represent a berth, terminal
 building, or older dock. This catches larger displacement, not dock-level drift;
 existing OSM coordinate checks remain necessary.

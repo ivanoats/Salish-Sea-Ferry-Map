@@ -123,8 +123,8 @@
       "12443"
     ],
     "stopIds": {
-      "tsawwassen": "2505789",
-      "swartz-bay": "2505787"
+      "tsawwassen": "2505790",
+      "swartz-bay": "2506537"
     }
   },
   {
@@ -143,8 +143,8 @@
       "12393"
     ],
     "stopIds": {
-      "tsawwassen": "2505789",
-      "duke-point": "2505784"
+      "tsawwassen": "2505790",
+      "duke-point": "2505782"
     }
   },
   {
@@ -154,7 +154,7 @@
     ],
     "stopIds": {
       "horseshoe-bay": "2505786",
-      "langdale": "2505791"
+      "langdale": "2505792"
     }
   },
   {
@@ -173,7 +173,7 @@
       "12401"
     ],
     "stopIds": {
-      "langdale": "2505791",
+      "langdale": "2505792",
       "gambier-island": "2505799",
       "keats-island": "2506596"
     },
@@ -186,7 +186,7 @@
     ],
     "stopIds": {
       "horseshoe-bay": "2505786",
-      "bowen-island": "2505796"
+      "bowen-island": "2505797"
     }
   },
   {
@@ -196,7 +196,7 @@
     ],
     "stopIds": {
       "comox": "2505801",
-      "powell-river": "2505812"
+      "powell-river": "2505813"
     }
   },
   {
@@ -208,7 +208,11 @@
       "powell-river": "2505812",
       "texada-island": "2505834"
     },
-    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
+    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification.",
+    "stopMembershipSkipReasons": {
+      "powell-river": "Publisher supplies no stop_times for this route; only feed-wide coordinates can be checked.",
+      "texada-island": "Publisher supplies no stop_times for this route; only feed-wide coordinates can be checked."
+    }
   },
   {
     "routeId": "bcf-swartzbay-fulford",
@@ -219,7 +223,11 @@
       "swartz-bay": "2505787",
       "fulford-harbour": "2505845"
     },
-    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
+    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification.",
+    "stopMembershipSkipReasons": {
+      "swartz-bay": "Publisher supplies no stop_times for this route; only feed-wide coordinates can be checked.",
+      "fulford-harbour": "Publisher supplies no stop_times for this route; only feed-wide coordinates can be checked."
+    }
   },
   {
     "routeId": "bcf-swartzbay-southerngulfislands",
@@ -227,9 +235,9 @@
       "12422"
     ],
     "stopIds": {
-      "swartz-bay": "2505787",
-      "galiano-island": "2505857",
-      "mayne-island": "2505918",
+      "swartz-bay": "2505788",
+      "galiano-island": "2505858",
+      "mayne-island": "2505919",
       "pender-island": "2505854",
       "saturna-island": "2505856"
     }
@@ -243,7 +251,11 @@
       "crofton": "2505867",
       "vesuvius-bay": "2505917"
     },
-    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
+    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification.",
+    "stopMembershipSkipReasons": {
+      "crofton": "Publisher supplies no stop_times for this route; only feed-wide coordinates can be checked.",
+      "vesuvius-bay": "Publisher supplies no stop_times for this route; only feed-wide coordinates can be checked."
+    }
   },
   {
     "routeId": "bcf-tsawwassen-southerngulfislands",
@@ -251,9 +263,9 @@
       "12422"
     ],
     "stopIds": {
-      "tsawwassen": "2505789",
-      "galiano-island": "2505857",
-      "mayne-island": "2505918",
+      "tsawwassen": "2506403",
+      "galiano-island": "2505858",
+      "mayne-island": "2505919",
       "pender-island": "2505854",
       "saturna-island": "2505856"
     }
@@ -267,7 +279,11 @@
       "brentwood-bay": "2505859",
       "mill-bay": "2505868"
     },
-    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
+    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification.",
+    "stopMembershipSkipReasons": {
+      "brentwood-bay": "Publisher supplies no stop_times for this route; only feed-wide coordinates can be checked.",
+      "mill-bay": "Publisher supplies no stop_times for this route; only feed-wide coordinates can be checked."
+    }
   },
   {
     "routeId": "bcf-nanaimo-gabriola",
@@ -276,7 +292,7 @@
     ],
     "stopIds": {
       "nanaimo-harbour": "2505850",
-      "gabriola-island": "2505851"
+      "gabriola-island": "2505852"
     },
     "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
   },
@@ -287,7 +303,7 @@
     ],
     "stopIds": {
       "chemainus": "2505865",
-      "thetis-island": "2505869",
+      "thetis-island": "2505870",
       "penelakut-island": "2505915"
     }
   },
@@ -307,7 +323,7 @@
       "12429"
     ],
     "stopIds": {
-      "denman-island-east": "2505838",
+      "denman-island-east": "2505839",
       "hornby-island": "2505841"
     }
   },
@@ -320,7 +336,11 @@
       "campbell-river": "2505805",
       "quadra-quathiaski": "2505807"
     },
-    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
+    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification.",
+    "stopMembershipSkipReasons": {
+      "campbell-river": "Publisher supplies no stop_times for this route; only feed-wide coordinates can be checked.",
+      "quadra-quathiaski": "Publisher supplies no stop_times for this route; only feed-wide coordinates can be checked."
+    }
   },
   {
     "routeId": "bcf-quadra-cortes",
@@ -328,10 +348,13 @@
       "12431"
     ],
     "stopIds": {
-      "quadra-heriot-bay": "2505808",
+      "quadra-heriot-bay": "2505809",
       "cortes-island": "2505844"
     },
-    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
+    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification.",
+    "stopMembershipSkipReasons": {
+      "cortes-island": "Published route stop_times omit this curated terminal; feed-wide coordinates remain checked. Requires manual verification."
+    }
   },
   {
     "routeId": "bcf-frenchcreek-lasqueti",
@@ -363,7 +386,7 @@
       "100337"
     ],
     "stopIds": {
-      "seattle-colman-dock": "1907",
+      "seattle-colman-dock": "1889",
       "vashon-north": "99908"
     }
   },

@@ -56,8 +56,13 @@ ferry data enters the generated snapshot. Total archives are ~14 MB.
 Route and stop IDs are explicit and operator-specific. They are not fuzzy name
 matches or recalculated nearest neighbours, so an ID disappearing fails review.
 WSF's directional crossings combine into curated circuits; BC's Southern Gulf
-Islands record corroborates two curated routes. This is not a check of every
-sailing's stop order or complete end-to-end connectivity.
+Islands record corroborates two curated routes. Each mapped stop must occur in at least one matched route's stop_times.
+Eleven terminal memberships in the initial BC snapshot lack this evidence and
+have named exceptions in `stopMembershipSkipReasons`; these still receive
+coordinate checks and fail if the stop returns to the matched route. Terminal
+building IDs have been replaced with the corresponding served boarding-stop IDs
+where available. This is not a check of every sailing's stop order or complete
+end-to-end connectivity.
 
 The coordinate tolerance is **1,000 metres**. This allows terminal buildings,
 berths, and older dock points, including the approximately 0.8 km discrepancies

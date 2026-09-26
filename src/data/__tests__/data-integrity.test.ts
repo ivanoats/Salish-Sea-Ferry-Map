@@ -187,7 +187,8 @@ describe("pinned GTFS corroboration (ADR 0005)", () => {
     const { validateGtfs } = await import("../../../scripts/gtfs-validation");
     const report = validateGtfs(ROUTES, [...TERMINALS_BY_ID.values()], GTFS, mappings);
     for (const warning of report.warnings) console.warn(`GTFS coverage: ${warning}`);
-    expect(report.checkedRoutes).toBeGreaterThan(0);
+    // A feed refresh may change coverage, but that change must be reviewed.
+    expect(report.checkedRoutes).toBe(32);
     expect(report.errors).toEqual([]);
   });
 });
