@@ -1,0 +1,380 @@
+[
+  {
+    "routeId": "wsf-seattle-bainbridge",
+    "gtfsRouteIds": [
+      "37",
+      "73"
+    ],
+    "stopIds": {
+      "seattle-colman-dock": "7",
+      "bainbridge-island": "3"
+    }
+  },
+  {
+    "routeId": "wsf-seattle-bremerton",
+    "gtfsRouteIds": [
+      "47",
+      "74"
+    ],
+    "stopIds": {
+      "seattle-colman-dock": "7",
+      "bremerton": "4"
+    }
+  },
+  {
+    "routeId": "wsf-fauntleroy-vashon-southworth",
+    "gtfsRouteIds": [
+      "2022",
+      "209",
+      "2220",
+      "229",
+      "920",
+      "922"
+    ],
+    "stopIds": {
+      "fauntleroy": "9",
+      "vashon-north": "22",
+      "southworth": "20"
+    }
+  },
+  {
+    "routeId": "wsf-point-defiance-tahlequah",
+    "gtfsRouteIds": [
+      "1621",
+      "2116"
+    ],
+    "stopIds": {
+      "point-defiance": "16",
+      "tahlequah": "21"
+    }
+  },
+  {
+    "routeId": "wsf-edmonds-kingston",
+    "gtfsRouteIds": [
+      "128",
+      "812"
+    ],
+    "stopIds": {
+      "edmonds": "8",
+      "kingston": "12"
+    }
+  },
+  {
+    "routeId": "wsf-mukilteo-clinton",
+    "gtfsRouteIds": [
+      "145",
+      "514"
+    ],
+    "stopIds": {
+      "mukilteo": "14",
+      "clinton": "5"
+    }
+  },
+  {
+    "routeId": "wsf-port-townsend-coupeville",
+    "gtfsRouteIds": [
+      "1117",
+      "1711"
+    ],
+    "stopIds": {
+      "port-townsend": "17",
+      "coupeville": "11"
+    }
+  },
+  {
+    "routeId": "wsf-san-juan-islands",
+    "gtfsRouteIds": [
+      "101",
+      "1013",
+      "1015",
+      "1018",
+      "110",
+      "113",
+      "115",
+      "118",
+      "131",
+      "1310",
+      "1315",
+      "1318",
+      "151",
+      "1510",
+      "1513",
+      "1518",
+      "181",
+      "1810",
+      "1813",
+      "1815"
+    ],
+    "stopIds": {
+      "anacortes": "1",
+      "lopez-island": "13",
+      "shaw-island": "18",
+      "orcas-island": "15",
+      "friday-harbor": "10"
+    }
+  },
+  {
+    "routeId": "wsf-anacortes-sidney",
+    "skipReason": "Sidney service and stop are absent from this WSF snapshot; absence alone cannot establish suspension."
+  },
+  {
+    "routeId": "bcf-tsawwassen-swartzbay",
+    "gtfsRouteIds": [
+      "12443"
+    ],
+    "stopIds": {
+      "tsawwassen": "2505789",
+      "swartz-bay": "2505787"
+    }
+  },
+  {
+    "routeId": "bcf-departurebay-horseshoebay",
+    "gtfsRouteIds": [
+      "12444"
+    ],
+    "stopIds": {
+      "departure-bay": "2505781",
+      "horseshoe-bay": "2505786"
+    }
+  },
+  {
+    "routeId": "bcf-tsawwassen-dukepoint",
+    "gtfsRouteIds": [
+      "12393"
+    ],
+    "stopIds": {
+      "tsawwassen": "2505789",
+      "duke-point": "2505784"
+    }
+  },
+  {
+    "routeId": "bcf-horseshoebay-langdale",
+    "gtfsRouteIds": [
+      "12394"
+    ],
+    "stopIds": {
+      "horseshoe-bay": "2505786",
+      "langdale": "2505791"
+    }
+  },
+  {
+    "routeId": "bcf-earlscove-salterybay",
+    "gtfsRouteIds": [
+      "12395"
+    ],
+    "stopIds": {
+      "earls-cove": "2505794",
+      "saltery-bay": "2505937"
+    }
+  },
+  {
+    "routeId": "bcf-langdale-gambier-keats",
+    "gtfsRouteIds": [
+      "12401"
+    ],
+    "stopIds": {
+      "langdale": "2505791",
+      "gambier-island": "2505799",
+      "keats-island": "2506596"
+    },
+    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
+  },
+  {
+    "routeId": "bcf-horseshoebay-bowen",
+    "gtfsRouteIds": [
+      "12400"
+    ],
+    "stopIds": {
+      "horseshoe-bay": "2505786",
+      "bowen-island": "2505796"
+    }
+  },
+  {
+    "routeId": "bcf-comox-powellriver",
+    "gtfsRouteIds": [
+      "12396"
+    ],
+    "stopIds": {
+      "comox": "2505801",
+      "powell-river": "2505812"
+    }
+  },
+  {
+    "routeId": "bcf-powellriver-texada",
+    "gtfsRouteIds": [
+      "12397"
+    ],
+    "stopIds": {
+      "powell-river": "2505812",
+      "texada-island": "2505834"
+    },
+    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
+  },
+  {
+    "routeId": "bcf-swartzbay-fulford",
+    "gtfsRouteIds": [
+      "12427"
+    ],
+    "stopIds": {
+      "swartz-bay": "2505787",
+      "fulford-harbour": "2505845"
+    },
+    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
+  },
+  {
+    "routeId": "bcf-swartzbay-southerngulfislands",
+    "gtfsRouteIds": [
+      "12422"
+    ],
+    "stopIds": {
+      "swartz-bay": "2505787",
+      "galiano-island": "2505857",
+      "mayne-island": "2505918",
+      "pender-island": "2505854",
+      "saturna-island": "2505856"
+    }
+  },
+  {
+    "routeId": "bcf-crofton-vesuvius",
+    "gtfsRouteIds": [
+      "12426"
+    ],
+    "stopIds": {
+      "crofton": "2505867",
+      "vesuvius-bay": "2505917"
+    },
+    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
+  },
+  {
+    "routeId": "bcf-tsawwassen-southerngulfislands",
+    "gtfsRouteIds": [
+      "12422"
+    ],
+    "stopIds": {
+      "tsawwassen": "2505789",
+      "galiano-island": "2505857",
+      "mayne-island": "2505918",
+      "pender-island": "2505854",
+      "saturna-island": "2505856"
+    }
+  },
+  {
+    "routeId": "bcf-brentwoodbay-millbay",
+    "gtfsRouteIds": [
+      "12402"
+    ],
+    "stopIds": {
+      "brentwood-bay": "2505859",
+      "mill-bay": "2505868"
+    },
+    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
+  },
+  {
+    "routeId": "bcf-nanaimo-gabriola",
+    "gtfsRouteIds": [
+      "12425"
+    ],
+    "stopIds": {
+      "nanaimo-harbour": "2505850",
+      "gabriola-island": "2505851"
+    },
+    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
+  },
+  {
+    "routeId": "bcf-chemainus-thetis-penelakut",
+    "gtfsRouteIds": [
+      "12405"
+    ],
+    "stopIds": {
+      "chemainus": "2505865",
+      "thetis-island": "2505869",
+      "penelakut-island": "2505915"
+    }
+  },
+  {
+    "routeId": "bcf-buckleybay-denman",
+    "gtfsRouteIds": [
+      "12428"
+    ],
+    "stopIds": {
+      "buckley-bay": "2505803",
+      "denman-island-west": "2505836"
+    }
+  },
+  {
+    "routeId": "bcf-denman-hornby",
+    "gtfsRouteIds": [
+      "12429"
+    ],
+    "stopIds": {
+      "denman-island-east": "2505838",
+      "hornby-island": "2505841"
+    }
+  },
+  {
+    "routeId": "bcf-campbellriver-quadra",
+    "gtfsRouteIds": [
+      "12430"
+    ],
+    "stopIds": {
+      "campbell-river": "2505805",
+      "quadra-quathiaski": "2505807"
+    },
+    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
+  },
+  {
+    "routeId": "bcf-quadra-cortes",
+    "gtfsRouteIds": [
+      "12431"
+    ],
+    "stopIds": {
+      "quadra-heriot-bay": "2505808",
+      "cortes-island": "2505844"
+    },
+    "calendarSkipReason": "Publisher includes this route but supplies no service dates at or after the snapshot date. Status requires manual verification."
+  },
+  {
+    "routeId": "bcf-frenchcreek-lasqueti",
+    "skipReason": "BC feed omits Route 55 and its French Creek / Lasqueti stops."
+  },
+  {
+    "routeId": "blackball-port-angeles-victoria",
+    "gtfsRouteIds": [
+      "coho"
+    ],
+    "stopIds": {
+      "port-angeles": "pa",
+      "victoria-belleville": "bc"
+    }
+  },
+  {
+    "routeId": "kcwt-seattle-west-seattle",
+    "gtfsRouteIds": [
+      "100336"
+    ],
+    "stopIds": {
+      "seattle-colman-dock": "1907",
+      "west-seattle-seacrest": "99997"
+    }
+  },
+  {
+    "routeId": "kcwt-seattle-vashon",
+    "gtfsRouteIds": [
+      "100337"
+    ],
+    "stopIds": {
+      "seattle-colman-dock": "1907",
+      "vashon-north": "99908"
+    }
+  },
+  {
+    "routeId": "skagit-guemes",
+    "gtfsRouteIds": [
+      "76436"
+    ],
+    "stopIds": {
+      "anacortes-guemes-dock": "4212587",
+      "guemes-island": "4212588"
+    }
+  }
+]

@@ -141,3 +141,11 @@ stale table fails in CI rather than silently drifting.
 upstream `mesh-route.ts` it was ported from, deliberately and in ways the
 file's own header lists. Copying the upstream version over it would revert
 those silently. Port individual upstream changes across by hand.
+
+## `gtfs/`
+
+Pinned operator GTFS archives corroborate the curated dataset under
+[ADR 0005](../docs/adr/0005-gtfs-as-build-time-input.md). See
+[the feed manifest and refresh guide](gtfs/README.md) for coverage, exceptions,
+and offline generation. These inputs and their generated validation snapshot
+are never imported by application code.

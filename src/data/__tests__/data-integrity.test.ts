@@ -178,3 +178,16 @@ describe("ferry dataset integrity", () => {
     expect(geometry?.coordinates.slice(1, -1)).not.toEqual([]);
   });
 });
+
+// Only tests import this generated snapshot; the application keeps curated data.
+describe("pinned GTFS corroboration (ADR 0005)", () => {
+  it("checks mapped route ids, terminal displacement, and service evidence", async () => {
+    const { GTFS } = await import("../generated/gtfs");
+    const { default: mappings } = await import("../../../data/gtfs/mappings.json");
+    const { validateGtfs } = await import("../../../scripts/gtfs-validation");
+    const report = validateGtfs(ROUTES, [...TERMINALS_BY_ID.values()], GTFS, mappings);
+    for (const warning of report.warnings) console.warn(`GTFS coverage: ${warning}`);
+    expect(report.checkedRoutes).toBeGreaterThan(0);
+    expect(report.errors).toEqual([]);
+  });
+});
