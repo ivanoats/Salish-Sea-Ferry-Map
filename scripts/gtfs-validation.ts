@@ -109,6 +109,10 @@ function checkCalendar(route: FerryRoute, referenceDate: string | null, matched:
       if (!matched.some((candidate) => candidate.serviceDates.length)) report.errors.push(`${route.id}: seasonal route has no service in snapshot`);
       report.warnings.push(`${route.id}: seasonal classification still requires manual verification`);
       break;
+    default: {
+      const unhandledStatus: never = route.status;
+      report.errors.push(`${route.id}: unsupported route status ${unhandledStatus}`);
+    }
   }
 }
 
