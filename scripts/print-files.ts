@@ -13,7 +13,7 @@
 //
 // scripts/export-print-files.ts writes these out; this module only draws
 // and rasterizes, so the tests can check what it produces.
-import sharp from "sharp";
+import sharp, { type OutputInfo } from "sharp";
 import {
   CELL,
   LABEL_DIRECTIONS,
@@ -244,8 +244,11 @@ export const printFileSvg = (product: Product, themeName: ThemeName, landStyle: 
  * without the other and the file comes out the wrong size for Printful,
  * which is what print-files.test.ts guards.
  */
-export const rasterizePrintFile = async (svg: string, dpi: number) => {
-  if (!Number.isFinite(dpi) || dpi < MIN_DPI) throw new Error(`dpi must be at least ${MIN_DPI}, Printful's minimum`);
+export const rasterizePrintFile = (svg: string, dpi: number): Promise<{ data: Buffer; info: OutputInfo }> => {
+  // Rejected rather than thrown, so callers get a promise either way.
+  if (!Number.isFinite(dpi) || dpi < MIN_DPI) {
+    return Promise.reject(new Error(`dpi must be at least ${MIN_DPI}, Printful's minimum`));
+  }
   const rasterSvg = svg.replace(
     /width="([\d.]+)in" height="([\d.]+)in"/,
     (_, w: string, h: string) => `width="${Number(w) * 72}" height="${Number(h) * 72}"`,
