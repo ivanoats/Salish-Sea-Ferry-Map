@@ -17,5 +17,5 @@ For the chronological history of status changes, see
 | [0002](./0002-small-domain-derived-views.md) | Accepted | Keep the core domain model small and derive map views from it |
 | [0003](./0003-nextjs-maplibre-and-server-proxy.md) | Accepted | Use Next.js App Router with a client-side MapLibre map and a server-side vessel proxy |
 | [0004](./0004-route-map-scope.md) | Accepted | Keep the product scoped to route mapping rather than trip planning or navigation |
-| [0005](./0005-gtfs-as-build-time-input.md) | Proposed | Treat GTFS feeds as build-time inputs, not a runtime data source |
+| [0005](./0005-gtfs-as-build-time-input.md) | Accepted | Treat GTFS feeds as build-time inputs, not a runtime data source |
 | [0006](./0006-octolinear-diagram-as-separate-page.md) | Accepted | Draw the octolinear route diagram as a separate SVG page over the same dataset |

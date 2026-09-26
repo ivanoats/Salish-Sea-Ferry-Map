@@ -1,6 +1,7 @@
 # ADR 0005: Treat GTFS feeds as build-time inputs, not a runtime data source
 
-- Status: Proposed
+- Status: Accepted
+- Accepted: 2026-09-25
 - Date: 2026-09-15
 - Informed by: a feed survey run 2026-09-15 against the Mobility Database catalog
 
@@ -15,8 +16,8 @@ that decision, limited to *how* GTFS data enters the project — not to what the
 product does with it.
 
 A survey of the Mobility Database catalog on 2026-09-15 found that the premise
-behind ADR 0001 has weakened but not disappeared. Ten of the twelve operators on
-the map now have a published GTFS feed:
+behind ADR 0001 has weakened but not disappeared. The survey recorded the following feed availability (historical observations,
+not a guarantee of current coverage):
 
 | Operator | Feed reachable | Freshness on 2026-09-15 |
 | --- | --- | --- |
@@ -44,10 +45,11 @@ containing 31,618 trips and 63,235 `stop_times` rows. TransLink's is 16 MB.
 Parsing GTFS in the browser is not a realistic option for a map whose current
 dataset is a few hundred lines of TypeScript.
 
-**No realtime feed exists.** The catalog contains zero `gtfs_rt` entries for
-Washington or British Columbia. The WSDOT Vessel Locations API proxied per
-[ADR 0003](./0003-nextjs-maplibre-and-server-proxy.md) remains the only live
-source, and GTFS does not change that.
+**Realtime is a separate concern.** The original survey incorrectly reported
+zero realtime catalog entries. The catalog includes WSF, King County Metro,
+and Kitsap realtime entries; their usefulness for vessel positions has not been
+assessed here. ADR 0003's WSDOT proxy remains the application's live source.
+This decision concerns static schedule archives only.
 
 ## Decision
 
@@ -77,7 +79,7 @@ service calendar. Drift becomes a failing test rather than a silent inaccuracy.
 
 **4. Feeds are vendored and pinned.** Downloaded archives live in `data/gtfs/`
 beside `salish-mesh.json`, committed alongside a manifest recording each feed's
-source URL, fetch date, and `feed_version`. Refreshing a feed is a deliberate,
+source URL, UTC fetch date, SHA-256, and `feed_version` (null if absent). Refreshing a feed is a deliberate,
 reviewable commit — not something that changes the build's output between two
 runs of the same source tree.
 
@@ -88,6 +90,41 @@ build, and it never causes a curated record to be weakened or removed.
 interface is *not* decided by this record. That would amend ADR 0004's product
 scope and requires its own ADR. This record only establishes that if such a
 feature is ever built, the data behind it arrives by the mechanism above.
+
+## Validation semantics
+
+The accepted implementation uses Python 3 standard-library ZIP and CSV readers
+in `scripts/build-gtfs.py`, with TypeScript assertions in the existing integrity
+suite. `npm run build-gtfs` reads only pinned archives; `npm run refresh-gtfs`
+explicitly downloads replacements. CI checks archive hashes and regenerated
+output without network access. Refresh failures retain the previous pin and
+warn. A malformed or hash-mismatched local pin is an error, not an outage.
+
+Validation uses each feed's UTC fetch date as its reference date. Expiry is
+assessed at that date, not against the machine clock; otherwise an unchanged
+checkout would stop validating over time. Refresh feeds to reassess freshness.
+Service evidence applies weekday calendars and added/removed service dates.
+Active routes require service on or after the reference date; suspended routes
+must not have such service. A seasonal route needs service somewhere in the
+published window, but its seasonal classification remains manually verified:
+a short schedule cannot establish a year-round operating pattern.
+
+`data/gtfs/mappings.json` pins route and stop identifiers explicitly, including
+many-to-one and one-to-many route correspondences. Mapped stops must belong
+to a matched route, with named exceptions for missing publisher stop_times;
+those exceptions fail when membership evidence returns. Coordinates use a 1 km
+terminal-area tolerance because feed points may represent a berth, terminal
+building, or older dock. This catches larger displacement, not dock-level drift;
+existing OSM coordinate checks remain necessary.
+
+Coverage gaps are named exceptions, never inferred status changes. The initial
+snapshot skips expired Clipper and Lummi feeds and an unreachable Kitsap feed.
+BC Ferries omits Route 55 and has several route records without usable future
+service dates. Those routes still receive presence and coordinate checks where
+possible, with calendar gaps reported separately. Sidney's suspended service
+is absent and remains manually verified. Calendar exceptions fail when service
+returns, requiring review. Full-route exceptions also require manual review on
+refresh. Coverage and refresh instructions live in `data/gtfs/README.md`.
 
 ## Consequences
 
@@ -102,7 +139,8 @@ feature is ever built, the data behind it arrives by the mechanism above.
 - Four operators — Puget Sound Express, Pierce County, Harbor Hopper, Hat Island
   — remain entirely hand-verified. Validation coverage is partial by nature, and
   the tests must not imply otherwise.
-- Vendoring adds roughly a megabyte of archives to the repository and makes feed
+- Vendoring adds roughly 14 MB of archives to the repository, mostly the
+  combined King County Metro feed and makes feed
   refresh a manual chore. That cost is accepted in exchange for reproducible builds.
 - GTFS route coverage will surface routes absent from the map — Hullo Ferries
   (Nanaimo–Vancouver), the TransLink SeaBus, Kitsap's Port Orchard and Annapolis
@@ -134,11 +172,8 @@ over plain HTTP.
 - Feed reachability, sizes, and validity windows above were measured by direct
   HTTP fetch on 2026-09-15; the archives' `feed_info.txt` and `calendar.txt`
   contents are the source of the freshness column.
-- The absence of realtime feeds was confirmed by filtering the Mobility Database
-  catalog for `gtfs_rt` entries in Washington and British Columbia — the result
-  set is empty.
-- `src/domain/vessel.ts` documents WSF as the only operator with a public live
-  position feed, which this survey confirms remains true.
+- The implementation rechecked the [Mobility Database catalog](https://github.com/MobilityData/mobility-database-catalogs/tree/main/catalogs/sources/gtfs)
+  and corrected the original realtime claim; no runtime feed integration is implied.
 - `data/README.md` establishes the convention that large build-time inputs live
   outside `src/` and `public/` so they cannot be bundled or served.
 - `scripts/build-route-geometry.ts` establishes the generate-into-`src/data`

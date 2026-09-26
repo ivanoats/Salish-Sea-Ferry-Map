@@ -1,0 +1,80 @@
+[
+  {
+    "operatorId": "wsf",
+    "url": "https://business.wsdot.wa.gov/Transit/csv_files/wsf/google_transit.zip",
+    "fetchedAt": "2026-09-26",
+    "archive": "wsf.zip",
+    "sha256": "fbef250ecb4cb2f08d8f7459488cb7263ebc63518e4419e206861ac840bd4add",
+    "feedVersion": null
+  },
+  {
+    "operatorId": "bc-ferries",
+    "url": "https://data.trilliumtransit.com/gtfs/bcferries-bc-ca/bcferries-bc-ca.zip",
+    "fetchedAt": "2026-09-26",
+    "archive": "bc-ferries.zip",
+    "sha256": "e1d28e3ad9752b00040312f7423dd8b01e0ea5b10f4102a0d05985dc5bf8079c",
+    "feedVersion": "UTC: 20-Aug-2026 17:58"
+  },
+  {
+    "operatorId": "black-ball",
+    "url": "https://mjcaction.com/MJC_GTFS_Public/blackball_google_transit.zip",
+    "fetchedAt": "2026-09-26",
+    "archive": "black-ball.zip",
+    "sha256": "6e09841ea65737db09b10ad8b1135fadf9c3bec9f08ba70a9909956957127dff",
+    "feedVersion": "20260810"
+  },
+  {
+    "operatorId": "king-county-water-taxi",
+    "url": "https://gtfs.sound.obaweb.org/prod/1_gtfs.zip",
+    "fetchedAt": "2026-09-26",
+    "archive": "king-county-water-taxi.zip",
+    "sha256": "be2e5158e6af9e5b26f4671b816edfd671410e2eb1606850db77e9c5bc70206c",
+    "feedVersion": "FAL26-161.1"
+  },
+  {
+    "operatorId": "kitsap-transit",
+    "url": "https://pride.kitsaptransit.com/gtfs/google_transit.zip",
+    "fetchedAt": "2026-09-26",
+    "skipReason": "HTTP Error 406: Not Acceptable"
+  },
+  {
+    "operatorId": "victoria-clipper",
+    "url": "https://addtransit.com/gtfsfile/42017/TheVictoriaClipper.zip",
+    "fetchedAt": "2026-09-26",
+    "archive": "victoria-clipper.zip",
+    "sha256": "2d746db2525d11316eb3d954221842d063bb9b2465623b88c0688fa76e2efda7",
+    "feedVersion": "6"
+  },
+  {
+    "operatorId": "skagit-county",
+    "url": "https://data.trilliumtransit.com/gtfs/guemesislandferry-wa-us/guemesislandferry-wa-us.zip",
+    "fetchedAt": "2026-09-26",
+    "archive": "skagit-county.zip",
+    "sha256": "c951e5713e1aac15d6c49ff0fc7a963b29a8f42cdd1888807425f595c94f1dec",
+    "feedVersion": "UTC: 22-Apr-2026 16:14"
+  },
+  {
+    "operatorId": "whatcom-county",
+    "url": "https://data.trilliumtransit.com/gtfs/lummiislandferry-wa-us/lummiislandferry-wa-us.zip",
+    "fetchedAt": "2026-09-26",
+    "archive": "whatcom-county.zip",
+    "sha256": "26060f3cb3b9c54a377a1777aff09d368c06c07a62b1e11c199e58b0be5e2b6b",
+    "feedVersion": "UTC: 08-Apr-2026 19:29"
+  },
+  {
+    "operatorId": "pierce-county",
+    "skipReason": "No usable published ferry feed identified in ADR 0005 survey"
+  },
+  {
+    "operatorId": "harbor-hopper",
+    "skipReason": "No usable published ferry feed identified in ADR 0005 survey"
+  },
+  {
+    "operatorId": "hat-island-ferry",
+    "skipReason": "No usable published ferry feed identified in ADR 0005 survey"
+  },
+  {
+    "operatorId": "puget-sound-express",
+    "skipReason": "No usable published ferry feed identified in ADR 0005 survey"
+  }
+]

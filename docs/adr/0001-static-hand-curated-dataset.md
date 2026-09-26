@@ -15,6 +15,10 @@ and terminal locations change slowly enough to curate by hand.
 Keep operators, terminals, and routes as readonly TypeScript data in `src/data/`
 and treat that dataset as the source of truth for the application.
 
+[ADR 0005](./0005-gtfs-as-build-time-input.md) adds pinned GTFS validation
+where usable feeds exist. It amends the sourcing process, not this ownership:
+feed disagreements require review, never automatic changes to curated records.
+
 ## Consequences
 
 - The application stays fast and reliable without depending on uneven external feeds.

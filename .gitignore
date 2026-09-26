@@ -86,3 +86,6 @@ Thumbs.db
 # skills-lock.json (which IS committed). Treated like node_modules.
 .agents/skills/
 .claude/skills/
+
+# Python build-time GTFS tooling
+__pycache__/
