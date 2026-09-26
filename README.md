@@ -42,7 +42,7 @@ It reads the same route records as the map. The only extra data is `src/data/sch
 - **Tee** (Stanley/Stella STTU169): the whole diagram, centered in the 12″ × 16″ front print area (3600 × 4800 px). There are also two lower-ink versions that don't fill the land: `-outline` draws only the coastlines, and `-waterline` adds two thin lines following the coast out into the water, the way engraved charts showed land and sea without fills.
 - **Tote** (Econscious EC8000): cropped to Central and South Puget Sound for the 9.5″ × 9.5″ print area (2850 × 2850 px). The whole diagram at that size would print its labels at about 4 pt, which is too small for DTG.
 
-`--dpi` changes the resolution (Printful's minimum is 150). The script draws with the same geometry as the page (`src/components/schematic/schematic-geometry.ts`), but it drops semi-transparency, which DTG handles badly, and on dark fabric it also drops the label halo.
+`--dpi` changes the resolution (Printful's minimum is 150). The drawing lives in `scripts/print-files.ts` and uses the same geometry as the page (`src/components/schematic/schematic-geometry.ts`), but it drops semi-transparency, which DTG handles badly, and on dark fabric it also drops the label halo.
 
 ## Stack
 
@@ -108,3 +108,5 @@ npm run lint
 ```
 
 `src/data/__tests__/data-integrity.test.ts` checks that every route's terminal ids actually resolve — the cheapest possible guard against a typo in the hand-written dataset silently dropping a route from the map.
+
+`scripts/print-files.test.ts` renders the tee and tote print files at full size and checks the PNGs' pixel dimensions and embedded DPI against Printful's print areas. The raster sizing in `scripts/print-files.ts` depends on how sharp and librsvg each apply density, so a small change there can produce the wrong size without breaking anything else.
