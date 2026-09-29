@@ -93,11 +93,11 @@ const terminals: SchematicLayout["terminals"] = {
   // --- Central Puget Sound ---
   kingston: { position: [26, 48], label: "Kingston", labelSide: "w" },
   edmonds: { position: [30, 48], label: "Edmonds", labelSide: "e" },
-  "seattle-pier-69": { position: [30, 51], label: "Pier 69", labelSide: "e" },
-  "seattle-colman-dock": { position: [29, 52], label: "Seattle", labelSide: "e" },
+  "seattle-pier-69": { position: [31, 52], label: "Pier 69", labelSide: "e" },
+  "seattle-colman-dock": { position: [30, 53], label: "Seattle", labelSide: "e" },
   "bainbridge-island": { position: [25, 52], label: "Bainbridge Island", labelSide: "n" },
   bremerton: { position: [22, 54], label: "Bremerton", labelSide: "w" },
-  "west-seattle-seacrest": { position: [31, 54], label: "West Seattle", labelSide: "e" },
+  "west-seattle-seacrest": { position: [30, 55], label: "West Seattle", labelSide: "e" },
 
   // --- South Puget Sound ---
   fauntleroy: { position: [31, 57], label: "Fauntleroy", labelSide: "e" },
@@ -130,9 +130,14 @@ const legVias: Record<string, readonly GridPoint[]> = {
   // Up Haro Strait, then down Admiralty Inlet between Port Townsend and
   // Whidbey, the way the boat actually goes.
   "seattle-pier-69>victoria-belleville": [[23, 44], [23, 37], [15, 37]],
-  // Out of Seattle to the southwest, then west across the Sound.
-  "seattle-colman-dock>bremerton": [[27, 54]],
-  "seattle-colman-dock>vashon-north": [[29, 56]],
+  // Out of Elliott Bay to the west and round Alki Point: Bremerton and
+  // Southworth across the Sound, Vashon down the west side of West Seattle.
+  "seattle-colman-dock>bremerton": [[29, 53], [28, 54]],
+  "seattle-colman-dock>southworth": [[29, 53], [28, 54], [27, 54]],
+  "seattle-colman-dock>vashon-north": [[29, 53], [28, 54]],
+  // Out of Elliott Bay to the northwest, past Magnolia.
+  "seattle-colman-dock>bainbridge-island": [[29, 52]],
+  "seattle-colman-dock>kingston": [[29, 52], [29, 51]],
 };
 
 export const SCHEMATIC_LAYOUT: SchematicLayout = { terminals, legVias };
@@ -214,8 +219,11 @@ export const SCHEMATIC_LAND: readonly { readonly name: string; readonly outline:
       [10, 7], [7, 7], [8, 6], [12, 2], [12, -4],
       [42, -4], [42, 70],
       // Washington, north from the South Sound to the border.
-      [28, 70], [28, 62], [32, 62], [33, 61], [33, 59], [31, 57], [30, 56], [30, 55], [31, 54],
-      [31, 53], [30, 52], [29, 52], [30, 51], [30, 45], [31, 44], [32, 43], [32, 35],
+      [28, 70], [28, 62], [32, 62], [33, 61], [33, 59],
+      // West Seattle from Fauntleroy up to Alki Point, then Elliott Bay:
+      // the West Seattle shore, the downtown waterfront, and Magnolia.
+      [29, 55], [31, 55], [31, 54], [30, 53], [31.6, 51.4], [31.6, 50.4], [30, 50.4],
+      [30, 45], [31, 44], [32, 43], [32, 35],
       // Fidalgo Island, reaching down to Whidbey at Deception Pass.
       [30.5, 33.5], [29.5, 33.5], [29.5, 32.5], [30, 32],
       [30, 30], [32, 30], [33, 29], [33, 26], [31, 24], [27, 24], [27, 23], [24, 23],
