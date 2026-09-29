@@ -37,12 +37,36 @@ const MIN_CHANNEL = 0.25;
 const distanceToLand = (point: GridPoint): number =>
   SCHEMATIC_LAND.some(({ outline }) => insidePolygon(point, outline)) ? 0 : distanceToCoast(point);
 
-/** Shortest distance between two polygon outlines that don't overlap. */
+type Segment = readonly [GridPoint, GridPoint];
+
+const edgesOf = (outline: readonly GridPoint[]): Segment[] =>
+  outline.map((p, i) => [p, outline[(i + 1) % outline.length] ?? p] as const);
+
+/** Whether two segments cross or touch, including collinear overlap. */
+const segmentsMeet = ([p, q]: Segment, [r, s]: Segment): boolean => {
+  const turn = (a: GridPoint, b: GridPoint, c: GridPoint) =>
+    Math.sign((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]));
+  const within = (a: GridPoint, b: GridPoint, c: GridPoint) =>
+    Math.min(a[0], b[0]) <= c[0] && c[0] <= Math.max(a[0], b[0]) &&
+    Math.min(a[1], b[1]) <= c[1] && c[1] <= Math.max(a[1], b[1]);
+  const [d1, d2, d3, d4] = [turn(r, s, p), turn(r, s, q), turn(p, q, r), turn(p, q, s)];
+  if (d1 !== d2 && d3 !== d4) return true;
+  return (d1 === 0 && within(r, s, p)) || (d2 === 0 && within(r, s, q)) ||
+    (d3 === 0 && within(p, q, r)) || (d4 === 0 && within(p, q, s));
+};
+
+/**
+ * Shortest distance between two polygon outlines, or 0 where they overlap:
+ * one inside the other, or any pair of edges crossing. A corner test alone
+ * misses shapes that cross like a plus sign, with every corner outside.
+ */
 const distanceBetween = (a: readonly GridPoint[], b: readonly GridPoint[]): number => {
-  const toOutline = (point: GridPoint, outline: readonly GridPoint[]) =>
-    Math.min(...outline.map((p, i) => distanceToSegment(point, p, outline[(i + 1) % outline.length] ?? p)));
+  const [edgesA, edgesB] = [edgesOf(a), edgesOf(b)];
+  if (edgesA.some((e) => edgesB.some((f) => segmentsMeet(e, f)))) return 0;
   if (a.some((p) => insidePolygon(p, b)) || b.some((p) => insidePolygon(p, a))) return 0;
-  return Math.min(...a.map((p) => toOutline(p, b)), ...b.map((p) => toOutline(p, a)));
+  const toOutline = (point: GridPoint, edges: readonly Segment[]) =>
+    Math.min(...edges.map(([p, q]) => distanceToSegment(point, p, q)));
+  return Math.min(...a.map((p) => toOutline(p, edgesB)), ...b.map((p) => toOutline(p, edgesA)));
 };
 
 /** isOctolinear, allowing for the float error in fractional coastline points. */
@@ -154,6 +178,17 @@ describe("schematic layout", () => {
     expect(afloat).toEqual([]);
   });
 
+  it("measures outlines whose edges cross as touching, even with no corner inside the other", () => {
+    const across: GridPoint[] = [[0, 1], [3, 1], [3, 2], [0, 2]];
+    const down: GridPoint[] = [[1, 0], [2, 0], [2, 3], [1, 3]];
+    expect(distanceBetween(across, down)).toBe(0);
+
+    const sideBySide: GridPoint[] = [[3, 1], [4, 1], [4, 2], [3, 2]];
+    expect(distanceBetween(across, sideBySide)).toBe(0);
+    const offshore: GridPoint[] = [[3.5, 1], [4, 1], [4, 2], [3.5, 2]];
+    expect(distanceBetween(across, offshore)).toBeCloseTo(0.5);
+  });
+
   it("keeps separate landmasses visibly apart", () => {
     const touching = SCHEMATIC_LAND.flatMap((a, i) =>
       SCHEMATIC_LAND.slice(i + 1)
@@ -165,6 +200,9 @@ describe("schematic layout", () => {
 
   it("draws Deception Pass as a narrows between Whidbey and Fidalgo", () => {
     const land = (name: string) => SCHEMATIC_LAND.find((l) => l.name === name)?.outline ?? [];
-    expect(distanceBetween(land("Whidbey Island"), land("Mainland"))).toBeLessThanOrEqual(0.4);
+    const pass = distanceBetween(land("Whidbey Island"), land("Mainland"));
+    // Open water, but narrow: neither a land bridge nor a wide strait.
+    expect(pass).toBeGreaterThanOrEqual(MIN_CHANNEL);
+    expect(pass).toBeLessThanOrEqual(0.4);
   });
 });
