@@ -29,6 +29,22 @@ const distanceToCoast = (point: GridPoint): number =>
     )
   );
 
+/** How far past a coast a terminal marker still reaches, in grid units. */
+const MARKER_REACH = 0.2;
+/** The narrowest water that still reads as a channel between two landmasses. */
+const MIN_CHANNEL = 0.25;
+
+const distanceToLand = (point: GridPoint): number =>
+  SCHEMATIC_LAND.some(({ outline }) => insidePolygon(point, outline)) ? 0 : distanceToCoast(point);
+
+/** Shortest distance between two polygon outlines that don't overlap. */
+const distanceBetween = (a: readonly GridPoint[], b: readonly GridPoint[]): number => {
+  const toOutline = (point: GridPoint, outline: readonly GridPoint[]) =>
+    Math.min(...outline.map((p, i) => distanceToSegment(point, p, outline[(i + 1) % outline.length] ?? p)));
+  if (a.some((p) => insidePolygon(p, b)) || b.some((p) => insidePolygon(p, a))) return 0;
+  return Math.min(...a.map((p) => toOutline(p, b)), ...b.map((p) => toOutline(p, a)));
+};
+
 /** isOctolinear, allowing for the float error in fractional coastline points. */
 const isOctolinearEdge = ([ax, ay]: GridPoint, [bx, by]: GridPoint): boolean => {
   const [dx, dy] = [Math.abs(bx - ax), Math.abs(by - ay)];
@@ -127,5 +143,28 @@ describe("schematic layout", () => {
       .filter(([, terminal]) => distanceToCoast(terminal.position) > 0.5)
       .map(([id, terminal]) => `${id} is ${distanceToCoast(terminal.position).toFixed(2)} from the coast`);
     expect(inland).toEqual([]);
+  });
+
+  // A marker is 4.5–5.5 px across plus its stroke, about 0.2 grid units, so
+  // a terminal further than that from land draws as a circle in the water.
+  it("puts every terminal on its land, not in the water beside it", () => {
+    const afloat = Object.entries(SCHEMATIC_LAYOUT.terminals)
+      .filter(([, terminal]) => distanceToLand(terminal.position) > MARKER_REACH)
+      .map(([id, terminal]) => `${id} is ${distanceToLand(terminal.position).toFixed(2)} out in the water`);
+    expect(afloat).toEqual([]);
+  });
+
+  it("keeps separate landmasses visibly apart", () => {
+    const touching = SCHEMATIC_LAND.flatMap((a, i) =>
+      SCHEMATIC_LAND.slice(i + 1)
+        .filter((b) => distanceBetween(a.outline, b.outline) < MIN_CHANNEL)
+        .map((b) => `${a.name} and ${b.name} are ${distanceBetween(a.outline, b.outline).toFixed(2)} apart`)
+    );
+    expect(touching).toEqual([]);
+  });
+
+  it("draws Deception Pass as a narrows between Whidbey and Fidalgo", () => {
+    const land = (name: string) => SCHEMATIC_LAND.find((l) => l.name === name)?.outline ?? [];
+    expect(distanceBetween(land("Whidbey Island"), land("Mainland"))).toBeLessThanOrEqual(0.4);
   });
 });

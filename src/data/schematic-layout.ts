@@ -101,12 +101,12 @@ const terminals: SchematicLayout["terminals"] = {
 
   // --- South Puget Sound ---
   fauntleroy: { position: [31, 57], label: "Fauntleroy", labelSide: "e" },
-  "vashon-north": { position: [28, 57], label: "Vashon", labelSide: "s" },
+  "vashon-north": { position: [28, 57], label: "Vashon", labelSide: "nw" },
   southworth: { position: [24, 57], label: "Southworth", labelSide: "w" },
   tahlequah: { position: [28, 60], label: "Tahlequah", labelSide: "e" },
   "point-defiance": { position: [28, 62], label: "Point Defiance", labelSide: "e" },
   "steilacoom-landing": { position: [28, 65], label: "Steilacoom", labelSide: "e" },
-  "ketron-island": { position: [26, 65], label: "Ketron", labelSide: "s" },
+  "ketron-island": { position: [26, 65], label: "Ketron", labelSide: "n" },
   "anderson-island-yoman": { position: [24, 65], label: "Anderson Island", labelSide: "w" },
 };
 
@@ -115,15 +115,18 @@ const legVias: Record<string, readonly GridPoint[]> = {
   "departure-bay>horseshoe-bay": [[12, 14], [18, 14]],
   // Duke Point joins the Swartz Bay run for the last stretch into Tsawwassen.
   "duke-point>tsawwassen": [[19, 24]],
-  // The two Southern Gulf Islands runs meet at Galiano and share the trunk
-  // south from there; the Tsawwassen–Swartz Bay mainline cuts across it
-  // between Galiano and Mayne, which is roughly where Active Pass is.
-  "tsawwassen>galiano-island": [[15, 21]],
-  "swartz-bay>galiano-island": [[11, 26]],
+  // Both Southern Gulf Islands runs reach Galiano the way the boats do,
+  // along the Tsawwassen–Swartz Bay mainline through Active Pass, which
+  // crosses the Galiano–Mayne trunk. Arriving from the south also leaves
+  // Galiano's north side free for the island itself.
+  "tsawwassen>galiano-island": [[16, 27]],
+  "swartz-bay>galiano-island": [[15, 28]],
   // Suspended, but still drawn when asked for: kept off the Lopez–Shaw line
-  // it would otherwise run straight through, and off San Juan Island.
+  // it would otherwise run straight through, and out of Friday Harbor to the
+  // northwest, around the top of San Juan Island as the boat goes, rather
+  // than along its shore.
   "anacortes>friday-harbor": [[28, 32]],
-  "friday-harbor>sidney-bc": [[19, 31], [16, 34]],
+  "friday-harbor>sidney-bc": [[21, 30], [20, 30], [16, 34]],
   // Up Haro Strait, then down Admiralty Inlet between Port Townsend and
   // Whidbey, the way the boat actually goes.
   "seattle-pier-69>victoria-belleville": [[23, 44], [23, 37], [15, 37]],
@@ -212,37 +215,39 @@ export const SCHEMATIC_LAND: readonly { readonly name: string; readonly outline:
       [42, -4], [42, 70],
       // Washington, north from the South Sound to the border.
       [28, 70], [28, 62], [32, 62], [33, 61], [33, 59], [31, 57], [30, 56], [30, 55], [31, 54],
-      [31, 53], [30, 52], [29, 52], [30, 51], [30, 45], [31, 44], [32, 43], [32, 35], [30, 33],
+      [31, 53], [30, 52], [29, 52], [30, 51], [30, 45], [31, 44], [32, 43], [32, 35],
+      // Fidalgo Island, reaching down to Whidbey at Deception Pass.
+      [30.5, 33.5], [29.5, 33.5], [29.5, 32.5], [30, 32],
       [30, 30], [32, 30], [33, 29], [33, 26], [31, 24], [27, 24], [27, 23], [24, 23],
     ],
   },
   { name: "Quadra Island", outline: [[5, -1.5], [7.5, -1.5], [7.5, 1.5], [5.5, 3.5], [5, 3.5]] },
   { name: "Cortes Island", outline: [[10, -1.5], [11.4, -1.5], [11.4, 2.2], [10, 2.2]] },
-  { name: "Texada Island", outline: [[6.5, 9.3], [8.5, 9.3], [8.5, 11.5], [6.5, 11.5]] },
+  { name: "Texada Island", outline: [[6.5, 9], [8.5, 9], [8.5, 11.5], [6.5, 11.5]] },
   { name: "Denman Island", outline: [[4, 10.3], [4.7, 10.3], [6, 11.6], [6, 13.6], [5.3, 13.6], [4, 12.3]] },
-  { name: "Hornby Island", outline: [[9.3, 12.3], [10.6, 12.3], [10.6, 13.7], [9.3, 13.7]] },
-  { name: "Lasqueti Island", outline: [[7.2, 14.4], [8.6, 14.4], [8.6, 15.4], [7.2, 15.4]] },
-  { name: "Gambier Island", outline: [[14.6, 9.6], [16.4, 9.6], [16.4, 10.6], [14.6, 10.6]] },
-  { name: "Keats Island", outline: [[16.6, 11.3], [17.8, 11.3], [17.8, 12.4], [16.6, 12.4]] },
-  { name: "Bowen Island", outline: [[18.2, 14.6], [19.4, 14.6], [19.4, 16.2], [18.2, 16.2]] },
+  { name: "Hornby Island", outline: [[9, 12.3], [10.6, 12.3], [10.6, 13.7], [9, 13.7]] },
+  { name: "Lasqueti Island", outline: [[7, 14.4], [8.6, 14.4], [8.6, 15.6], [7, 15.6]] },
+  { name: "Gambier Island", outline: [[14.6, 9.6], [16.4, 9.6], [16.4, 10.6], [15.4, 10.6], [14.6, 11.4]] },
+  { name: "Keats Island", outline: [[17, 10.4], [18.2, 10.4], [18.2, 11.6], [17, 11.6]] },
+  { name: "Bowen Island", outline: [[18.2, 14.8], [19.4, 14.8], [19.4, 16.2], [18.2, 16.2]] },
   { name: "Gabriola Island", outline: [[9, 21], [10.5, 21], [10.5, 23], [9, 23]] },
-  { name: "Thetis Island", outline: [[5.5, 25.6], [6.6, 25.6], [6.6, 26.7], [5.5, 26.7]] },
-  { name: "Penelakut Island", outline: [[8.3, 28.3], [9.3, 28.3], [9.3, 29.3], [8.3, 29.3]] },
-  { name: "Salt Spring Island", outline: [[6.3, 30.3], [8.8, 30.3], [8.8, 32.8], [6.3, 32.8]] },
-  { name: "Galiano Island", outline: [[11.6, 24.5], [14.7, 24.5], [14.7, 25.7], [12.8, 25.7]] },
-  { name: "Mayne Island", outline: [[15.4, 28.8], [16.6, 28.8], [16.6, 30], [15.4, 30]] },
-  { name: "Pender Island", outline: [[13.8, 30.6], [14.6, 30.6], [14.6, 32.4], [13.2, 32.4], [13.2, 31.2]] },
-  { name: "Saturna Island", outline: [[17.3, 29.6], [19, 29.6], [19, 30.8], [17.3, 30.8]] },
-  { name: "Lummi Island", outline: [[23.6, 23.6], [24.7, 23.6], [24.7, 26.2], [23.6, 26.2]] },
+  { name: "Thetis Island", outline: [[5.4, 25.8], [6.6, 25.8], [6.6, 27], [5.4, 27]] },
+  { name: "Penelakut Island", outline: [[8, 28.3], [8.9, 28.3], [8.9, 29.4], [8, 29.4]] },
+  { name: "Salt Spring Island", outline: [[6, 29.8], [9.2, 29.8], [7.4, 31.6], [7.4, 32.6], [6, 32.6]] },
+  { name: "Galiano Island", outline: [[11.6, 24.6], [15.6, 24.6], [15.6, 26], [11.6, 26]] },
+  { name: "Mayne Island", outline: [[14.85, 29], [15.45, 28.4], [16.6, 28.4], [16.6, 30], [15.85, 30]] },
+  { name: "Pender Island", outline: [[13.6, 30.4], [14.4, 30.4], [15.6, 31.6], [15.6, 32.4], [13.6, 32.4]] },
+  { name: "Saturna Island", outline: [[17, 30.3], [18, 30.3], [18, 31.4], [17, 31.4]] },
+  { name: "Lummi Island", outline: [[23.6, 23.5], [25, 23.5], [25, 25.4], [23.6, 25.4]] },
   { name: "Orcas Island", outline: [[23.5, 26], [27, 26], [27, 28], [23.5, 28]] },
-  { name: "Shaw Island", outline: [[24.4, 30.4], [25.6, 30.4], [25.6, 31.4], [24.4, 31.4]] },
-  { name: "Lopez Island", outline: [[26.4, 30.4], [28.2, 30.4], [28.2, 31.6], [26.4, 31.6]] },
-  { name: "San Juan Island", outline: [[19.9, 31.3], [21.7, 31.3], [21.7, 34.5], [20.7, 35.5], [19.9, 35.5]] },
+  { name: "Shaw Island", outline: [[24, 29.6], [24.6, 29.6], [25.4, 30.4], [25.4, 31.2], [24, 31.2]] },
+  { name: "Lopez Island", outline: [[27, 29.85], [27.6, 30.45], [27.6, 31.6], [26.4, 31.6], [26.4, 30.45]] },
+  { name: "San Juan Island", outline: [[19.9, 31.2], [22.2, 31.2], [22.2, 33.1], [21.6, 33.7], [21.6, 34.6], [20.7, 35.5], [19.9, 35.5]] },
   { name: "Guemes Island", outline: [[30.8, 26.2], [32.5, 26.2], [32.5, 28], [30.8, 28]] },
-  { name: "Whidbey Island", outline: [[25, 35], [27, 35], [28, 36], [28, 45], [27, 46], [26, 46], [25, 45]] },
-  { name: "Hat Island", outline: [[29, 39.8], [30.2, 39.8], [30.2, 40.8], [29, 40.8]] },
+  { name: "Whidbey Island", outline: [[25, 35], [26.2, 33.8], [30.2, 33.8], [28, 36], [28, 45], [27, 46], [26, 46], [25, 45]] },
+  { name: "Hat Island", outline: [[29, 39.8], [30.4, 39.8], [30.4, 40.6], [29.6, 41.4], [29, 41.4]] },
   { name: "Bainbridge Island", outline: [[22.7, 49.6], [24, 49.6], [25, 50.6], [25, 53], [22.7, 53]] },
-  { name: "Vashon Island", outline: [[26.4, 57.4], [29.6, 57.4], [29.6, 59.2], [28.8, 60], [27.2, 60], [26.4, 59.2]] },
-  { name: "Anderson Island", outline: [[22.6, 63.8], [23.7, 63.8], [23.7, 66.4], [22.6, 66.4]] },
-  { name: "Ketron Island", outline: [[25.6, 65.3], [26.8, 65.3], [26.8, 66], [25.6, 66]] },
+  { name: "Vashon Island", outline: [[28, 56.85], [29, 57.85], [29.6, 57.85], [29.6, 59.2], [28.8, 60], [27.2, 60], [26.4, 59.2], [26.4, 57.85], [27, 57.85]] },
+  { name: "Anderson Island", outline: [[22.6, 63.8], [24, 63.8], [24, 66.4], [22.6, 66.4]] },
+  { name: "Ketron Island", outline: [[26, 64.85], [26.6, 65.45], [26.6, 66.2], [25.4, 66.2], [25.4, 65.45]] },
 ];
