@@ -360,11 +360,11 @@ export const ROUTES: readonly FerryRoute[] = [
   },
   {
     id: "bcf-long-harbour-southerngulfislands",
-    name: "Long Harbour (Salt Spring Island) – Mayne – Pender",
+    name: "Long Harbour (Salt Spring Island) – Mayne – Pender – Swartz Bay",
     operatorId: "bc-ferries",
     mode: "vehicle",
     status: "active",
-    terminalIds: ["mayne-island", "long-harbour", "pender-island"],
+    terminalIds: ["mayne-island", "long-harbour", "pender-island", "long-harbour", "swartz-bay"],
     note: "Route 9 connecting sailings from Long Harbour to Village Bay and Otter Bay; a few also run on to Swartz Bay",
   },
 
