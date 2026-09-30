@@ -364,8 +364,8 @@ export const ROUTES: readonly FerryRoute[] = [
     operatorId: "bc-ferries",
     mode: "vehicle",
     status: "active",
-    terminalIds: ["mayne-island", "long-harbour", "pender-island", "long-harbour", "swartz-bay"],
-    note: "Route 9 connecting sailings from Long Harbour to Village Bay and Otter Bay; a few also run on to Swartz Bay",
+    terminalIds: ["mayne-island", "long-harbour", "pender-island", "swartz-bay"],
+    note: "Route 9 connecting sailings from Long Harbour to Village Bay and to Otter Bay, passing south of Prevost Island; the sailings on to Swartz Bay call at Otter Bay first",
   },
 
   // --- BC Ferries: Central Vancouver Island ---

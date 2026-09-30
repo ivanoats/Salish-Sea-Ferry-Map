@@ -183,6 +183,18 @@ describe("ferry dataset integrity", () => {
     expect(geometry?.coordinates.length).toBeGreaterThan(2);
     expect(geometry?.coordinates.slice(1, -1)).not.toEqual([]);
   });
+
+  // The mesh is a sailing network, not a ferry one (data/README.md), so a leg
+  // that falls back to it is drawn along water no ferry uses. The one
+  // expected fallback is the suspended Sidney run. Anything else usually
+  // means a leg the boats don't sail: a direct Long Harbour–Swartz Bay leg
+  // drew a 20 nm loop east past Pender, when those sailings call at Otter Bay.
+  it("falls back to the sailing mesh only for the suspended Friday Harbor–Sidney leg", () => {
+    const meshLegs = Object.entries(ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS)
+      .filter(([, geometry]) => geometry.source === "mesh")
+      .map(([legKey]) => legKey.replace("\0", " > "));
+    expect(meshLegs).toEqual(["friday-harbor > sidney-bc"]);
+  });
 });
 
 // Only tests import this generated snapshot; the application keeps curated data.
