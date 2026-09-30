@@ -45,6 +45,7 @@ const terminals: SchematicLayout["terminals"] = {
   "departure-bay": { position: [6, 20], label: "Departure Bay", labelSide: "w" },
   "nanaimo-harbour": { position: [6, 22], label: "Nanaimo Harbour", labelSide: "w" },
   "gabriola-island": { position: [9, 22], label: "Gabriola Island", labelSide: "e" },
+  "nanaimo-hullo": { position: [6, 23], label: "Nanaimo (Hullo)", labelSide: "w" },
   "duke-point": { position: [6, 24], label: "Duke Point", labelSide: "w" },
 
   // --- Central Vancouver Island and Salt Spring ---
@@ -98,6 +99,10 @@ const terminals: SchematicLayout["terminals"] = {
   bremerton: { position: [22, 54], label: "Bremerton", labelSide: "w" },
   "west-seattle-seacrest": { position: [30, 55], label: "West Seattle", labelSide: "e" },
 
+  // --- Burrard Inlet ---
+  "vancouver-hullo": { position: [23, 17], label: "Coal Harbour", labelSide: "sw" },
+  "vancouver-waterfront": { position: [24, 17], label: "Waterfront", labelSide: "se" },
+  "lonsdale-quay": { position: [24, 15], label: "Lonsdale Quay", labelSide: "n" },
   // --- South Puget Sound ---
   fauntleroy: { position: [31, 57], label: "Fauntleroy", labelSide: "e" },
   "vashon-north": { position: [28, 57], label: "Vashon", labelSide: "nw" },
@@ -112,6 +117,9 @@ const terminals: SchematicLayout["terminals"] = {
 const legVias: Record<string, readonly GridPoint[]> = {
   // Across the Strait of Georgia below Howe Sound, clear of Langdale.
   "departure-bay>horseshoe-bay": [[12, 14], [18, 14]],
+  // East under Gabriola, then across the Strait of Georgia and into
+  // Burrard Inlet between Point Grey and West Vancouver.
+  "nanaimo-hullo>vancouver-hullo": [[12, 23], [19, 16], [22, 16]],
   // Duke Point joins the Swartz Bay run for the last stretch into Tsawwassen.
   "duke-point>tsawwassen": [[19, 24]],
   // Both Southern Gulf Islands runs reach Galiano the way the boats do,
@@ -153,7 +161,9 @@ export const SCHEMATIC_LAND_LINKS: readonly (readonly [string, string])[] = [
   ["quadra-quathiaski", "quadra-heriot-bay"],
   ["denman-island-west", "denman-island-east"],
   ["departure-bay", "nanaimo-harbour"],
-  ["nanaimo-harbour", "duke-point"],
+  ["nanaimo-harbour", "nanaimo-hullo"],
+  ["nanaimo-hullo", "duke-point"],
+  ["vancouver-hullo", "vancouver-waterfront"],
   ["swartz-bay", "sidney-bc"],
   ["anacortes", "anacortes-guemes-dock"],
   ["port-townsend", "port-townsend-point-hudson"],
@@ -215,7 +225,10 @@ export const SCHEMATIC_LAND: readonly { readonly name: string; readonly outline:
     name: "Mainland",
     outline: [
       // British Columbia, north from Tsawwassen past Howe Sound and Jervis Inlet.
-      [22, 21], [22, 17], [20, 15], [20, 14], [19, 13], [19, 9], [14, 9], [14, 12], [15, 13],
+      [22, 21], [22, 17],
+      // Burrard Inlet: downtown Vancouver on the south shore, North and West
+      // Vancouver on the north.
+      [26, 17], [26, 15], [20, 15], [20, 14], [19, 13], [19, 9], [14, 9], [14, 12], [15, 13],
       [14.5, 13.5], [11.5, 13.5], [11, 13], [11, 10], [13, 8], [15, 6], [15, 3], [14, 3], [11, 6],
       [10, 7], [7, 7], [8, 6], [12, 2], [12, -4],
       [42, -4], [42, 70],
@@ -238,8 +251,8 @@ export const SCHEMATIC_LAND: readonly { readonly name: string; readonly outline:
   { name: "Lasqueti Island", outline: [[7, 14.4], [8.6, 14.4], [8.6, 15.6], [7, 15.6]] },
   { name: "Gambier Island", outline: [[14.6, 9.6], [16.4, 9.6], [16.4, 10.6], [15.4, 10.6], [14.6, 11.4]] },
   { name: "Keats Island", outline: [[17, 10.4], [18.2, 10.4], [18.2, 11.6], [17, 11.6]] },
-  { name: "Bowen Island", outline: [[18.2, 14.8], [19.4, 14.8], [19.4, 16.2], [18.2, 16.2]] },
-  { name: "Gabriola Island", outline: [[9, 21], [10.5, 21], [10.5, 23], [9, 23]] },
+  { name: "Bowen Island", outline: [[18.4, 14.8], [19.4, 14.8], [19.4, 15.6], [18.4, 15.6]] },
+  { name: "Gabriola Island", outline: [[9, 21], [10.5, 21], [10.5, 22.6], [9, 22.6]] },
   { name: "Thetis Island", outline: [[5.4, 25.8], [6.6, 25.8], [6.6, 27], [5.4, 27]] },
   { name: "Penelakut Island", outline: [[8, 28.3], [8.9, 28.3], [8.9, 29.4], [8, 29.4]] },
   { name: "Salt Spring Island", outline: [[6, 29.8], [9.2, 29.8], [7.4, 31.6], [7.4, 32.6], [6, 32.6]] },

@@ -423,4 +423,26 @@ export const ROUTES: readonly FerryRoute[] = [
     terminalIds: ["french-creek", "lasqueti-island"],
     note: "Route 55",
   },
+
+  // --- Hullo ---
+  {
+    id: "hullo-nanaimo-vancouver",
+    name: "Nanaimo – Vancouver (passenger only)",
+    operatorId: "hullo",
+    mode: "passenger",
+    status: "active",
+    terminalIds: ["nanaimo-hullo", "vancouver-hullo"],
+    note: "Downtown to downtown, about 70 min. Reservations required; bicycles carried, no vehicles",
+  },
+
+  // --- TransLink SeaBus ---
+  {
+    id: "translink-seabus",
+    name: "SeaBus: Waterfront – Lonsdale Quay (passenger only)",
+    operatorId: "translink",
+    mode: "passenger",
+    status: "active",
+    terminalIds: ["vancouver-waterfront", "lonsdale-quay"],
+    note: "About 12 min across Burrard Inlet, on the TransLink transit fare. Bicycles carried",
+  },
 ];

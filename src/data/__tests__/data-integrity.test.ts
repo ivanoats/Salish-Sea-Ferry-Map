@@ -96,15 +96,19 @@ describe("ferry dataset integrity", () => {
       "hornby-island": [-124.70454, 49.51125],
       "keats-island": [-123.4332, 49.39556],
       "lasqueti-island": [-124.35159, 49.49144],
+      "lonsdale-quay": [-123.08392, 49.30954],
       "lummi-island": [-122.68131, 48.72044],
       "mayne-island": [-123.32328, 48.84454],
       "mill-bay": [-123.51777, 48.61399],
+      "nanaimo-hullo": [-123.92249, 49.16354],
       "pender-island": [-123.31561, 48.80052],
       "penelakut-island": [-123.66127, 48.97073],
       "saltery-bay": [-124.1771, 49.78142],
       "saturna-island": [-123.20138, 48.79809],
       "texada-island": [-124.62007, 49.79482],
       "thetis-island": [-123.67824, 48.98096],
+      "vancouver-hullo": [-123.11635, 49.29031],
+      "vancouver-waterfront": [-123.10903, 49.28702],
       "vesuvius-bay": [-123.57339, 48.88125],
     };
 
@@ -189,7 +193,7 @@ describe("pinned GTFS corroboration (ADR 0005)", () => {
     const report = validateGtfs(ROUTES, [...TERMINALS_BY_ID.values()], GTFS, mappings);
     for (const warning of report.warnings) console.warn(`GTFS coverage: ${warning}`);
     // A feed refresh may change coverage, but that change must be reviewed.
-    expect(report.checkedRoutes).toBe(32);
+    expect(report.checkedRoutes).toBe(33);
     expect(report.errors).toEqual([]);
   });
 });

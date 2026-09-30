@@ -29,6 +29,13 @@
         "endpoint": "https://overpass-api.de/api/interpreter",
         "retrieved": "2026-09-14",
         "note": "Possession Sound and Saratoga Passage, south of the first relation query's 48.3\u00b0N edge. Adds the Harbor Hopper (relation 21250907, Everett Marina \u2194 Langley), which neither earlier query could see: the relation query above stopped north of it, and the bare-way query subtracts relation members, so its member way was excluded too. Relation member way geometry, unmodified."
+      },
+      {
+        "source": "OpenStreetMap API 0.6 (/relation/{id}/full, /way/{id}/full)",
+        "query": "relation 1142439, relation 9603351, way 1192240945",
+        "endpoint": "https://api.openstreetmap.org/api/0.6/",
+        "retrieved": "2026-09-30",
+        "note": "Burrard Inlet and the Hullo crossing, for issue #49. The SeaBus is a proper relation pair (one per direction, sharing way 36474098) that the first relation query's box already covered, but it was not vendored because no SeaBus route was modelled then. Hullo is a bare route=ferry way with no parent relation, so only the bare-way query could see it; it is vendored as the one leg no relation reaches. Fetched from the main API because both Overpass endpoints were timing out. Way geometry, unmodified."
       }
     ]
   },
@@ -9912,6 +9919,189 @@
           [
             -122.7516612,
             48.1170393
+          ]
+        ]
+      ]
+    },
+    {
+      "routeName": "SeaBus (Waterfront \u2194 Lonsdale Quay)",
+      "operator": "TransLink",
+      "from": "Waterfront",
+      "to": "Lonsdale Quay",
+      "osmRelationIds": [
+        1142439,
+        9603351
+      ],
+      "coordinates": [
+        [
+          [
+            -123.1090282,
+            49.2870176
+          ],
+          [
+            -123.1077047,
+            49.2874726
+          ],
+          [
+            -123.1061055,
+            49.2881048
+          ],
+          [
+            -123.1046678,
+            49.2887416
+          ],
+          [
+            -123.1029405,
+            49.2896583
+          ],
+          [
+            -123.102168,
+            49.2901552
+          ],
+          [
+            -123.1014648,
+            49.2906188
+          ],
+          [
+            -123.0978679,
+            49.2933535
+          ],
+          [
+            -123.0937487,
+            49.2964852
+          ],
+          [
+            -123.0928876,
+            49.2973063
+          ],
+          [
+            -123.092158,
+            49.2981738
+          ],
+          [
+            -123.0839179,
+            49.3095403
+          ]
+        ]
+      ]
+    },
+    {
+      "routeName": "Nanaimo Harbour \u2194 Coal Harbour",
+      "operator": "Hullo Ferries",
+      "from": "Nanaimo",
+      "to": "Vancouver (Coal Harbour)",
+      "osmWayIds": [
+        1192240945
+      ],
+      "coordinates": [
+        [
+          [
+            -123.9224912,
+            49.1635413
+          ],
+          [
+            -123.9219996,
+            49.1644754
+          ],
+          [
+            -123.9111791,
+            49.1689643
+          ],
+          [
+            -123.9062338,
+            49.1722049
+          ],
+          [
+            -123.8993244,
+            49.1803409
+          ],
+          [
+            -123.8907628,
+            49.1903969
+          ],
+          [
+            -123.88557,
+            49.1991048
+          ],
+          [
+            -123.8814263,
+            49.203815
+          ],
+          [
+            -123.8756113,
+            49.2070255
+          ],
+          [
+            -123.8679294,
+            49.2102077
+          ],
+          [
+            -123.8583164,
+            49.212899
+          ],
+          [
+            -123.8370948,
+            49.2164313
+          ],
+          [
+            -123.8141136,
+            49.218884
+          ],
+          [
+            -123.7769704,
+            49.2201735
+          ],
+          [
+            -123.2553176,
+            49.3040447
+          ],
+          [
+            -123.1988098,
+            49.3121339
+          ],
+          [
+            -123.1564524,
+            49.3155751
+          ],
+          [
+            -123.1488848,
+            49.3159188
+          ],
+          [
+            -123.1412178,
+            49.3156008
+          ],
+          [
+            -123.1088199,
+            49.3015721
+          ],
+          [
+            -123.1080088,
+            49.3009091
+          ],
+          [
+            -123.1076045,
+            49.3002006
+          ],
+          [
+            -123.1073272,
+            49.2991851
+          ],
+          [
+            -123.1074231,
+            49.297961
+          ],
+          [
+            -123.1078677,
+            49.2969534
+          ],
+          [
+            -123.1086121,
+            49.2961115
+          ],
+          [
+            -123.116346,
+            49.2903053
           ]
         ]
       ]

@@ -92,6 +92,20 @@ export const OPERATORS: readonly Operator[] = [
     color: "#a21caf",
     website: "https://www.pugetsoundexpress.com",
   },
+  {
+    id: "hullo",
+    name: "Hullo",
+    shortName: "Hullo",
+    color: "#ea580c",
+    website: "https://hullo.com",
+  },
+  {
+    id: "translink",
+    name: "TransLink SeaBus",
+    shortName: "SeaBus",
+    color: "#854d0e",
+    website: "https://www.translink.ca/schedules-and-maps/seabus",
+  },
 ];
 
 export const OPERATORS_BY_ID = new Map(OPERATORS.map((o) => [o.id, o] as const));
