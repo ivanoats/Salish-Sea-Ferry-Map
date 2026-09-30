@@ -60,11 +60,11 @@ export const TERMINALS: readonly Terminal[] = [
   { id: "hat-island", name: "Hat Island (Gedney Island)", coordinates: [-122.32259, 48.02016], jurisdiction: "WA" },
 
   // --- Puget Sound Express ---
-  // Both ends are the operator's own dock rather than the WSF one nearby:
-  // Point Hudson is a mile up the shore from the Port Townsend slip, and
-  // Spring Street Landing sits just west of the Friday Harbor terminal.
+  // Point Hudson is the operator's own dock, a mile up the shore from the
+  // Port Townsend slip. At the other end the boat lands at Spring Street
+  // Landing, a short walk from the WSF terminal, so it shares the
+  // friday-harbor terminal rather than having one of its own.
   { id: "port-townsend-point-hudson", name: "Port Townsend (Point Hudson)", coordinates: [-122.75166, 48.11704], jurisdiction: "WA" },
-  { id: "friday-harbor-spring-street", name: "Friday Harbor (Spring Street Landing)", coordinates: [-123.01441, 48.53626], jurisdiction: "WA" },
 
   // --- BC Ferries ---
   { id: "tsawwassen", name: "Tsawwassen", coordinates: [-123.1306, 49.0062], jurisdiction: "BC" },

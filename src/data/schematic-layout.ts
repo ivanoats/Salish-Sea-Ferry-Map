@@ -78,7 +78,6 @@ const terminals: SchematicLayout["terminals"] = {
   "shaw-island": { position: [25, 30], label: "Shaw", labelSide: "s" },
   "orcas-island": { position: [25, 28], label: "Orcas", labelSide: "n" },
   "friday-harbor": { position: [22, 31], label: "Friday Harbor", labelSide: "nw" },
-  "friday-harbor-spring-street": { position: [22, 33], label: "Spring Street", labelSide: "e" },
 
   // --- Admiralty Inlet and Whidbey Island ---
   "port-townsend-point-hudson": { position: [22, 38], label: "Point Hudson", labelSide: "w" },
@@ -127,6 +126,9 @@ const legVias: Record<string, readonly GridPoint[]> = {
   // than along its shore.
   "anacortes>friday-harbor": [[28, 32]],
   "friday-harbor>sidney-bc": [[21, 30], [20, 30], [16, 34]],
+  // Down San Juan Channel, east of San Juan Island, then across the Strait
+  // of Juan de Fuca to Point Hudson.
+  "friday-harbor>port-townsend-point-hudson": [[23, 32], [23, 36], [22, 37]],
   // Up Haro Strait, then down Admiralty Inlet between Port Townsend and
   // Whidbey, the way the boat actually goes.
   "seattle-pier-69>victoria-belleville": [[23, 44], [23, 37], [15, 37]],
@@ -154,7 +156,6 @@ export const SCHEMATIC_LAND_LINKS: readonly (readonly [string, string])[] = [
   ["nanaimo-harbour", "duke-point"],
   ["swartz-bay", "sidney-bc"],
   ["anacortes", "anacortes-guemes-dock"],
-  ["friday-harbor", "friday-harbor-spring-street"],
   ["port-townsend", "port-townsend-point-hudson"],
   ["langley", "clinton"],
   ["seattle-colman-dock", "seattle-pier-69"],
@@ -250,7 +251,7 @@ export const SCHEMATIC_LAND: readonly { readonly name: string; readonly outline:
   { name: "Orcas Island", outline: [[23.5, 26], [27, 26], [27, 28], [23.5, 28]] },
   { name: "Shaw Island", outline: [[24, 29.6], [24.6, 29.6], [25.4, 30.4], [25.4, 31.2], [24, 31.2]] },
   { name: "Lopez Island", outline: [[27, 29.85], [27.6, 30.45], [27.6, 31.6], [26.4, 31.6], [26.4, 30.45]] },
-  { name: "San Juan Island", outline: [[19.9, 31.2], [22.2, 31.2], [22.2, 33.1], [21.6, 33.7], [21.6, 34.6], [20.7, 35.5], [19.9, 35.5]] },
+  { name: "San Juan Island", outline: [[19.9, 31.2], [22.2, 31.2], [22.2, 34.5], [21.2, 35.5], [19.9, 35.5]] },
   { name: "Guemes Island", outline: [[30.8, 26.2], [32.5, 26.2], [32.5, 28], [30.8, 28]] },
   { name: "Whidbey Island", outline: [[25, 35], [26.2, 33.8], [30.2, 33.8], [28, 36], [28, 45], [27, 46], [26, 46], [25, 45]] },
   { name: "Hat Island", outline: [[29, 39.8], [30.4, 39.8], [30.4, 40.6], [29.6, 41.4], [29, 41.4]] },
