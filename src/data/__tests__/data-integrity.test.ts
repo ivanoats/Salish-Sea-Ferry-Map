@@ -52,15 +52,29 @@ describe("ferry dataset integrity", () => {
    * `gooseberry-point` — on the mainland, not the island — so the Whatcom
    * Chief drew a stub that never left the dock.
    *
-   * The floor is also the rule docks in the same town are merged under:
-   * two docks a short walk apart are one place to a traveller, so they
-   * belong in one terminal. The two Everett docks were merged this way, and
-   * so were Friday Harbor's WSF terminal and Spring Street Landing, 0.098 nm
-   * apart. The closest pair kept separate is Colman Dock and Pier 69 in
+   * A second, wider floor is the rule docks in the same town are merged
+   * under: two docks a short walk apart, with no ferry between them, are one
+   * place to a traveller, so they belong in one terminal. The two Everett
+   * docks were merged this way, as were Friday Harbor's WSF terminal and
+   * Spring Street Landing (0.098 nm), the two Granville Island docks
+   * (0.093 nm), and Hornby Street with the Aquatic Centre (0.175 nm). The
+   * closest unconnected pair kept separate is Colman Dock and Pier 69 in
    * Seattle, at 0.394 nm.
+   *
+   * Docks a route sails between are different places by definition, however
+   * close: the Aquabus crosses False Creek from Granville Island to Hornby
+   * Street in 0.107 nm. They are held only to the first floor, which is still
+   * what catches a terminal drifting onto the other end of its own crossing.
    */
   it("keeps distinct terminals far enough apart to be distinct places", () => {
-    const minimumSeparationNm = 0.2;
+    const crossingFloorNm = 0.05;
+    const sameTownFloorNm = 0.2;
+    const pairKey = (a: string, b: string) => [a, b].sort().join("|");
+    const sailedBetween = new Set(
+      ROUTES.flatMap((route) =>
+        route.terminalIds.slice(1).map((to, i) => pairKey(route.terminalIds[i] ?? "", to))
+      )
+    );
     const terminals = [...TERMINALS_BY_ID.values()];
     const tooClose: string[] = [];
 
@@ -71,9 +85,11 @@ describe("ferry dataset integrity", () => {
         if (terminal === undefined || other === undefined) continue;
 
         const separationNm = haversineNm(terminal.coordinates, other.coordinates);
-        if (separationNm < minimumSeparationNm) {
+        const sailed = sailedBetween.has(pairKey(terminal.id, other.id));
+        const floorNm = sailed ? crossingFloorNm : sameTownFloorNm;
+        if (separationNm < floorNm) {
           tooClose.push(
-            `${terminal.id} <-> ${other.id} (${separationNm.toFixed(3)} nm)`
+            `${terminal.id} <-> ${other.id} (${separationNm.toFixed(3)} nm${sailed ? ", sailed between" : ""})`
           );
         }
       }
@@ -206,7 +222,7 @@ describe("pinned GTFS corroboration (ADR 0005)", () => {
     const report = validateGtfs(ROUTES, [...TERMINALS_BY_ID.values()], GTFS, mappings);
     for (const warning of report.warnings) console.warn(`GTFS coverage: ${warning}`);
     // A feed refresh may change coverage, but that change must be reviewed.
-    expect(report.checkedRoutes).toBe(35);
+    expect(report.checkedRoutes).toBe(36);
     expect(report.errors).toEqual([]);
   });
 });

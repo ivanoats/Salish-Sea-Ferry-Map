@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { ROUTES } from "@/data/routes";
 import { TERMINALS } from "@/data/terminals";
-import { SCHEMATIC_LAND, SCHEMATIC_LAND_LINKS, SCHEMATIC_LAYOUT } from "@/data/schematic-layout";
+import {
+  SCHEMATIC_INSETS,
+  SCHEMATIC_LAND,
+  SCHEMATIC_LAND_LINKS,
+  SCHEMATIC_LAYOUT,
+  type SchematicInset,
+} from "@/data/schematic-layout";
 import { isOctolinear, legVertices, unitSteps, type GridPoint } from "@/domain/schematic";
 
 const key = (point: readonly [number, number]) => `${point[0]},${point[1]}`;
@@ -22,9 +28,19 @@ const distanceToSegment = ([x, y]: GridPoint, [ax, ay]: GridPoint, [bx, by]: Gri
   return Math.hypot(x - (ax + along * dx), y - (ay + along * dy));
 };
 
+/** The inset whose box a point falls in, if any. */
+const insetAt = ([x, y]: GridPoint): SchematicInset | undefined =>
+  SCHEMATIC_INSETS.find(({ box }) => box.min[0] <= x && x <= box.max[0] && box.min[1] <= y && y <= box.max[1]);
+
+/** Inside an inset's box only its own land counts; the main land it covers is hidden there. */
+const landAt = (point: GridPoint) => insetAt(point)?.land ?? SCHEMATIC_LAND;
+
+/** Every separately drawn set of land: the main diagram's, then each inset's. */
+const landSets = [SCHEMATIC_LAND, ...SCHEMATIC_INSETS.map((inset) => inset.land)];
+
 const distanceToCoast = (point: GridPoint): number =>
   Math.min(
-    ...SCHEMATIC_LAND.flatMap(({ outline }) =>
+    ...landAt(point).flatMap(({ outline }) =>
       outline.map((a, i) => distanceToSegment(point, a, outline[(i + 1) % outline.length] ?? a))
     )
   );
@@ -35,7 +51,7 @@ const MARKER_REACH = 0.2;
 const MIN_CHANNEL = 0.25;
 
 const distanceToLand = (point: GridPoint): number =>
-  SCHEMATIC_LAND.some(({ outline }) => insidePolygon(point, outline)) ? 0 : distanceToCoast(point);
+  landAt(point).some(({ outline }) => insidePolygon(point, outline)) ? 0 : distanceToCoast(point);
 
 type Segment = readonly [GridPoint, GridPoint];
 
@@ -140,7 +156,7 @@ describe("schematic layout", () => {
   });
 
   it("draws every coastline with horizontal, vertical, and 45° edges", () => {
-    const skewed = SCHEMATIC_LAND.flatMap(({ name, outline }) =>
+    const skewed = landSets.flat().flatMap(({ name, outline }) =>
       outline
         .map((a, i) => [a, outline[(i + 1) % outline.length] ?? a] as const)
         .filter(([a, b]) => !isOctolinearEdge(a, b))
@@ -155,7 +171,7 @@ describe("schematic layout", () => {
       return points.slice(1).flatMap((end, i) => {
         const start = points[i] ?? end;
         const middle: GridPoint = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
-        const land = SCHEMATIC_LAND.find(({ outline }) => insidePolygon(middle, outline));
+        const land = landAt(middle).find(({ outline }) => insidePolygon(middle, outline));
         return land === undefined ? [] : [`${route.id} crosses ${land.name} at ${middle}`];
       });
     });
@@ -190,13 +206,27 @@ describe("schematic layout", () => {
   });
 
   it("keeps separate landmasses visibly apart", () => {
-    const touching = SCHEMATIC_LAND.flatMap((a, i) =>
-      SCHEMATIC_LAND.slice(i + 1)
-        .filter((b) => distanceBetween(a.outline, b.outline) < MIN_CHANNEL)
-        .map((b) => `${a.name} and ${b.name} are ${distanceBetween(a.outline, b.outline).toFixed(2)} apart`)
+    const touching = landSets.flatMap((land) =>
+      land.flatMap((a, i) =>
+        land.slice(i + 1)
+          .filter((b) => distanceBetween(a.outline, b.outline) < MIN_CHANNEL)
+          .map((b) => `${a.name} and ${b.name} are ${distanceBetween(a.outline, b.outline).toFixed(2)} apart`)
+      )
     );
     expect(touching).toEqual([]);
   });
+
+  // An inset hides the main land under its box, so a route may not cross the
+  // frame: it would run from one geography into another. Everything a route
+  // touches is either in one inset or clear of all of them.
+  it("keeps each route wholly inside one inset or clear of them all", () => {
+    const straddling = legs.flatMap(({ route, fromId, toId }) => {
+      const where = unitSteps(legVertices(fromId, toId, SCHEMATIC_LAYOUT) ?? []).map((p) => insetAt(p)?.title ?? "main");
+      return new Set(where).size > 1 ? [`${route.id} (${fromId}>${toId}) crosses an inset frame`] : [];
+    });
+    expect(straddling).toEqual([]);
+  });
+
 
   it("draws Deception Pass as a narrows between Whidbey and Fidalgo", () => {
     const land = (name: string) => SCHEMATIC_LAND.find((l) => l.name === name)?.outline ?? [];

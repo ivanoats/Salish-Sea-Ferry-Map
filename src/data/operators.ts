@@ -106,6 +106,20 @@ export const OPERATORS: readonly Operator[] = [
     color: "#854d0e",
     website: "https://www.translink.ca/schedules-and-maps/seabus",
   },
+  {
+    id: "aquabus",
+    name: "The Aquabus",
+    shortName: "Aquabus",
+    color: "#e11d48",
+    website: "https://www.theaquabus.com",
+  },
+  {
+    id: "false-creek-ferries",
+    name: "False Creek Ferries",
+    shortName: "False Creek Ferries",
+    color: "#4f46e5",
+    website: "https://granvilleislandferries.bc.ca",
+  },
 ];
 
 export const OPERATORS_BY_ID = new Map(OPERATORS.map((o) => [o.id, o] as const));

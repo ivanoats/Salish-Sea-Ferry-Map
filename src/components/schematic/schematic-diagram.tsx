@@ -10,6 +10,7 @@ import {
   SCHEMATIC_LAND,
   SCHEMATIC_LAND_LINKS,
   SCHEMATIC_LAYOUT,
+  SCHEMATIC_INSETS,
   SCHEMATIC_WATER_LABELS,
 } from "@/data/schematic-layout";
 import {
@@ -17,6 +18,7 @@ import {
   LABEL_DIRECTIONS,
   LANE_WIDTH,
   LINE_WIDTH,
+  boxPath,
   diagramView,
   pathData,
   px,
@@ -75,6 +77,35 @@ function DiagramSvg({ routes, style }: { routes: readonly FerryRoute[]; style: R
         {SCHEMATIC_BORDER.labels.map(({ text, position }) => {
           const [x, y] = px(position);
           return <text key={text} className="schematic-border-label" x={x} y={y} textAnchor="end">{text}</text>;
+        })}
+      </g>
+
+      {/* Each inset's frame is filled like the water, covering the main land
+          under it; its own land is clipped to the frame. */}
+      <g className="schematic-insets" aria-hidden="true">
+        {SCHEMATIC_INSETS.map(({ title, box, land, waterLabels }, i) => {
+          const [x0, y0] = px(box.min);
+          const [x1, y1] = px(box.max);
+          const clipId = `schematic-inset-${i}`;
+          return (
+            <g key={title}>
+              <clipPath id={clipId}><path d={boxPath([x0, y0], [x1, y1])} /></clipPath>
+              <rect className="schematic-inset-frame" x={x0} y={y0} width={x1 - x0} height={y1 - y0} />
+              <g clipPath={`url(#${clipId})`}>
+                <g className="schematic-land">
+                  {land.map(({ name, outline }) => <path key={name} d={roundedOutline(outline.map(px))} />)}
+                </g>
+                <g className="schematic-water-labels">
+                  {waterLabels.map(({ text, position }) => {
+                    const [x, y] = px(position);
+                    return <text key={text} x={x} y={y} textAnchor="middle">{text}</text>;
+                  })}
+                </g>
+              </g>
+              <rect className="schematic-inset-outline" x={x0} y={y0} width={x1 - x0} height={y1 - y0} />
+              <text className="schematic-border-label" x={x0} y={y0 - 6}>{title}</text>
+            </g>
+          );
         })}
       </g>
 

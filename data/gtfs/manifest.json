@@ -88,5 +88,17 @@
   {
     "operatorId": "translink",
     "skipReason": "Not pinned: TransLink publishes SeaBus only inside its full regional feed (about 16 MB), which would double the vendored archives for one route; SeaBus manually verified"
+  },
+  {
+    "operatorId": "aquabus",
+    "url": "https://aquabusferries.github.io/gtfs-feed/aquabus-bc-ca.zip",
+    "fetchedAt": "2026-09-30",
+    "archive": "aquabus.zip",
+    "sha256": "d6e6241c001a2ff2082d7f4487bc0081066924114a721f2eb39bcd7a28e25175",
+    "feedVersion": "1.0"
+  },
+  {
+    "operatorId": "false-creek-ferries",
+    "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap"
   }
 ]

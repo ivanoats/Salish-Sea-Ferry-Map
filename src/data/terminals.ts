@@ -119,6 +119,21 @@ export const TERMINALS: readonly Terminal[] = [
   // --- TransLink SeaBus ---
   { id: "vancouver-waterfront", name: "Vancouver (Waterfront)", coordinates: [-123.10903, 49.28702], jurisdiction: "BC" },
   { id: "lonsdale-quay", name: "North Vancouver (Lonsdale Quay)", coordinates: [-123.08392, 49.30954], jurisdiction: "BC" },
+
+  // --- False Creek (Aquabus and False Creek Ferries) ---
+  // Docks that serve both operators are one terminal. Granville Island's two
+  // docks (0.093 nm apart) are one, placed on the Aquabus dock; so are the
+  // Aquabus dock at Hornby Street and False Creek Ferries' Aquatic Centre
+  // dock (0.175 nm), placed at Hornby Street.
+  { id: "false-creek-maritime-museum", name: "Maritime Museum (Vanier Park)", coordinates: [-123.14701, 49.27871], jurisdiction: "BC" },
+  { id: "false-creek-hornby", name: "Hornby Street / Aquatic Centre (False Creek)", coordinates: [-123.13437, 49.27424], jurisdiction: "BC" },
+  { id: "granville-island", name: "Granville Island", coordinates: [-123.13394, 49.27249], jurisdiction: "BC" },
+  { id: "false-creek-david-lam-park", name: "David Lam Park (False Creek)", coordinates: [-123.12519, 49.27048], jurisdiction: "BC" },
+  { id: "false-creek-stamps-landing", name: "Stamps Landing (False Creek)", coordinates: [-123.11876, 49.26942], jurisdiction: "BC" },
+  { id: "false-creek-yaletown", name: "Yaletown (False Creek)", coordinates: [-123.11795, 49.27171], jurisdiction: "BC" },
+  { id: "false-creek-spyglass", name: "Spyglass Place (False Creek)", coordinates: [-123.11551, 49.27101], jurisdiction: "BC" },
+  { id: "false-creek-plaza-of-nations", name: "Plaza of Nations (False Creek)", coordinates: [-123.10982, 49.2742], jurisdiction: "BC" },
+  { id: "false-creek-village", name: "The Village (False Creek, by Science World)", coordinates: [-123.10565, 49.27249], jurisdiction: "BC" },
 ];
 
 export const TERMINALS_BY_ID = new Map(TERMINALS.map((t) => [t.id, t] as const));

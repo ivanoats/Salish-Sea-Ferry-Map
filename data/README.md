@@ -33,7 +33,7 @@ that caveat and must keep it visible.
 
 ### Terminal coverage
 
-Measured against the current `src/data/terminals.ts`, 76 of 78 terminals
+Measured against the current `src/data/terminals.ts`, 85 of 87 terminals
 fall within `MAX_SNAP_NM` (2 nm) of a mesh vertex. Two do not:
 
 | Terminal | Nearest vertex |
