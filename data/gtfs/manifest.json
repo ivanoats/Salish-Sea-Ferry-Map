@@ -108,9 +108,5 @@
   {
     "operatorId": "herron-island",
     "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap"
-  },
-  {
-    "operatorId": "drayton-harbor-maritime",
-    "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap"
   }
 ]

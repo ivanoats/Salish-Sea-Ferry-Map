@@ -121,9 +121,6 @@ const terminals: SchematicLayout["terminals"] = {
   // Case Inlet, on the far side of the Key Peninsula.
   "key-peninsula-herron-landing": { position: [19, 65], label: "Key Peninsula", labelSide: "n" },
   "herron-island": { position: [18, 65], label: "Herron Island", labelSide: "w" },
-  // Drayton Harbor, just south of the border.
-  "blaine-harbor": { position: [30, 23], label: "Blaine", labelSide: "e" },
-  semiahmoo: { position: [29, 23], label: "Semiahmoo", labelSide: "w" },
   // --- False Creek, drawn in the inset (SCHEMATIC_INSETS below) ---
   // North-shore docks on row 5, south-shore docks on row 7, west to east,
   // except that Spyglass sits west of Yaletown rather than just east of it,
@@ -227,8 +224,8 @@ export const SCHEMATIC_BORDER: {
 } = {
   line: [[42, 22.5], [21.5, 22.5], [19.5, 24.5], [19.5, 40], [16.5, 43], [-8, 43]],
   labels: [
-    { text: "CANADA", position: [38, 21.9] },
-    { text: "UNITED STATES", position: [38, 23.3] },
+    { text: "CANADA", position: [35, 21.9] },
+    { text: "UNITED STATES", position: [35, 23.3] },
   ],
 };
 
@@ -321,9 +318,7 @@ export const SCHEMATIC_LAND: readonly { readonly name: string; readonly outline:
       [30, 45], [31, 44], [32, 43], [32, 35],
       // Fidalgo Island, reaching down to Whidbey at Deception Pass.
       [30.5, 33.5], [29.5, 33.5], [29.5, 32.5], [30, 32],
-      [30, 30], [32, 30], [33, 29], [33, 26], [31, 24],
-      // Drayton Harbor at Blaine, between the town and Semiahmoo Spit.
-      [30, 24], [30, 22.8], [29, 22.8], [29, 24], [27, 24], [27, 23], [24, 23],
+      [30, 30], [32, 30], [33, 29], [33, 26], [31, 24], [27, 24], [27, 23], [24, 23],
     ],
   },
   { name: "Quadra Island", outline: [[5, -1.5], [7.5, -1.5], [7.5, 1.5], [5.5, 3.5], [5, 3.5]] },

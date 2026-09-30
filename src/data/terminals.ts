@@ -60,13 +60,6 @@ export const TERMINALS: readonly Terminal[] = [
   { id: "ketron-island", name: "Ketron Island", coordinates: [-122.6292, 47.16223], jurisdiction: "WA" },
   { id: "anderson-island-yoman", name: "Anderson Island (Yoman)", coordinates: [-122.67726, 47.17855], jurisdiction: "WA" },
 
-  // --- Plover Ferry, across Drayton Harbor at Blaine ---
-  // OSM node 4341831088, "Plover Ferry" at Blaine Harbor. OSM draws the run
-  // as a loop (way 436312687) with no node at the far end, so Semiahmoo is
-  // the loop's farthest point, node 4341831062, by the resort dock.
-  { id: "blaine-harbor", name: "Blaine Harbor", coordinates: [-122.7586, 48.99398], jurisdiction: "WA" },
-  { id: "semiahmoo", name: "Semiahmoo Resort", coordinates: [-122.77007, 48.98464], jurisdiction: "WA" },
-
   // --- Skagit County / Whatcom County ---
   // OSM node 243582118 (terminal audit: moved 850 m onto the dock)
   { id: "anacortes-guemes-dock", name: "Anacortes (6th St. dock)", coordinates: [-122.6236, 48.51907], jurisdiction: "WA" },

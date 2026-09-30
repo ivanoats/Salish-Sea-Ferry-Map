@@ -24,7 +24,6 @@ const operatorCoverage = [
   "Hullo — passenger service between downtown Nanaimo and downtown Vancouver",
   "TransLink SeaBus — Waterfront to Lonsdale Quay across Burrard Inlet",
   "Herron Island Ferry — the private ferry to Herron Island, for residents and their guests only",
-  "Plover Ferry — the summer foot ferry across Drayton Harbor between Blaine and Semiahmoo",
   "Port of Everett — the summer Jetty Island Ferry from the Everett waterfront",
   "Aquabus and False Creek Ferries — the small passenger ferries around False Creek in Vancouver",
 ] as const;

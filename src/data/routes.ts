@@ -247,17 +247,6 @@ export const ROUTES: readonly FerryRoute[] = [
     note: "MV Another Holiday — passengers and freight, no vehicles. Reservations required, island members and their guests",
   },
 
-  // --- Drayton Harbor Maritime ---
-  {
-    id: "plover-blaine-semiahmoo",
-    name: "Blaine – Semiahmoo (passenger only)",
-    operatorId: "drayton-harbor-maritime",
-    mode: "passenger",
-    status: "seasonal",
-    terminalIds: ["blaine-harbor", "semiahmoo"],
-    note: "MV Plover, Washington's oldest foot ferry: Friday to Sunday, Memorial Day to Labor Day. Owned by the City of Blaine",
-  },
-
   // --- Port of Everett ---
   {
     id: "port-of-everett-jetty-island",

@@ -21940,11 +21940,5 @@ export const GTFS = [
     "referenceDate": null,
     "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap",
     "routes": []
-  },
-  {
-    "operatorId": "drayton-harbor-maritime",
-    "referenceDate": null,
-    "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap",
-    "routes": []
   }
 ];

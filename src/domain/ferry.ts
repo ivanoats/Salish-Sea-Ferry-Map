@@ -26,8 +26,7 @@ export type OperatorId =
   | "aquabus"
   | "false-creek-ferries"
   | "port-of-everett"
-  | "herron-island"
-  | "drayton-harbor-maritime";
+  | "herron-island";
 
 export interface Operator {
   readonly id: OperatorId;

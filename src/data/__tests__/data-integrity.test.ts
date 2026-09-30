@@ -103,7 +103,6 @@ describe("ferry dataset integrity", () => {
   it("keeps known dock-level terminal coordinates on the terminal itself", () => {
     const expectedByTerminalId: Readonly<Record<string, readonly [number, number]>> = {
       "anacortes-guemes-dock": [-122.6236, 48.51907],
-      "blaine-harbor": [-122.7586, 48.99398],
       "bowen-island": [-123.33135, 49.37949],
       "bremerton": [-122.62448, 47.56195],
       "brentwood-bay": [-123.46734, 48.57725],
@@ -158,7 +157,6 @@ describe("ferry dataset integrity", () => {
       "quadra-heriot-bay": [-125.21075, 50.10352],
       "saltery-bay": [-124.1771, 49.78142],
       "saturna-island": [-123.20138, 48.79809],
-      "semiahmoo": [-122.77007, 48.98464],
       "sidney-bc": [-123.39672, 48.64315],
       "texada-island": [-124.62007, 49.79482],
       "thetis-island": [-123.67824, 48.98096],

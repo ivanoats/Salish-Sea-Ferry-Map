@@ -31,7 +31,6 @@ An interactive map of every ferry route across the Salish Sea — Puget Sound, t
 - **Hullo** — downtown Nanaimo ↔ downtown Vancouver (Coal Harbour), passenger only
 - **TransLink SeaBus** — Waterfront ↔ Lonsdale Quay across Burrard Inlet, passenger only
 - **Herron Island Ferry** — the private *Charlie Wells*, Key Peninsula ↔ Herron Island, for residents and their guests only
-- **Plover Ferry** — the MV *Plover*, Blaine ↔ Semiahmoo across Drayton Harbor, summer weekends, passenger only
 - **Port of Everett** — the summer Jetty Island Ferry, a five-minute crossing from the Everett waterfront, passenger only
 - **Aquabus** and **False Creek Ferries** — the small passenger ferries around False Creek, from Granville Island to Hornby Street, Yaletown, The Village and the Maritime Museum
 

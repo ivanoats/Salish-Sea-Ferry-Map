@@ -134,13 +134,6 @@ export const OPERATORS: readonly Operator[] = [
     color: "#9a3412",
     website: "https://www.herronisland.org",
   },
-  {
-    id: "drayton-harbor-maritime",
-    name: "Drayton Harbor Maritime (Plover Ferry)",
-    shortName: "Plover Ferry",
-    color: "#15803d",
-    website: "https://www.draytonharbormaritime.org",
-  },
 ];
 
 export const OPERATORS_BY_ID = new Map(OPERATORS.map((o) => [o.id, o] as const));

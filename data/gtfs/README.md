@@ -50,7 +50,7 @@ Initial snapshot fetched 2026-09-26 UTC (2026-09-25 Pacific):
 | Aquabus | Routes, stops, calendar (pinned 2026-09-30 UTC; frequency-based trips, feed valid to 2033) |
 | False Creek Ferries | No feed in the Mobility Database catalog; manually verified against OpenStreetMap |
 | Port of Everett (Jetty Island Ferry) | No feed in the Mobility Database catalog; manually verified against OpenStreetMap |
-| Herron Island Ferry, Plover Ferry | No feed in the Mobility Database catalog; manually verified against OpenStreetMap |
+| Herron Island Ferry | No feed in the Mobility Database catalog; manually verified against OpenStreetMap |
 
 Coverage warnings appear during generation and in the integrity test. They do
 not fail the build. Missing or corrupt pinned files and unexpected data drift do.
