@@ -125,14 +125,23 @@ export const TERMINALS: readonly Terminal[] = [
   // docks (0.093 nm apart) are one, placed on the Aquabus dock; so are the
   // Aquabus dock at Hornby Street and False Creek Ferries' Aquatic Centre
   // dock (0.175 nm), placed at Hornby Street.
+  // OSM node 728158415
   { id: "false-creek-maritime-museum", name: "Maritime Museum (Vanier Park)", coordinates: [-123.14701, 49.27871], jurisdiction: "BC" },
+  // OSM node 638861821 (Aquabus Hornby Terminal; the Aquatic Centre dock is node 643885508)
   { id: "false-creek-hornby", name: "Hornby Street / Aquatic Centre (False Creek)", coordinates: [-123.13437, 49.27424], jurisdiction: "BC" },
+  // OSM node 3456666797 (Aquabus dock; the False Creek Ferries dock is node 7323816655)
   { id: "granville-island", name: "Granville Island", coordinates: [-123.13394, 49.27249], jurisdiction: "BC" },
+  // OSM node 3456659790
   { id: "false-creek-david-lam-park", name: "David Lam Park (False Creek)", coordinates: [-123.12519, 49.27048], jurisdiction: "BC" },
+  // OSM node 3456696411
   { id: "false-creek-stamps-landing", name: "Stamps Landing (False Creek)", coordinates: [-123.11876, 49.26942], jurisdiction: "BC" },
+  // OSM node 1356857891
   { id: "false-creek-yaletown", name: "Yaletown (False Creek)", coordinates: [-123.11795, 49.27171], jurisdiction: "BC" },
+  // OSM node 3456702076
   { id: "false-creek-spyglass", name: "Spyglass Place (False Creek)", coordinates: [-123.11551, 49.27101], jurisdiction: "BC" },
+  // OSM node 431234884
   { id: "false-creek-plaza-of-nations", name: "Plaza of Nations (False Creek)", coordinates: [-123.10982, 49.2742], jurisdiction: "BC" },
+  // OSM node 431234943
   { id: "false-creek-village", name: "The Village (False Creek, by Science World)", coordinates: [-123.10565, 49.27249], jurisdiction: "BC" },
 ];
 

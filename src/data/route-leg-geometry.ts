@@ -565,21 +565,6 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
       [-123.11551, 49.27101],
     ],
   },
-  "false-creek-stamps-landing\u0000false-creek-yaletown": {
-    source: "osm",
-    coordinates: [
-      [-123.11876, 49.26942],
-      [-123.1187582, 49.2694191],
-      [-123.1186923, 49.2695621],
-      [-123.1175433, 49.2704362],
-      [-123.1162676, 49.2709639],
-      [-123.1158714, 49.2710351],
-      [-123.1155128, 49.2710105],
-      [-123.1167045, 49.2713531],
-      [-123.1179512, 49.2717105],
-      [-123.11795, 49.27171],
-    ],
-  },
   "false-creek-yaletown\u0000false-creek-plaza-of-nations": {
     source: "osm",
     coordinates: [

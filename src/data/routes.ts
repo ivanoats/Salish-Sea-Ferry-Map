@@ -493,10 +493,13 @@ export const ROUTES: readonly FerryRoute[] = [
       "granville-island",
       "false-creek-david-lam-park",
       "false-creek-stamps-landing",
+      "false-creek-spyglass",
       "false-creek-yaletown",
       "false-creek-plaza-of-nations",
       "false-creek-village",
     ],
+    // OSM's route 3 relations skip Spyglass, but the operator lists it among
+    // its nine stops (granvilleislandferries.bc.ca/plan-your-trip, 2026-09-30).
     note: "Route 3. Small passenger ferries",
   },
   {

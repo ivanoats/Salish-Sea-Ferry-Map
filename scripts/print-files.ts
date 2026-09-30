@@ -176,8 +176,8 @@ function diagramSvg(
       clip: `inset-${i}`,
     })),
   ];
-  const land = coastGroups.map(({ coasts, clip }) =>
-    `<g clip-path="url(#${clip})">${coasts.map((d) => `<path class="land" d="${d}"/>`).join("")}</g>`);
+  const landPaths = (coasts: readonly string[]) => coasts.map((d) => `<path class="land" d="${d}"/>`).join("");
+  const land = coastGroups.map(({ coasts, clip }) => `<g clip-path="url(#${clip})">${landPaths(coasts)}</g>`);
   if (landStyle === "waterline") land.unshift(waterlineMarkup(coastGroups, view));
 
   const insets = SCHEMATIC_INSETS.map(({ title, box, waterLabels: labels }, i) => {

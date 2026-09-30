@@ -116,7 +116,7 @@ const terminals: SchematicLayout["terminals"] = {
   // --- False Creek, drawn in the inset (SCHEMATIC_INSETS below) ---
   // North-shore docks on row 5, south-shore docks on row 7, west to east,
   // except that Spyglass sits west of Yaletown rather than just east of it,
-  // so the Aquabus runs through instead of doubling back to it.
+  // so both operators' boats run through it instead of doubling back.
   "false-creek-maritime-museum": { position: [17, 7], label: "Maritime Museum", labelSide: "s" },
   "false-creek-hornby": { position: [21, 5], label: "Hornby St", labelSide: "n" },
   "granville-island": { position: [21, 7], label: "Granville Island", labelSide: "s" },
@@ -175,7 +175,6 @@ const legVias: Record<string, readonly GridPoint[]> = {
   "granville-island>false-creek-david-lam-park": [[22, 6], [23, 6]],
   "false-creek-david-lam-park>false-creek-stamps-landing": [[24, 6]],
   "false-creek-stamps-landing>false-creek-spyglass": [[26, 6], [27, 6]],
-  "false-creek-stamps-landing>false-creek-yaletown": [[26, 6], [29, 6]],
   "false-creek-yaletown>false-creek-plaza-of-nations": [[31, 6], [32, 6]],
   "false-creek-plaza-of-nations>false-creek-village": [[33, 6]],
   "false-creek-hornby>false-creek-maritime-museum": [[20, 6], [18, 6]],
