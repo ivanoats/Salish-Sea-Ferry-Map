@@ -135,7 +135,8 @@ const legVias: Record<string, readonly GridPoint[]> = {
   "long-harbour>tsawwassen": [[13, 30]],
   "long-harbour>mayne-island": [[14, 30]],
   "long-harbour>pender-island": [[14, 30], [15, 30]],
-  "long-harbour>swartz-bay": [[10, 31]],
+  // Otter Bay on to Swartz Bay: back up the trunk, then down the mainline.
+  "pender-island>swartz-bay": [[15, 30], [13, 30]],
   // Suspended, but still drawn when asked for: kept off the Lopez–Shaw line
   // it would otherwise run straight through, and out of Friday Harbor to the
   // northwest, around the top of San Juan Island as the boat goes, rather
