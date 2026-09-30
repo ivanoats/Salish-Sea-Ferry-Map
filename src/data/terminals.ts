@@ -155,6 +155,28 @@ export const TERMINALS: readonly Terminal[] = [
   { id: "nanaimo-hullo", name: "Nanaimo (Hullo terminal)", coordinates: [-123.92249, 49.16354], jurisdiction: "BC" },
   { id: "vancouver-hullo", name: "Vancouver (Hullo terminal, Coal Harbour)", coordinates: [-123.11635, 49.29031], jurisdiction: "BC" },
 
+  // --- BC local passenger ferries and water taxis ---
+  // The Protection Island ferry leaves from Nanaimo's boat basin, 0.11 nm
+  // from the Gabriola ferry, so it shares nanaimo-harbour; the Hornby water
+  // taxi lands at the Thatch Pub dock, 0.09 nm from Shingle Spit, so it
+  // shares hornby-island.
+  // OSM node 1676254599, the Sidney end of the Sidney Spit Ferry way (299945752)
+  { id: "port-sidney", name: "Sidney (Port Sidney Marina)", coordinates: [-123.39303, 48.64975], jurisdiction: "BC" },
+  // OSM node 3040271048, the Sidney Spit end of the same way
+  { id: "sidney-spit", name: "Sidney Spit", coordinates: [-123.33277, 48.6418], jurisdiction: "BC" },
+  // OSM node 431360311 (Saysutshun / Newcastle Island Dock)
+  { id: "newcastle-island", name: "Saysutshun (Newcastle Island)", coordinates: [-123.92877, 49.18009], jurisdiction: "BC" },
+  // OSM node 3634698128 (Maffeo Sutton Dock)
+  { id: "nanaimo-maffeo-sutton", name: "Nanaimo (Maffeo Sutton Park)", coordinates: [-123.93643, 49.17186], jurisdiction: "BC" },
+  // OSM node 3380652107
+  { id: "protection-island", name: "Protection Island", coordinates: [-123.92635, 49.17671], jurisdiction: "BC" },
+  // OSM node 4376688106 (Lund Water Taxi)
+  { id: "lund", name: "Lund", coordinates: [-124.76231, 49.98111], jurisdiction: "BC" },
+  // OSM node 2948288469, the Savary Island end of the Lund Water Taxi way (291364983)
+  { id: "savary-island", name: "Savary Island", coordinates: [-124.7796, 49.94581], jurisdiction: "BC" },
+  // OSM node 1368661655, a float of the municipal marina below Marina Park
+  { id: "comox-marina", name: "Comox (Municipal Marina)", coordinates: [-124.92778, 49.67039], jurisdiction: "BC" },
+
   // --- TransLink SeaBus ---
   { id: "vancouver-waterfront", name: "Vancouver (Waterfront)", coordinates: [-123.10903, 49.28702], jurisdiction: "BC" },
   { id: "lonsdale-quay", name: "North Vancouver (Lonsdale Quay)", coordinates: [-123.08392, 49.30954], jurisdiction: "BC" },

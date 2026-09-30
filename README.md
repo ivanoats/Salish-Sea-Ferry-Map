@@ -32,6 +32,10 @@ An interactive map of every ferry route across the Salish Sea — Puget Sound, t
 - **TransLink SeaBus** — Waterfront ↔ Lonsdale Quay across Burrard Inlet, passenger only
 - **Herron Island Ferry** — the private *Charlie Wells*, Key Peninsula ↔ Herron Island, for residents and their guests only
 - **Port of Everett** — the summer Jetty Island Ferry, a five-minute crossing from the Everett waterfront, passenger only
+- **Sidney Spit Ferry** — Sidney ↔ Sidney Spit in the Gulf Islands National Park Reserve, passenger only, summer
+- **Protection Island Ferry** and **Saysutshun Ferry** — Nanaimo harbour's foot ferries: the Dinghy Dock Pub's hourly boat to Protection Island, and the Snuneymuxw First Nation's summer ferry to Saysutshun (Newcastle Island)
+- **Lund Water Taxi** — Lund ↔ Savary Island, year-round, passenger only
+- **Hornby Island Water Taxi** — Big Animal Encounters' Comox ↔ Hornby Island run, spring and summer, passenger only
 - **Aquabus** and **False Creek Ferries** — the small passenger ferries around False Creek, from Granville Island to Hornby Street, Yaletown, The Village and the Maritime Museum
 
 ## Route diagram

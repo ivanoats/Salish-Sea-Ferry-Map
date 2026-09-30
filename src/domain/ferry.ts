@@ -26,7 +26,12 @@ export type OperatorId =
   | "aquabus"
   | "false-creek-ferries"
   | "port-of-everett"
-  | "herron-island";
+  | "herron-island"
+  | "sidney-spit-ferry"
+  | "dinghy-dock-pub"
+  | "saysutshun-ferry"
+  | "lund-water-taxi"
+  | "big-animal-encounters";
 
 export interface Operator {
   readonly id: OperatorId;

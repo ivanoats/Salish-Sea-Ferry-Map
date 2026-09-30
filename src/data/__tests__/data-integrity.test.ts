@@ -109,6 +109,7 @@ describe("ferry dataset integrity", () => {
       "buckley-bay": [-124.84655, 49.52639],
       "chemainus": [-123.7142, 48.92553],
       "comox": [-124.92382, 49.73991],
+      "comox-marina": [-124.92778, 49.67039],
       "cortes-island": [-125.05386, 50.10974],
       "coupeville": [-122.67271, 48.15913],
       "crofton": [-123.63764, 48.8657],
@@ -143,21 +144,28 @@ describe("ferry dataset integrity", () => {
       "long-harbour": [-123.44578, 48.85211],
       "lonsdale-quay": [-123.08392, 49.30954],
       "lummi-island": [-122.68131, 48.72044],
+      "lund": [-124.76231, 49.98111],
       "mayne-island": [-123.32328, 48.84454],
       "mill-bay": [-123.51777, 48.61399],
       "mukilteo": [-122.29704, 47.95067],
       "nanaimo-harbour": [-123.93071, 49.16619],
       "nanaimo-hullo": [-123.92249, 49.16354],
+      "nanaimo-maffeo-sutton": [-123.93643, 49.17186],
+      "newcastle-island": [-123.92877, 49.18009],
       "pender-island": [-123.31561, 48.80052],
       "penelakut-island": [-123.66127, 48.97073],
       "port-angeles": [-123.43073, 48.12184],
       "port-orchard": [-122.63547, 47.54313],
       "port-orchard-annapolis": [-122.61641, 47.54958],
+      "port-sidney": [-123.39303, 48.64975],
       "powell-river": [-124.53074, 49.83524],
+      "protection-island": [-123.92635, 49.17671],
       "quadra-heriot-bay": [-125.21075, 50.10352],
       "saltery-bay": [-124.1771, 49.78142],
       "saturna-island": [-123.20138, 48.79809],
+      "savary-island": [-124.7796, 49.94581],
       "sidney-bc": [-123.39672, 48.64315],
+      "sidney-spit": [-123.33277, 48.6418],
       "texada-island": [-124.62007, 49.79482],
       "thetis-island": [-123.67824, 48.98096],
       "vancouver-hullo": [-123.11635, 49.29031],
@@ -237,15 +245,17 @@ describe("ferry dataset integrity", () => {
   });
 
   // The mesh is a sailing network, not a ferry one (data/README.md), so a leg
-  // that falls back to it is drawn along water no ferry uses. The one
-  // expected fallback is the suspended Sidney run. Anything else usually
+  // that falls back to it is drawn along water no ferry uses. There are two
+  // expected fallbacks: the suspended Sidney run, and the Comox–Hornby water
+  // taxi, which OSM doesn't map and which runs the same line a sailor would,
+  // across the Comox Bar and down Lambert Channel. Anything else usually
   // means a leg the boats don't sail: a direct Long Harbour–Swartz Bay leg
   // drew a 20 nm loop east past Pender, when those sailings call at Otter Bay.
-  it("falls back to the sailing mesh only for the suspended Friday Harbor–Sidney leg", () => {
+  it("falls back to the sailing mesh only for the suspended Friday Harbor–Sidney leg and the Comox–Hornby water taxi", () => {
     const meshLegs = Object.entries(ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS)
       .filter(([, geometry]) => geometry.source === "mesh")
       .map(([legKey]) => legKey.replace("\0", " > "));
-    expect(meshLegs).toEqual(["friday-harbor > sidney-bc"]);
+    expect(meshLegs).toEqual(["comox-marina > hornby-island", "friday-harbor > sidney-bc"]);
   });
 });
 

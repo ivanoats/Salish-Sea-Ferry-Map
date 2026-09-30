@@ -134,6 +134,41 @@ export const OPERATORS: readonly Operator[] = [
     color: "#9a3412",
     website: "https://www.herronisland.org",
   },
+  {
+    id: "sidney-spit-ferry",
+    name: "Alpine Group (Sidney Spit Ferry)",
+    shortName: "Sidney Spit Ferry",
+    color: "#0d9488",
+    website: "https://www.sidneyspitferry.com",
+  },
+  {
+    id: "dinghy-dock-pub",
+    name: "Dinghy Dock Pub (Protection Island Ferry)",
+    shortName: "Protection Island Ferry",
+    color: "#92400e",
+    website: "https://dinghydockpub.com",
+  },
+  {
+    id: "saysutshun-ferry",
+    name: "Snuneymuxw First Nation (Saysutshun Ferry)",
+    shortName: "Saysutshun Ferry",
+    color: "#047857",
+    website: "https://newcastleisland.ca",
+  },
+  {
+    id: "lund-water-taxi",
+    name: "Lund Water Taxi",
+    shortName: "Lund Water Taxi",
+    color: "#be185d",
+    website: "https://www.lundwatertaxi.com",
+  },
+  {
+    id: "big-animal-encounters",
+    name: "Big Animal Encounters (Hornby Island Water Taxi)",
+    shortName: "Hornby Island Water Taxi",
+    color: "#1d4ed8",
+    website: "https://biganimalencounters.com/hornby-island-water-taxi/",
+  },
 ];
 
 export const OPERATORS_BY_ID = new Map(OPERATORS.map((o) => [o.id, o] as const));

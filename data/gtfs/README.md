@@ -51,6 +51,11 @@ Initial snapshot fetched 2026-09-26 UTC (2026-09-25 Pacific):
 | False Creek Ferries | No feed in the Mobility Database catalog; manually verified against OpenStreetMap |
 | Port of Everett (Jetty Island Ferry) | No feed in the Mobility Database catalog; manually verified against OpenStreetMap |
 | Herron Island Ferry | No feed in the Mobility Database catalog; manually verified against OpenStreetMap |
+| Sidney Spit Ferry | No feed in the Mobility Database catalog; manually verified against OpenStreetMap |
+| Protection Island Ferry (Dinghy Dock Pub) | No feed in the Mobility Database catalog; manually verified against OpenStreetMap |
+| Saysutshun Ferry | No feed in the Mobility Database catalog; manually verified against OpenStreetMap |
+| Lund Water Taxi | No feed in the Mobility Database catalog; manually verified against OpenStreetMap |
+| Hornby Island Water Taxi (Big Animal Encounters) | No feed in the Mobility Database catalog; manually verified against the operator's 2026 schedule (OpenStreetMap has no route) |
 
 Coverage warnings appear during generation and in the integrity test. They do
 not fail the build. Missing or corrupt pinned files and unexpected data drift do.
