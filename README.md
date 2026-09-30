@@ -20,7 +20,7 @@ An interactive map of every ferry route across the Salish Sea — Puget Sound, t
 - **Washington State Ferries (WSF)** — all 8 active routes plus the currently-suspended Anacortes–Sidney, BC run
 - **BC Ferries** — every route within the Salish Sea proper: the three major Strait of Georgia crossings, the Sunshine Coast/Howe Sound routes, the Southern Gulf Islands, and the smaller central-Vancouver-Island crossings
 - **Black Ball Ferry Line** — the MV *Coho*, Port Angeles ↔ Victoria
-- **Kitsap Transit** — the Bremerton, Kingston, and Southworth fast passenger ferries to Seattle
+- **Kitsap Transit** — the Bremerton, Kingston, and Southworth fast passenger ferries to Seattle, and the foot ferries from Bremerton to Port Orchard and Annapolis
 - **Pierce County** — the Steilacoom ↔ Anderson Island car ferry, with the Ketron Island stop by request
 - **Victoria Clipper** — Seattle ↔ Victoria, passenger only
 - **Skagit County** — the Guemes Island ferry
@@ -30,6 +30,8 @@ An interactive map of every ferry route across the Salish Sea — Puget Sound, t
 - **Hat Island Ferry** — the *Another Holiday*, Everett ↔ Hat Island (Gedney)
 - **Hullo** — downtown Nanaimo ↔ downtown Vancouver (Coal Harbour), passenger only
 - **TransLink SeaBus** — Waterfront ↔ Lonsdale Quay across Burrard Inlet, passenger only
+- **Herron Island Ferry** — the private *Charlie Wells*, Key Peninsula ↔ Herron Island, for residents and their guests only
+- **Plover Ferry** — the MV *Plover*, Blaine ↔ Semiahmoo across Drayton Harbor, summer weekends, passenger only
 - **Port of Everett** — the summer Jetty Island Ferry, a five-minute crossing from the Everett waterfront, passenger only
 - **Aquabus** and **False Creek Ferries** — the small passenger ferries around False Creek, from Granville Island to Hornby Street, Yaletown, The Village and the Maritime Museum
 

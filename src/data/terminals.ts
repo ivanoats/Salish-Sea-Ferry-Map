@@ -43,10 +43,29 @@ export const TERMINALS: readonly Terminal[] = [
   { id: "victoria-belleville", name: "Victoria, BC (Belleville St. Terminal)", coordinates: [-123.3719, 48.4229], jurisdiction: "BC" },
   { id: "seattle-pier-69", name: "Seattle (Pier 69)", coordinates: [-122.3406, 47.6086], jurisdiction: "WA" },
 
+  // --- Kitsap Transit foot ferries, across Sinclair Inlet from Bremerton ---
+  // OSM node 2061770120, the Kitsap Transit dock
+  { id: "port-orchard", name: "Port Orchard", coordinates: [-122.63547, 47.54313], jurisdiction: "WA" },
+  // OSM node 2061770119, the end of the Annapolis foot ferry way (202908021)
+  { id: "port-orchard-annapolis", name: "Port Orchard (Annapolis)", coordinates: [-122.61641, 47.54958], jurisdiction: "WA" },
+
+  // --- Herron Island (private) ---
+  // The ends of OSM's Herron Island Ferry way (224061584): node 480588928 on
+  // the Key Peninsula shore and node 2328979484 on the island.
+  { id: "key-peninsula-herron-landing", name: "Key Peninsula (Herron Island ferry landing)", coordinates: [-122.81578, 47.27558], jurisdiction: "WA" },
+  { id: "herron-island", name: "Herron Island", coordinates: [-122.82747, 47.26699], jurisdiction: "WA" },
+
   // --- Pierce County ---
   { id: "steilacoom-landing", name: "Steilacoom Landing", coordinates: [-122.6031, 47.17315], jurisdiction: "WA" },
   { id: "ketron-island", name: "Ketron Island", coordinates: [-122.6292, 47.16223], jurisdiction: "WA" },
   { id: "anderson-island-yoman", name: "Anderson Island (Yoman)", coordinates: [-122.67726, 47.17855], jurisdiction: "WA" },
+
+  // --- Plover Ferry, across Drayton Harbor at Blaine ---
+  // OSM node 4341831088, "Plover Ferry" at Blaine Harbor. OSM draws the run
+  // as a loop (way 436312687) with no node at the far end, so Semiahmoo is
+  // the loop's farthest point, node 4341831062, by the resort dock.
+  { id: "blaine-harbor", name: "Blaine Harbor", coordinates: [-122.7586, 48.99398], jurisdiction: "WA" },
+  { id: "semiahmoo", name: "Semiahmoo Resort", coordinates: [-122.77007, 48.98464], jurisdiction: "WA" },
 
   // --- Skagit County / Whatcom County ---
   // OSM node 243582118 (terminal audit: moved 850 m onto the dock)

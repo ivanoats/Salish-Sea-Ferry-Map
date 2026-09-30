@@ -33,7 +33,7 @@ that caveat and must keep it visible.
 
 ### Terminal coverage
 
-Measured against the current `src/data/terminals.ts`, 87 of 89 terminals
+Measured against the current `src/data/terminals.ts`, 93 of 95 terminals
 fall within `MAX_SNAP_NM` (2 nm) of a mesh vertex. Two do not:
 
 | Terminal | Nearest vertex |
@@ -64,7 +64,7 @@ sailing lines, both mapped as ferries rather than inferred from open water.
 Check a terminal against OSM, not against this mesh.
 
 Since the OSM ferry routes landed, the mesh is a fallback rather than the
-primary source: 69 of 70 route legs use OSM geometry and 1 uses the mesh
+primary source: 73 of 74 route legs use OSM geometry and 1 uses the mesh
 (`friday-harbor`–`sidney-bc`, suspended since 2020, whose Sidney end has
 no OSM ferry route within `MAX_OSM_ENDPOINT_NM`). No leg falls back to a
 straight line.
@@ -83,7 +83,7 @@ it for a leg only when **both** of the leg's terminals sit within
 `MAX_OSM_ENDPOINT_NM` (1.25 nm) of that one route's vertices. So a leg
 either gets the line a ferry actually sails or it gets none — two
 terminals covered by two different routes are never stitched together.
-Geometry beats the mesh where it exists, which is 69 of the 70 legs.
+Geometry beats the mesh where it exists, which is 73 of the 74 legs.
 
 ### Relations first, bare ways only to fill gaps
 
@@ -95,13 +95,14 @@ Kitsap Transit fast ferries and the Gambier–Keats crossing fell back to the
 mesh long after every terminal they touch had real geometry nearby.
 
 The third source query subtracts relation member ways from all ferry ways
-in the region, leaving 66 standalone ones. Only eleven are vendored: the
+in the region, leaving 66 standalone ones. Only fourteen are vendored: the
 ones carrying a route leg no relation reaches — the two Kitsap Transit
 fast ferries, the Gambier–Keats crossing, Seattle–West Seattle, the Hat
 Island Ferry, the Puget Sound Express Port Townsend–Friday Harbor run, and,
 added later from the main OSM API, Hullo's Nanaimo–Vancouver crossing,
-Long Harbour's three legs to Village Bay, Otter Bay and Tsawwassen, and the
-Jetty Island Ferry.
+Long Harbour's three legs to Village Bay, Otter Bay and Tsawwassen, the
+Jetty Island Ferry, Bremerton–Annapolis, the private Herron Island Ferry,
+and the Plover at Blaine.
 The rest are either the same crossing a relation already covers — and a
 duplicate can only displace better geometry, since the builder breaks ties
 on snap distance — or berth approaches, freight barges and water taxis this

@@ -13,7 +13,7 @@ const operatorCoverage = [
   "Washington State Ferries — all 8 active routes plus the currently suspended Anacortes–Sidney, BC run",
   "BC Ferries — every route within the Salish Sea proper: the three major Strait of Georgia crossings, the Sunshine Coast/Howe Sound routes, the Southern Gulf Islands, and the smaller central-Vancouver-Island crossings",
   "Black Ball Ferry Line — the MV Coho between Port Angeles and Victoria",
-  "Kitsap Transit — the Bremerton, Kingston, and Southworth fast passenger ferries to Seattle",
+  "Kitsap Transit — the Bremerton, Kingston, and Southworth fast passenger ferries to Seattle, and the Bremerton foot ferries to Port Orchard and Annapolis",
   "Pierce County — the Steilacoom ↔ Anderson Island car ferry, including the Ketron Island request stop",
   "Victoria Clipper — passenger-only service between Seattle and Victoria",
   "Skagit County — the Guemes Island ferry",
@@ -23,6 +23,8 @@ const operatorCoverage = [
   "Hat Island Ferry — the Another Holiday between Everett and Hat Island",
   "Hullo — passenger service between downtown Nanaimo and downtown Vancouver",
   "TransLink SeaBus — Waterfront to Lonsdale Quay across Burrard Inlet",
+  "Herron Island Ferry — the private ferry to Herron Island, for residents and their guests only",
+  "Plover Ferry — the summer foot ferry across Drayton Harbor between Blaine and Semiahmoo",
   "Port of Everett — the summer Jetty Island Ferry from the Everett waterfront",
   "Aquabus and False Creek Ferries — the small passenger ferries around False Creek in Vancouver",
 ] as const;
