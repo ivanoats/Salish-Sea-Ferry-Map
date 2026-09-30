@@ -72,12 +72,14 @@ export const TERMINALS: readonly Terminal[] = [
   { id: "departure-bay", name: "Departure Bay (Nanaimo)", coordinates: [-123.9556, 49.1934], jurisdiction: "BC" },
   { id: "horseshoe-bay", name: "Horseshoe Bay (West Vancouver)", coordinates: [-123.2716, 49.3763], jurisdiction: "BC" },
   { id: "duke-point", name: "Duke Point (Nanaimo)", coordinates: [-123.89177, 49.16001], jurisdiction: "BC" },
-  { id: "langdale", name: "Langdale (Sunshine Coast)", coordinates: [-123.4645, 49.4306], jurisdiction: "BC" },
+  // OSM node 2502620344 (issue #61: the old point was ~650 m out in Howe Sound)
+  { id: "langdale", name: "Langdale (Sunshine Coast)", coordinates: [-123.47234, 49.43394], jurisdiction: "BC" },
   { id: "earls-cove", name: "Earls Cove (Sunshine Coast)", coordinates: [-124.0006, 49.7488], jurisdiction: "BC" },
   { id: "saltery-bay", name: "Saltery Bay", coordinates: [-124.1771, 49.78142], jurisdiction: "BC" },
   { id: "gambier-island", name: "Gambier Island (New Brighton)", coordinates: [-123.43958, 49.44999], jurisdiction: "BC" },
   { id: "keats-island", name: "Keats Island (Eastbourne)", coordinates: [-123.4332, 49.39556], jurisdiction: "BC" },
-  { id: "fulford-harbour", name: "Fulford Harbour (Salt Spring Island)", coordinates: [-123.4497, 48.7638], jurisdiction: "BC" },
+  // OSM node 529748303 (issue #61: the old point was ~600 m south, out in the harbour)
+  { id: "fulford-harbour", name: "Fulford Harbour (Salt Spring Island)", coordinates: [-123.45113, 48.76939], jurisdiction: "BC" },
   // Salt Spring's third terminal, on the northeast shore: Route 9 sailings to
   // Tsawwassen and the other Southern Gulf Islands, not the Swartz Bay run.
   { id: "long-harbour", name: "Long Harbour (Salt Spring Island)", coordinates: [-123.44578, 48.85211], jurisdiction: "BC" },
