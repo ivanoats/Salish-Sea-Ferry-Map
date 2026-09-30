@@ -69,9 +69,12 @@ where available. This is not a check of every sailing's stop order or complete
 end-to-end connectivity.
 
 The coordinate tolerance is **1,000 metres**. This allows terminal buildings,
-berths, and older dock points, including the approximately 0.8 km discrepancies
-at the Guemes terminals. It is a coarse displacement check, not confirmation of
-precise dock placement. Existing dock-level checks against OSM remain separate.
+berths, and older dock points. It is a coarse displacement check, not
+confirmation of precise dock placement, and it let real errors through: the
+approximately 0.8 km discrepancies at the Guemes terminals, first taken for
+old dock points, were the curated coordinates sitting in the wrong place, and
+the terminal audit for #61 found 19 terminals 170–850 m off their docks.
+Dock-level placement is checked against OSM in `data-integrity.test.ts`.
 
 Calendar weekdays and `calendar_dates.txt` additions/removals are expanded,
 including feeds that contain only exception dates. Feed validity bounds the

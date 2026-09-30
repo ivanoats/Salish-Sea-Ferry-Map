@@ -130,15 +130,17 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
   "anacortes-guemes-dock\u0000guemes-island": {
     source: "osm",
     coordinates: [
-      [-122.6156, 48.5136],
+      [-122.6236, 48.51907],
       [-122.6236048, 48.5190696],
-      [-122.6304, 48.5218],
+      [-122.6247228, 48.5271343],
+      [-122.6246642, 48.5280251],
+      [-122.62466, 48.52803],
     ],
   },
   "bremerton\u0000seattle-colman-dock": {
     source: "osm",
     coordinates: [
-      [-122.6273, 47.5673],
+      [-122.62448, 47.56195],
       [-122.6244828, 47.5619495],
       [-122.6243606, 47.561859],
       [-122.6237963, 47.561441],
@@ -194,7 +196,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
   "brentwood-bay\u0000mill-bay": {
     source: "osm",
     coordinates: [
-      [-123.4632, 48.5716],
+      [-123.46734, 48.57725],
       [-123.4673414, 48.5772513],
       [-123.4680787, 48.5770423],
       [-123.4691824, 48.5772147],
@@ -240,7 +242,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
   "chemainus\u0000thetis-island": {
     source: "osm",
     coordinates: [
-      [-123.7128, 48.9236],
+      [-123.7142, 48.92553],
       [-123.7141952, 48.9255306],
       [-123.7135474, 48.9257108],
       [-123.7130324, 48.928756],
@@ -283,13 +285,13 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
       [-124.5325782, 49.8321992],
       [-124.5313851, 49.8337397],
       [-124.5307406, 49.8352358],
-      [-124.5308, 49.8378],
+      [-124.53074, 49.83524],
     ],
   },
   "crofton\u0000vesuvius-bay": {
     source: "osm",
     coordinates: [
-      [-123.6392, 48.8686],
+      [-123.63764, 48.8657],
       [-123.6376385, 48.8656961],
       [-123.6369624, 48.865543],
       [-123.625, 48.8691948],
@@ -366,7 +368,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
   "earls-cove\u0000saltery-bay": {
     source: "osm",
     coordinates: [
-      [-124.0006, 49.7488],
+      [-124.00884, 49.75315],
       [-124.0088423, 49.7531547],
       [-124.00829, 49.7537386],
       [-124.0081827, 49.7546466],
@@ -405,7 +407,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
   "edmonds\u0000kingston": {
     source: "osm",
     coordinates: [
-      [-122.3826, 47.8113],
+      [-122.3833, 47.81271],
       [-122.385475, 47.813366],
       [-122.3855689, 47.8133909],
       [-122.3872677, 47.8138383],
@@ -637,13 +639,13 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
       [-123.35862, 48.64739],
       [-123.37339, 48.65171],
       [-123.3927, 48.65243],
-      [-123.3956, 48.6497],
+      [-123.39672, 48.64315],
     ],
   },
   "galiano-island\u0000mayne-island": {
     source: "osm",
     coordinates: [
-      [-123.3213, 48.8794],
+      [-123.31487, 48.87657],
       [-123.3148691, 48.8765668],
       [-123.3104594, 48.875267],
       [-123.308878, 48.8747095],
@@ -760,7 +762,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
       [-123.3288263, 49.379555],
       [-123.3302565, 49.3793214],
       [-123.3313455, 49.3794924],
-      [-123.3378, 49.38],
+      [-123.33135, 49.37949],
     ],
   },
   "horseshoe-bay\u0000langdale": {
@@ -960,7 +962,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
   "mukilteo\u0000clinton": {
     source: "osm",
     coordinates: [
-      [-122.3046, 47.9476],
+      [-122.29704, 47.95067],
       [-122.2970394, 47.9506698],
       [-122.2974391, 47.9512642],
       [-122.3129035, 47.9566973],
@@ -974,7 +976,8 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
   "nanaimo-harbour\u0000gabriola-island": {
     source: "osm",
     coordinates: [
-      [-123.935, 49.1667],
+      [-123.93071, 49.16619],
+      [-123.930958, 49.1667626],
       [-123.9311646, 49.1669643],
       [-123.9310844, 49.167202],
       [-123.9307517, 49.1674962],
@@ -1145,7 +1148,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
   "port-angeles\u0000victoria-belleville": {
     source: "osm",
     coordinates: [
-      [-123.4307, 48.1176],
+      [-123.43073, 48.12184],
       [-123.4307334, 48.1218363],
       [-123.4278301, 48.1247696],
       [-123.4245342, 48.1269281],
@@ -1190,7 +1193,8 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
       [-122.6703526, 48.1517001],
       [-122.6716389, 48.1555397],
       [-122.672725, 48.159039],
-      [-122.6773, 48.159],
+      [-122.672715, 48.1591308],
+      [-122.67271, 48.15913],
     ],
   },
   "port-townsend-point-hudson\u0000friday-harbor": {
@@ -1255,7 +1259,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
   "powell-river\u0000texada-island": {
     source: "osm",
     coordinates: [
-      [-124.5308, 49.8378],
+      [-124.53074, 49.83524],
       [-124.5307406, 49.8352358],
       [-124.5311792, 49.832119],
       [-124.5320074, 49.8299528],
@@ -1276,7 +1280,17 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
   "quadra-heriot-bay\u0000cortes-island": {
     source: "osm",
     coordinates: [
-      [-125.2064, 50.1058],
+      [-125.21075, 50.10352],
+      [-125.2107469, 50.103515],
+      [-125.2114309, 50.1034641],
+      [-125.2122098, 50.1035143],
+      [-125.2126638, 50.1036097],
+      [-125.213063, 50.1038148],
+      [-125.2134479, 50.1041247],
+      [-125.2136625, 50.1044275],
+      [-125.2137054, 50.1048128],
+      [-125.2133192, 50.1054459],
+      [-125.2125102, 50.1061567],
       [-125.2113421, 50.1068415],
       [-125.2040894, 50.1100686],
       [-125.2015391, 50.1105997],
@@ -1373,7 +1387,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
       [-122.6237963, 47.561441],
       [-122.6243606, 47.561859],
       [-122.6244828, 47.5619495],
-      [-122.6273, 47.5673],
+      [-122.62448, 47.56195],
     ],
   },
   "seattle-colman-dock\u0000vashon-north": {
@@ -1640,7 +1654,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
       [-123.3092514, 48.8743315],
       [-123.3107821, 48.8748711],
       [-123.3148691, 48.8765668],
-      [-123.3213, 48.8794],
+      [-123.31487, 48.87657],
     ],
   },
   "thetis-island\u0000penelakut-island": {
@@ -1713,7 +1727,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
       [-123.3086913, 48.8748985],
       [-123.3102981, 48.8754649],
       [-123.3148691, 48.8765668],
-      [-123.3213, 48.8794],
+      [-123.31487, 48.87657],
     ],
   },
   "tsawwassen\u0000long-harbour": {
