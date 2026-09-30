@@ -54,7 +54,8 @@ const terminals: SchematicLayout["terminals"] = {
   "penelakut-island": { position: [8, 29], label: "Penelakut Island", labelSide: "e" },
   crofton: { position: [4, 32], label: "Crofton", labelSide: "w" },
   "vesuvius-bay": { position: [6, 32], label: "Vesuvius Bay", labelSide: "s" },
-  "fulford-harbour": { position: [9, 30], label: "Fulford Harbour", labelSide: "w" },
+  "long-harbour": { position: [9, 30], label: "Long Harbour", labelSide: "s" },
+  "fulford-harbour": { position: [9, 32], label: "Fulford Harbour", labelSide: "s" },
 
   // --- Southern Gulf Islands and the Saanich Peninsula ---
   tsawwassen: { position: [22, 21], label: "Tsawwassen", labelSide: "e" },
@@ -62,7 +63,7 @@ const terminals: SchematicLayout["terminals"] = {
   "mayne-island": { position: [15, 29], label: "Mayne Island", labelSide: "w" },
   "pender-island": { position: [15, 31], label: "Pender Island", labelSide: "w" },
   "saturna-island": { position: [17, 31], label: "Saturna Island", labelSide: "s" },
-  "swartz-bay": { position: [11, 32], label: "Swartz Bay", labelSide: "w" },
+  "swartz-bay": { position: [11, 32], label: "Swartz Bay", labelSide: "e" },
   "sidney-bc": { position: [11, 34], label: "Sidney", labelSide: "e" },
   "brentwood-bay": { position: [10, 36], label: "Brentwood Bay", labelSide: "e" },
   "mill-bay": { position: [8, 36], label: "Mill Bay", labelSide: "w" },
@@ -128,6 +129,12 @@ const legVias: Record<string, readonly GridPoint[]> = {
   // Galiano's north side free for the island itself.
   "tsawwassen>galiano-island": [[16, 27]],
   "swartz-bay>galiano-island": [[15, 28]],
+  // Long Harbour's boats all leave Salt Spring eastward. The Tsawwassen boat
+  // joins the mainline through Active Pass; the others fork to Mayne and to
+  // Pender, the Pender boat coming down the Mayne–Pender trunk.
+  "long-harbour>tsawwassen": [[13, 30]],
+  "long-harbour>mayne-island": [[14, 30]],
+  "long-harbour>pender-island": [[14, 30], [15, 30]],
   // Suspended, but still drawn when asked for: kept off the Lopez–Shaw line
   // it would otherwise run straight through, and out of Friday Harbor to the
   // northwest, around the top of San Juan Island as the boat goes, rather
@@ -255,7 +262,7 @@ export const SCHEMATIC_LAND: readonly { readonly name: string; readonly outline:
   { name: "Gabriola Island", outline: [[9, 21], [10.5, 21], [10.5, 22.6], [9, 22.6]] },
   { name: "Thetis Island", outline: [[5.4, 25.8], [6.6, 25.8], [6.6, 27], [5.4, 27]] },
   { name: "Penelakut Island", outline: [[8, 28.3], [8.9, 28.3], [8.9, 29.4], [8, 29.4]] },
-  { name: "Salt Spring Island", outline: [[6, 29.8], [9.2, 29.8], [7.4, 31.6], [7.4, 32.6], [6, 32.6]] },
+  { name: "Salt Spring Island", outline: [[6, 29.8], [8.8, 29.8], [9.4, 30.4], [9.4, 31.6], [8.4, 32.6], [6, 32.6]] },
   { name: "Galiano Island", outline: [[11.6, 24.6], [15.6, 24.6], [15.6, 26], [11.6, 26]] },
   { name: "Mayne Island", outline: [[14.85, 29], [15.45, 28.4], [16.6, 28.4], [16.6, 30], [15.85, 30]] },
   { name: "Pender Island", outline: [[13.6, 30.4], [14.4, 30.4], [15.6, 31.6], [15.6, 32.4], [13.6, 32.4]] },

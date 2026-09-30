@@ -349,6 +349,24 @@ export const ROUTES: readonly FerryRoute[] = [
     terminalIds: ["tsawwassen", "galiano-island", "mayne-island", "pender-island", "saturna-island"],
     note: "Route 9/9A, seasonal circuit",
   },
+  {
+    id: "bcf-tsawwassen-long-harbour",
+    name: "Tsawwassen – Long Harbour (Salt Spring Island)",
+    operatorId: "bc-ferries",
+    mode: "vehicle",
+    status: "active",
+    terminalIds: ["tsawwassen", "long-harbour"],
+    note: "Route 9, nonstop sailings between Tsawwassen and Salt Spring",
+  },
+  {
+    id: "bcf-long-harbour-southerngulfislands",
+    name: "Long Harbour (Salt Spring Island) – Mayne – Pender",
+    operatorId: "bc-ferries",
+    mode: "vehicle",
+    status: "active",
+    terminalIds: ["mayne-island", "long-harbour", "pender-island"],
+    note: "Route 9 connecting sailings from Long Harbour to Village Bay and Otter Bay; a few also run on to Swartz Bay",
+  },
 
   // --- BC Ferries: Central Vancouver Island ---
   {

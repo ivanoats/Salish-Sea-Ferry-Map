@@ -410,5 +410,26 @@
       "nanaimo-hullo": "NAN",
       "vancouver-hullo": "VAN"
     }
+  },
+  {
+    "routeId": "bcf-tsawwassen-long-harbour",
+    "gtfsRouteIds": [
+      "12422"
+    ],
+    "stopIds": {
+      "tsawwassen": "2506403",
+      "long-harbour": "2505848"
+    }
+  },
+  {
+    "routeId": "bcf-long-harbour-southerngulfislands",
+    "gtfsRouteIds": [
+      "12422"
+    ],
+    "stopIds": {
+      "mayne-island": "2505919",
+      "long-harbour": "2505848",
+      "pender-island": "2505854"
+    }
   }
 ]
