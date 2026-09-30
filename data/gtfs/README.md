@@ -74,7 +74,10 @@ confirmation of precise dock placement, and it let real errors through: the
 approximately 0.8 km discrepancies at the Guemes terminals, first taken for
 old dock points, were the curated coordinates sitting in the wrong place, and
 the terminal audit for #61 found 19 terminals 170–850 m off their docks.
-Dock-level placement is checked against OSM in `data-integrity.test.ts`.
+Dock-level coordinates are taken from OSM `amenity=ferry_terminal` nodes (node
+ids noted in `terminals.ts`) and pinned in `data-integrity.test.ts`. That test
+compares the curated data with those pinned values, so it catches drift in
+this repository but not changes in OSM itself: re-check against OSM by hand.
 
 Calendar weekdays and `calendar_dates.txt` additions/removals are expanded,
 including feeds that contain only exception dates. Feed validity bounds the
