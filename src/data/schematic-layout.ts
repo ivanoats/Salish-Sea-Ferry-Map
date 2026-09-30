@@ -26,7 +26,7 @@ const terminals: SchematicLayout["terminals"] = {
   "powell-river": { position: [7, 7], label: "Powell River", labelSide: "ne" },
   "texada-island": { position: [7, 9], label: "Texada Island", labelSide: "e" },
   "saltery-bay": { position: [11, 6], label: "Saltery Bay", labelSide: "n" },
-  "earls-cove": { position: [13, 8], label: "Earls Cove", labelSide: "e" },
+  "earls-cove": { position: [13, 8], label: "Earls Cove", labelSide: "s" },
   "buckley-bay": { position: [2, 11], label: "Buckley Bay", labelSide: "w" },
   "denman-island-west": { position: [4, 11], label: "Denman West", labelSide: "n" },
   "denman-island-east": { position: [6, 13], label: "Denman East", labelSide: "s" },
@@ -113,6 +113,19 @@ const terminals: SchematicLayout["terminals"] = {
   "steilacoom-landing": { position: [28, 65], label: "Steilacoom", labelSide: "e" },
   "ketron-island": { position: [26, 65], label: "Ketron", labelSide: "n" },
   "anderson-island-yoman": { position: [24, 65], label: "Anderson Island", labelSide: "w" },
+  // --- False Creek, drawn in the inset (SCHEMATIC_INSETS below) ---
+  // North-shore docks on row 5, south-shore docks on row 7, west to east,
+  // except that Spyglass sits west of Yaletown rather than just east of it,
+  // so both operators' boats run through it instead of doubling back.
+  "false-creek-maritime-museum": { position: [17, 7], label: "Maritime Museum", labelSide: "s" },
+  "false-creek-hornby": { position: [21, 5], label: "Hornby St", labelSide: "n" },
+  "granville-island": { position: [21, 7], label: "Granville Island", labelSide: "s" },
+  "false-creek-david-lam-park": { position: [24, 5], label: "David Lam Park", labelSide: "n" },
+  "false-creek-stamps-landing": { position: [25, 7], label: "Stamps Landing", labelSide: "s" },
+  "false-creek-yaletown": { position: [30, 5], label: "Yaletown", labelSide: "n" },
+  "false-creek-spyglass": { position: [28, 7], label: "Spyglass", labelSide: "s" },
+  "false-creek-plaza-of-nations": { position: [33, 5], label: "Plaza of Nations", labelSide: "n" },
+  "false-creek-village": { position: [34, 7], label: "The Village", labelSide: "s" },
 };
 
 const legVias: Record<string, readonly GridPoint[]> = {
@@ -157,6 +170,14 @@ const legVias: Record<string, readonly GridPoint[]> = {
   // Out of Elliott Bay to the northwest, past Magnolia.
   "seattle-colman-dock>bainbridge-island": [[29, 52]],
   "seattle-colman-dock>kingston": [[29, 52], [29, 51]],
+  // False Creek: boats between docks on the same shore keep to mid-channel
+  // (row 6) rather than running along the shore.
+  "granville-island>false-creek-david-lam-park": [[22, 6], [23, 6]],
+  "false-creek-david-lam-park>false-creek-stamps-landing": [[24, 6]],
+  "false-creek-stamps-landing>false-creek-spyglass": [[26, 6], [27, 6]],
+  "false-creek-yaletown>false-creek-plaza-of-nations": [[31, 6], [32, 6]],
+  "false-creek-plaza-of-nations>false-creek-village": [[33, 6]],
+  "false-creek-hornby>false-creek-maritime-museum": [[20, 6], [18, 6]],
 };
 
 export const SCHEMATIC_LAYOUT: SchematicLayout = { terminals, legVias };
@@ -199,6 +220,42 @@ export const SCHEMATIC_BORDER: {
 };
 
 /** Names of the open water, set in the gaps between routes. */
+/**
+ * A detail panel drawn over part of the diagram, for waters too small to
+ * draw at the diagram's own scale. Its box sits over land the main diagram
+ * leaves empty; inside it, its own land replaces the main land (clipped to
+ * the box), and the terminals placed in the box are drawn and routed like
+ * any others.
+ */
+export interface SchematicInset {
+  readonly title: string;
+  readonly box: { readonly min: GridPoint; readonly max: GridPoint };
+  readonly land: readonly { readonly name: string; readonly outline: readonly GridPoint[] }[];
+  readonly waterLabels: readonly { readonly text: string; readonly position: GridPoint }[];
+}
+
+/**
+ * False Creek has nine docks within two kilometres, and Vancouver has no
+ * room for them between Burrard Inlet and Tsawwassen, so it gets a panel
+ * in the empty mainland northeast of Jervis Inlet: downtown along the top,
+ * the south shore along the bottom, English Bay open to the west.
+ */
+export const SCHEMATIC_INSETS: readonly SchematicInset[] = [
+  {
+    title: "FALSE CREEK, VANCOUVER",
+    box: { min: [15, 3], max: [37, 9] },
+    land: [
+      {
+        name: "Vancouver around False Creek",
+        // Runs past the box on its outer sides; renderers clip it to the frame,
+        // so the land meets the frame square instead of in rounded corners.
+        outline: [[19.5, 2], [38, 2], [38, 10], [14, 10], [14, 7], [35.5, 7], [35.5, 5], [19.5, 5]],
+      },
+    ],
+    waterLabels: [{ text: "English Bay", position: [17.2, 4.6] }],
+  },
+];
+
 export const SCHEMATIC_WATER_LABELS: readonly { readonly text: string; readonly position: GridPoint }[] = [
   { text: "Strait of Georgia", position: [12, 17.5] },
   { text: "Strait of Juan de Fuca", position: [7, 41.5] },

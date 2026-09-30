@@ -131,6 +131,8 @@ button, input, select { font: inherit; }
 .schematic-terminal text { fill: var(--ink); font-size: 11px; font-weight: 700; paint-order: stroke; stroke: color-mix(in srgb, var(--canvas) 70%, transparent); stroke-width: 3px; stroke-linejoin: round; }
 .schematic-terminal:not(.interchange) text { font-weight: 400; }
 .schematic-water-labels text { fill: var(--ink-muted); font-family: Georgia, 'Times New Roman', serif; font-size: 12px; font-style: italic; letter-spacing: .04em; opacity: .75; }
+.schematic-inset-frame { fill: var(--canvas); }
+.schematic-inset-outline { fill: none; stroke: var(--ink-muted); stroke-width: 1.25; }
 .schematic-border-label { fill: var(--ink-muted); font-size: 9px; font-weight: 800; letter-spacing: .18em; }
 .maplibregl-ctrl-group { border: 1px solid var(--line) !important; border-radius: 4px !important; background: var(--surface-raised) !important; box-shadow: var(--shadow) !important; overflow: hidden; }
 .maplibregl-ctrl-group button { filter: sepia(.1) hue-rotate(85deg); }

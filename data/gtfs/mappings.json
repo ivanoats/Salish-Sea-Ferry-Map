@@ -432,5 +432,24 @@
       "pender-island": "2505854",
       "swartz-bay": "2505788"
     }
+  },
+  {
+    "routeId": "aquabus-hornby-village",
+    "gtfsRouteIds": [
+      "ABUS",
+      "GIHB",
+      "GIYT",
+      "YTOV"
+    ],
+    "stopIds": {
+      "false-creek-hornby": "HB",
+      "granville-island": "GI",
+      "false-creek-david-lam-park": "DL",
+      "false-creek-stamps-landing": "SL",
+      "false-creek-spyglass": "SP",
+      "false-creek-yaletown": "YT",
+      "false-creek-plaza-of-nations": "PN",
+      "false-creek-village": "OV"
+    }
   }
 ]

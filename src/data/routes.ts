@@ -463,4 +463,52 @@ export const ROUTES: readonly FerryRoute[] = [
     terminalIds: ["vancouver-waterfront", "lonsdale-quay"],
     note: "About 12 min across Burrard Inlet, on the TransLink transit fare. Bicycles carried",
   },
+
+  // --- False Creek ---
+  {
+    id: "aquabus-hornby-village",
+    name: "Aquabus: Hornby Street – The Village (passenger only)",
+    operatorId: "aquabus",
+    mode: "passenger",
+    status: "active",
+    terminalIds: [
+      "false-creek-hornby",
+      "granville-island",
+      "false-creek-david-lam-park",
+      "false-creek-stamps-landing",
+      "false-creek-spyglass",
+      "false-creek-yaletown",
+      "false-creek-plaza-of-nations",
+      "false-creek-village",
+    ],
+    note: "Small passenger ferries run as several overlapping routes, the Granville Island–Hornby Street crossing the busiest; not every sailing calls at every dock. Bicycles carried",
+  },
+  {
+    id: "fcf-granville-village",
+    name: "False Creek Ferries: Granville Island – The Village (passenger only)",
+    operatorId: "false-creek-ferries",
+    mode: "passenger",
+    status: "active",
+    terminalIds: [
+      "granville-island",
+      "false-creek-david-lam-park",
+      "false-creek-stamps-landing",
+      "false-creek-spyglass",
+      "false-creek-yaletown",
+      "false-creek-plaza-of-nations",
+      "false-creek-village",
+    ],
+    // OSM's route 3 relations skip Spyglass, but the operator lists it among
+    // its nine stops (granvilleislandferries.bc.ca/plan-your-trip, 2026-09-30).
+    note: "Route 3. Small passenger ferries",
+  },
+  {
+    id: "fcf-granville-maritime-museum",
+    name: "False Creek Ferries: Granville Island – Aquatic Centre – Maritime Museum (passenger only)",
+    operatorId: "false-creek-ferries",
+    mode: "passenger",
+    status: "active",
+    terminalIds: ["granville-island", "false-creek-hornby", "false-creek-maritime-museum"],
+    note: "Routes 1 and 2: Granville Island to the Aquatic Centre, with some sailings on to the Maritime Museum. Small passenger ferries",
+  },
 ];

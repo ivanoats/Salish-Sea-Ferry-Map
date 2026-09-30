@@ -47,6 +47,8 @@ Initial snapshot fetched 2026-09-26 UTC (2026-09-25 Pacific):
 | Pierce County, Harbor Hopper, Hat Island, Puget Sound Express | No usable feed identified; manually verified |
 | Hullo | Route, stops, calendar (pinned 2026-09-30 UTC; the feed ends 2026-11-30, so refresh before then) |
 | TransLink (SeaBus) | Not pinned: SeaBus is only in the full regional feed, about 16 MB; manually verified |
+| Aquabus | Routes, stops, calendar (pinned 2026-09-30 UTC; frequency-based trips, feed valid to 2033) |
+| False Creek Ferries | No feed in the Mobility Database catalog; manually verified against OpenStreetMap |
 
 Coverage warnings appear during generation and in the integrity test. They do
 not fail the build. Missing or corrupt pinned files and unexpected data drift do.

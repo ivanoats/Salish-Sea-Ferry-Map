@@ -22,7 +22,9 @@ export type OperatorId =
   | "hat-island-ferry"
   | "puget-sound-express"
   | "hullo"
-  | "translink";
+  | "translink"
+  | "aquabus"
+  | "false-creek-ferries";
 
 export interface Operator {
   readonly id: OperatorId;

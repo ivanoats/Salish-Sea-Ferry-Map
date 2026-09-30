@@ -76,6 +76,10 @@ export const diagramView = (layout: SchematicLayout): DiagramView => {
   };
 };
 
+/** A rectangle's outline as SVG path data, from its min and max corners in pixels. */
+export const boxPath = ([x0, y0]: readonly [number, number], [x1, y1]: readonly [number, number]): string =>
+  `M${x0} ${y0}H${x1}V${y1}H${x0}Z`;
+
 /** A terminal marker is wide enough to cover every lane that reaches it. */
 export const terminalRadius = (interchange: boolean, maxLane: number): number =>
   Math.max(interchange ? 5.5 : 4.5, maxLane * LANE_WIDTH + LINE_WIDTH / 2 + 2);

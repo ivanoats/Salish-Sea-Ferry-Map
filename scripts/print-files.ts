@@ -19,6 +19,7 @@ import {
   LABEL_DIRECTIONS,
   LANE_WIDTH,
   LINE_WIDTH,
+  boxPath,
   diagramView,
   pathData,
   px,
@@ -33,6 +34,7 @@ import {
   SCHEMATIC_LAND,
   SCHEMATIC_LAND_LINKS,
   SCHEMATIC_LAYOUT,
+  SCHEMATIC_INSETS,
   SCHEMATIC_WATER_LABELS,
 } from "../src/data/schematic-layout.ts";
 import { buildSchematicDiagram, strokeToPixels } from "../src/domain/schematic.ts";
@@ -77,14 +79,20 @@ const WATERLINES = [
  * its offset and one narrower. That ring runs on both sides of the coast,
  * so the land is masked out last, leaving only the half out on the water.
  * Outermost first, or a nearer line's inner stroke would erase it.
+ *
+ * Coasts come in clipped groups: the main diagram's everywhere but the
+ * inset boxes, and each inset's only inside its own box.
  */
-const waterlineMarkup = (coasts: readonly string[], view: DiagramView): string => {
-  const strokes = (color: string, width: number) =>
+const waterlineMarkup = (groups: readonly { coasts: readonly string[]; clip: string }[], view: DiagramView): string => {
+  const eachGroup = (draw: (coasts: readonly string[]) => string) =>
+    groups.map(({ coasts, clip }) => `<g clip-path="url(#${clip})">${draw(coasts)}</g>`).join("");
+  const strokes = (coasts: readonly string[], color: string, width: number) =>
     coasts.map((d) => `<path d="${d}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linejoin="round"/>`).join("");
   const rings = [...WATERLINES]
     .sort((a, b) => b.offset - a.offset)
-    .map(({ offset, width }) => strokes("white", 2 * offset + width) + strokes("black", 2 * offset - width));
-  const land = coasts.map((d) => `<path d="${d}" fill="black"/>`).join("");
+    .map(({ offset, width }) =>
+      eachGroup((coasts) => strokes(coasts, "white", 2 * offset + width) + strokes(coasts, "black", 2 * offset - width)));
+  const land = eachGroup((coasts) => coasts.map((d) => `<path d="${d}" fill="black"/>`).join(""));
   const box = `x="${view.minX}" y="${view.minY}" width="${view.width}" height="${view.height}"`;
   return `<mask id="waterlines" maskUnits="userSpaceOnUse" ${box}>${rings.join("")}${land}</mask>`
     + `<rect class="waterline" ${box} mask="url(#waterlines)"/>`;
@@ -123,6 +131,7 @@ const styles = (theme: Theme, landStyle: LandStyle): string => {
     .waterline { fill: ${theme.coast}; }
     .water { fill: ${theme.inkMuted}; font-family: Georgia, 'Times New Roman', serif; font-size: 12px; font-style: italic; letter-spacing: .04em; }
     .border { fill: none; stroke: ${theme.inkMuted}; stroke-width: 1.25; stroke-dasharray: 2 4; stroke-linecap: round; }
+    .inset-frame { fill: none; stroke: ${theme.inkMuted}; stroke-width: 1.25; }
     .border-label { fill: ${theme.inkMuted}; font-family: Arial, Helvetica, sans-serif; font-size: 9px; font-weight: 800; letter-spacing: .18em; }
     .route { fill: none; stroke-width: ${LINE_WIDTH}; stroke-linecap: round; stroke-linejoin: round; }
     .link-outer { stroke: ${theme.ink}; stroke-width: 8; stroke-linecap: round; }
@@ -152,9 +161,36 @@ function diagramSvg(
   const landLinks = SCHEMATIC_LAND_LINKS.filter(([a, b]) => shownTerminalIds.has(a) && shownTerminalIds.has(b));
   const landLinked = new Set(landLinks.flat());
 
-  const coasts = SCHEMATIC_LAND.map(({ outline }) => roundedOutline(outline.map(px)));
-  const land = coasts.map((d) => `<path class="land" d="${d}"/>`);
-  if (landStyle === "waterline") land.unshift(waterlineMarkup(coasts, view));
+  // Inset boxes hide the main land under them (print files have no
+  // background to paint over it with), and each inset's own land is clipped
+  // to its box.
+  const insetBoxes = SCHEMATIC_INSETS.map(({ box }) => boxPath(px(box.min), px(box.max)));
+  const clips = [
+    `<clipPath id="outside-insets"><path clip-rule="evenodd" d="${boxPath([view.minX, view.minY], [view.minX + view.width, view.minY + view.height])}${insetBoxes.join("")}"/></clipPath>`,
+    ...insetBoxes.map((d, i) => `<clipPath id="inset-${i}"><path d="${d}"/></clipPath>`),
+  ];
+  const coastGroups = [
+    { coasts: SCHEMATIC_LAND.map(({ outline }) => roundedOutline(outline.map(px))), clip: "outside-insets" },
+    ...SCHEMATIC_INSETS.map(({ land: insetLand }, i) => ({
+      coasts: insetLand.map(({ outline }) => roundedOutline(outline.map(px))),
+      clip: `inset-${i}`,
+    })),
+  ];
+  const landPaths = (coasts: readonly string[]) => coasts.map((d) => `<path class="land" d="${d}"/>`).join("");
+  const land = coastGroups.map(({ coasts, clip }) => `<g clip-path="url(#${clip})">${landPaths(coasts)}</g>`);
+  if (landStyle === "waterline") land.unshift(waterlineMarkup(coastGroups, view));
+
+  const insets = SCHEMATIC_INSETS.map(({ title, box, waterLabels: labels }, i) => {
+    const [x0, y0] = px(box.min);
+    const [x1, y1] = px(box.max);
+    const insetWaterLabels = labels.map(({ text, position }) => {
+      const [x, y] = px(position);
+      return `<text class="water" x="${x}" y="${y}" text-anchor="middle">${escapeXml(text)}</text>`;
+    });
+    return `<g clip-path="url(#inset-${i})">${insetWaterLabels.join("")}</g>`
+      + `<rect class="inset-frame" x="${x0}" y="${y0}" width="${x1 - x0}" height="${y1 - y0}"/>`
+      + `<text class="border-label" x="${x0}" y="${y0 - 6}">${escapeXml(title)}</text>`;
+  });
 
   const waterLabels = SCHEMATIC_WATER_LABELS.map(({ text, position }) => {
     const [x, y] = px(position);
@@ -205,10 +241,12 @@ function diagramSvg(
   <svg width="${printArea.width}" height="${printArea.height}" viewBox="${view.minX} ${view.minY} ${view.width} ${view.height}" preserveAspectRatio="xMidYMid meet">
     <style>${styles(theme, landStyle)}</style>
     <clipPath id="view"><rect x="${view.minX}" y="${view.minY}" width="${view.width}" height="${view.height}"/></clipPath>
+    ${clips.join("")}
     <g clip-path="url(#view)">
       <g>${land.join("")}</g>
       <g>${waterLabels.join("")}</g>
       <g>${border.join("")}</g>
+      <g>${insets.join("")}</g>
       <g>${lines.join("")}</g>
       <g>${links.join("")}</g>
       <g>${terminals.join("")}</g>
