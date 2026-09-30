@@ -36,6 +36,13 @@
         "endpoint": "https://api.openstreetmap.org/api/0.6/",
         "retrieved": "2026-09-30",
         "note": "Burrard Inlet and the Hullo crossing, for issue #49. The SeaBus is a proper relation pair (one per direction, sharing way 36474098) that the first relation query's box already covered, but it was not vendored because no SeaBus route was modelled then. Hullo is a bare route=ferry way with no parent relation, so only the bare-way query could see it; it is vendored as the one leg no relation reaches. Fetched from the main API because both Overpass endpoints were timing out. Way geometry, unmodified."
+      },
+      {
+        "source": "OpenStreetMap API 0.6 (/way/{id}/full)",
+        "query": "way 314518879, way 314518882, way 785139670 (found with way[\"route\"=\"ferry\"](48.83,-123.47,48.87,-123.40) on overpass-api.de)",
+        "endpoint": "https://api.openstreetmap.org/api/0.6/",
+        "retrieved": "2026-09-30",
+        "note": "Long Harbour on Salt Spring Island, for issue #42. All three legs (Village Bay, Otter Bay, Tsawwassen) are bare route=ferry ways with no parent relation, and Long Harbour was not modelled when the bare-way sweep was vendored, so none of them was kept then. Way geometry, unmodified."
       }
     ]
   },
@@ -10102,6 +10109,317 @@
           [
             -123.116346,
             49.2903053
+          ]
+        ]
+      ]
+    },
+    {
+      "routeName": "Mayne Island (Village Bay) \u2194 Salt Spring Island (Long Harbour)",
+      "operator": "British Columbia Ferry Services",
+      "from": "Mayne Island (Village Bay)",
+      "to": "Salt Spring Island (Long Harbour)",
+      "osmWayIds": [
+        314518879
+      ],
+      "coordinates": [
+        [
+          [
+            -123.3248271,
+            48.8447049
+          ],
+          [
+            -123.3261139,
+            48.8448973
+          ],
+          [
+            -123.3874638,
+            48.8540708
+          ],
+          [
+            -123.4018526,
+            48.8541737
+          ],
+          [
+            -123.408656,
+            48.8526301
+          ],
+          [
+            -123.412175,
+            48.8500058
+          ],
+          [
+            -123.4122058,
+            48.8468074
+          ],
+          [
+            -123.4127587,
+            48.8438052
+          ],
+          [
+            -123.4152194,
+            48.8410395
+          ],
+          [
+            -123.4179566,
+            48.8402206
+          ],
+          [
+            -123.4216061,
+            48.8408029
+          ],
+          [
+            -123.4289051,
+            48.8452245
+          ],
+          [
+            -123.4353747,
+            48.8493546
+          ],
+          [
+            -123.4392367,
+            48.8521893
+          ],
+          [
+            -123.4419847,
+            48.8531247
+          ],
+          [
+            -123.4445076,
+            48.8531333
+          ],
+          [
+            -123.445812,
+            48.8525886
+          ],
+          [
+            -123.4457822,
+            48.852109
+          ]
+        ]
+      ]
+    },
+    {
+      "routeName": "Pender Island (Otter Bay) \u2194 Salt Spring Island (Long Harbour)",
+      "operator": "British Columbia Ferry Services",
+      "from": "Pender Island (Otter Bay)",
+      "to": "Salt Spring Island (Long Harbour)",
+      "osmWayIds": [
+        314518882
+      ],
+      "coordinates": [
+        [
+          [
+            -123.3156073,
+            48.8005207
+          ],
+          [
+            -123.3157557,
+            48.8001522
+          ],
+          [
+            -123.3158957,
+            48.7998856
+          ],
+          [
+            -123.3233994,
+            48.7985812
+          ],
+          [
+            -123.3379975,
+            48.7981441
+          ],
+          [
+            -123.3628253,
+            48.8019321
+          ],
+          [
+            -123.3840589,
+            48.8085603
+          ],
+          [
+            -123.4076149,
+            48.8235617
+          ],
+          [
+            -123.4169599,
+            48.8352102
+          ],
+          [
+            -123.4217153,
+            48.8406375
+          ],
+          [
+            -123.429042,
+            48.8451318
+          ],
+          [
+            -123.4354978,
+            48.8492255
+          ],
+          [
+            -123.439455,
+            48.8520829
+          ],
+          [
+            -123.4421713,
+            48.8530346
+          ],
+          [
+            -123.4444444,
+            48.8530481
+          ],
+          [
+            -123.4457114,
+            48.8525146
+          ],
+          [
+            -123.4457822,
+            48.852109
+          ]
+        ]
+      ]
+    },
+    {
+      "routeName": "Salt Spring Island (Long Harbour) \u2194 Tsawwassen",
+      "operator": "British Columbia Ferry Services",
+      "from": "Salt Spring Island (Long Harbour)",
+      "to": "Tsawwassen",
+      "osmWayIds": [
+        785139670
+      ],
+      "coordinates": [
+        [
+          [
+            -123.4457822,
+            48.852109
+          ],
+          [
+            -123.4459079,
+            48.8526246
+          ],
+          [
+            -123.4445385,
+            48.8532013
+          ],
+          [
+            -123.4417844,
+            48.8532141
+          ],
+          [
+            -123.4390313,
+            48.8522801
+          ],
+          [
+            -123.4351636,
+            48.8494606
+          ],
+          [
+            -123.4214587,
+            48.8409245
+          ],
+          [
+            -123.4180303,
+            48.840413
+          ],
+          [
+            -123.4154333,
+            48.8411561
+          ],
+          [
+            -123.4129351,
+            48.8438592
+          ],
+          [
+            -123.4124552,
+            48.8468223
+          ],
+          [
+            -123.4124129,
+            48.850008
+          ],
+          [
+            -123.4087573,
+            48.8527942
+          ],
+          [
+            -123.4019119,
+            48.8543359
+          ],
+          [
+            -123.3873882,
+            48.8542898
+          ],
+          [
+            -123.3614767,
+            48.8504155
+          ],
+          [
+            -123.3588324,
+            48.8504651
+          ],
+          [
+            -123.3563675,
+            48.8510971
+          ],
+          [
+            -123.3545849,
+            48.8520716
+          ],
+          [
+            -123.3531887,
+            48.8535501
+          ],
+          [
+            -123.3512306,
+            48.8563858
+          ],
+          [
+            -123.3487523,
+            48.8586235
+          ],
+          [
+            -123.3463383,
+            48.8598588
+          ],
+          [
+            -123.3427763,
+            48.8606775
+          ],
+          [
+            -123.3392573,
+            48.860734
+          ],
+          [
+            -123.3283997,
+            48.8589553
+          ],
+          [
+            -123.3174348,
+            48.858207
+          ],
+          [
+            -123.3133793,
+            48.8588705
+          ],
+          [
+            -123.3100748,
+            48.8611857
+          ],
+          [
+            -123.3073712,
+            48.8671709
+          ],
+          [
+            -123.2988525,
+            48.878772
+          ],
+          [
+            -123.2833386,
+            48.8941797
+          ],
+          [
+            -123.1296614,
+            49.0041243
           ]
         ]
       ]

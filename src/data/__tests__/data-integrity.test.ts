@@ -97,6 +97,7 @@ describe("ferry dataset integrity", () => {
       "keats-island": [-123.4332, 49.39556],
       "lasqueti-island": [-124.35159, 49.49144],
       "lonsdale-quay": [-123.08392, 49.30954],
+      "long-harbour": [-123.44578, 48.85211],
       "lummi-island": [-122.68131, 48.72044],
       "mayne-island": [-123.32328, 48.84454],
       "mill-bay": [-123.51777, 48.61399],
@@ -193,7 +194,7 @@ describe("pinned GTFS corroboration (ADR 0005)", () => {
     const report = validateGtfs(ROUTES, [...TERMINALS_BY_ID.values()], GTFS, mappings);
     for (const warning of report.warnings) console.warn(`GTFS coverage: ${warning}`);
     // A feed refresh may change coverage, but that change must be reviewed.
-    expect(report.checkedRoutes).toBe(33);
+    expect(report.checkedRoutes).toBe(35);
     expect(report.errors).toEqual([]);
   });
 });

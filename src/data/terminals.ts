@@ -78,6 +78,9 @@ export const TERMINALS: readonly Terminal[] = [
   { id: "gambier-island", name: "Gambier Island (New Brighton)", coordinates: [-123.43958, 49.44999], jurisdiction: "BC" },
   { id: "keats-island", name: "Keats Island (Eastbourne)", coordinates: [-123.4332, 49.39556], jurisdiction: "BC" },
   { id: "fulford-harbour", name: "Fulford Harbour (Salt Spring Island)", coordinates: [-123.4497, 48.7638], jurisdiction: "BC" },
+  // Salt Spring's third terminal, on the northeast shore: Route 9 sailings to
+  // Tsawwassen and the other Southern Gulf Islands, not the Swartz Bay run.
+  { id: "long-harbour", name: "Long Harbour (Salt Spring Island)", coordinates: [-123.44578, 48.85211], jurisdiction: "BC" },
   { id: "galiano-island", name: "Sturdies Bay (Galiano Island)", coordinates: [-123.3213, 48.8794], jurisdiction: "BC" },
   { id: "mayne-island", name: "Village Bay (Mayne Island)", coordinates: [-123.32328, 48.84454], jurisdiction: "BC" },
   { id: "pender-island", name: "Otter Bay (Pender Island)", coordinates: [-123.31561, 48.80052], jurisdiction: "BC" },

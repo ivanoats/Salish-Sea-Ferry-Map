@@ -37,7 +37,7 @@ Initial snapshot fetched 2026-09-26 UTC (2026-09-25 Pacific):
 | Operator | Coverage |
 | --- | --- |
 | WSF | Eight active curated routes; suspended Sidney crossing manually verified |
-| BC Ferries | Twenty curated routes have presence and coordinate checks; Route 55 absent; eight calendar gaps explicitly recorded |
+| BC Ferries | Twenty-two curated routes have presence and coordinate checks; Route 55 absent; eight calendar gaps explicitly recorded |
 | Black Ball | Route, stops, calendar |
 | King County Water Taxi | Both routes, stops, calendars; other Metro modes filtered out |
 | Skagit County | Route, stops, calendar |
