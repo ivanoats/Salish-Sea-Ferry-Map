@@ -99,7 +99,10 @@ const terminals: SchematicLayout["terminals"] = {
   "seattle-pier-69": { position: [31, 52], label: "Pier 69", labelSide: "e" },
   "seattle-colman-dock": { position: [30, 53], label: "Seattle", labelSide: "e" },
   "bainbridge-island": { position: [25, 52], label: "Bainbridge Island", labelSide: "n" },
-  bremerton: { position: [22, 54], label: "Bremerton", labelSide: "w" },
+  bremerton: { position: [22, 54], label: "Bremerton", labelSide: "nw" },
+  // Across Sinclair Inlet from Bremerton.
+  "port-orchard": { position: [21, 55], label: "Port Orchard", labelSide: "sw" },
+  "port-orchard-annapolis": { position: [22, 55], label: "Annapolis", labelSide: "se" },
   "west-seattle-seacrest": { position: [30, 55], label: "West Seattle", labelSide: "e" },
 
   // --- Burrard Inlet ---
@@ -115,6 +118,9 @@ const terminals: SchematicLayout["terminals"] = {
   "steilacoom-landing": { position: [28, 65], label: "Steilacoom", labelSide: "e" },
   "ketron-island": { position: [26, 65], label: "Ketron", labelSide: "n" },
   "anderson-island-yoman": { position: [24, 65], label: "Anderson Island", labelSide: "w" },
+  // Case Inlet, on the far side of the Key Peninsula.
+  "key-peninsula-herron-landing": { position: [19, 65], label: "Key Peninsula", labelSide: "n" },
+  "herron-island": { position: [18, 65], label: "Herron Island", labelSide: "w" },
   // --- False Creek, drawn in the inset (SCHEMATIC_INSETS below) ---
   // North-shore docks on row 5, south-shore docks on row 7, west to east,
   // except that Spyglass sits west of Yaletown rather than just east of it,
@@ -201,6 +207,7 @@ export const SCHEMATIC_LAND_LINKS: readonly (readonly [string, string])[] = [
   ["port-townsend", "port-townsend-point-hudson"],
   ["langley", "clinton"],
   ["everett-marina", "everett-jetty-landing"],
+  ["port-orchard", "port-orchard-annapolis"],
   ["seattle-colman-dock", "seattle-pier-69"],
   ["vashon-north", "tahlequah"],
 ];
@@ -287,7 +294,9 @@ export const SCHEMATIC_LAND: readonly { readonly name: string; readonly outline:
     name: "Olympic and Kitsap Peninsulas",
     outline: [
       [-8, 44], [19, 44], [21, 42], [21, 39], [22, 38], [22, 44], [26, 48], [23, 48], [22, 49],
-      [22, 54], [23, 55], [23, 56], [24, 57], [24, 59], [26, 61], [26, 62.5], [22, 62.5], [22, 70], [-8, 70],
+      // Sinclair Inlet, west of Bremerton; then Case Inlet, beyond the Key Peninsula.
+      [22, 54], [19.6, 54], [19.6, 55], [23, 55], [23, 56], [24, 57], [24, 59], [26, 61], [26, 62.5], [22, 62.5],
+      [22, 70], [19, 70], [19, 63], [16, 63], [16, 70], [-8, 70],
     ],
   },
   {
@@ -341,6 +350,7 @@ export const SCHEMATIC_LAND: readonly { readonly name: string; readonly outline:
   { name: "Jetty Island", outline: [[30.55, 37.8], [31, 37.8], [31, 40.6], [30.55, 40.6]] },
   { name: "Bainbridge Island", outline: [[22.7, 49.6], [24, 49.6], [25, 50.6], [25, 53], [22.7, 53]] },
   { name: "Vashon Island", outline: [[28, 56.85], [29, 57.85], [29.6, 57.85], [29.6, 59.2], [28.8, 60], [27.2, 60], [26.4, 59.2], [26.4, 57.85], [27, 57.85]] },
+  { name: "Herron Island", outline: [[16.8, 64.2], [18, 64.2], [18, 66], [16.8, 66]] },
   { name: "Anderson Island", outline: [[22.6, 63.8], [24, 63.8], [24, 66.4], [22.6, 66.4]] },
   { name: "Ketron Island", outline: [[26, 64.85], [26.6, 65.45], [26.6, 66.2], [25.4, 66.2], [25.4, 65.45]] },
 ];

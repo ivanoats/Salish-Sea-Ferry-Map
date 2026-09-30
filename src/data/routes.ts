@@ -165,6 +165,37 @@ export const ROUTES: readonly FerryRoute[] = [
     terminalIds: ["seattle-pier-69", "victoria-belleville"],
   },
 
+  // --- Kitsap Transit (foot ferries) ---
+  {
+    id: "kt-bremerton-port-orchard",
+    name: "Bremerton – Port Orchard (passenger only)",
+    operatorId: "kitsap-transit",
+    mode: "passenger",
+    status: "active",
+    terminalIds: ["bremerton", "port-orchard"],
+    note: "Kitsap Transit foot ferry across Sinclair Inlet, about 10 min",
+  },
+  {
+    id: "kt-bremerton-annapolis",
+    name: "Bremerton – Annapolis, Port Orchard (passenger only)",
+    operatorId: "kitsap-transit",
+    mode: "passenger",
+    status: "active",
+    terminalIds: ["bremerton", "port-orchard-annapolis"],
+    note: "Kitsap Transit foot ferry to Port Orchard's Annapolis dock, about 5 min",
+  },
+
+  // --- Herron Island (private) ---
+  {
+    id: "herron-island-ferry",
+    name: "Key Peninsula – Herron Island (private)",
+    operatorId: "herron-island",
+    mode: "vehicle",
+    status: "active",
+    terminalIds: ["key-peninsula-herron-landing", "herron-island"],
+    note: "Private: the Charlie Wells carries only Herron Island residents, their guests with a pass, contractors and emergency services. Not open to the public",
+  },
+
   // --- Pierce County ---
   {
     id: "pierce-county-steilacoom-anderson",

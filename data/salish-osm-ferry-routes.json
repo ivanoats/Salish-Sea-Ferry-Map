@@ -57,6 +57,13 @@
         "endpoint": "https://api.openstreetmap.org/api/0.6/",
         "retrieved": "2026-09-30",
         "note": "The Jetty Island Ferry (Port of Everett, summer only), for issue #40. A bare route=ferry way with no parent relation and no terminal nodes; the bare-way sweep didn't keep it because the route wasn't modelled. Way geometry, unmodified."
+      },
+      {
+        "source": "OpenStreetMap API 0.6 (/relation/{id}/full, /way/{id}/full)",
+        "query": "relation 13608586 (and its twin 13608587, same way), way 202908021, way 224061584",
+        "endpoint": "https://api.openstreetmap.org/api/0.6/",
+        "retrieved": "2026-09-30",
+        "note": "Batch B of the #51 plan: Kitsap Transit's Bremerton-Port Orchard relation pair, and two bare route=ferry ways no relation covers: Bremerton-Annapolis and the private Herron Island Ferry. None was vendored before because none of these routes was modelled. (The Plover at Blaine, way 436312687, is left out: in 2026 it no longer docks at Semiahmoo and runs round-trip excursions only.) Way geometry, unmodified."
       }
     ]
   },
@@ -10985,6 +10992,142 @@
           [
             -122.2264651,
             48.0033577
+          ]
+        ]
+      ]
+    },
+    {
+      "routeName": "Bremerton \u2194 Port Orchard",
+      "operator": "Kitsap Transit",
+      "from": "Bremerton",
+      "to": "Port Orchard",
+      "osmRelationIds": [
+        13608586,
+        13608587
+      ],
+      "coordinates": [
+        [
+          [
+            -122.6354655,
+            47.5431278
+          ],
+          [
+            -122.6353918,
+            47.5431234
+          ],
+          [
+            -122.6250442,
+            47.5551539
+          ],
+          [
+            -122.623452,
+            47.5577894
+          ],
+          [
+            -122.6227922,
+            47.559619
+          ],
+          [
+            -122.6226484,
+            47.5603568
+          ],
+          [
+            -122.62247,
+            47.5612953
+          ]
+        ]
+      ]
+    },
+    {
+      "routeName": "Annapolis - Bremerton Foot Ferry",
+      "operator": "Kitsap Transit",
+      "from": "Bremerton Ferry Dock",
+      "to": "Port Orchard Annapolis Ferry Dock",
+      "osmWayIds": [
+        202908021
+      ],
+      "coordinates": [
+        [
+          [
+            -122.62247,
+            47.5612953
+          ],
+          [
+            -122.6221367,
+            47.5609961
+          ],
+          [
+            -122.6164079,
+            47.5495826
+          ]
+        ]
+      ]
+    },
+    {
+      "routeName": "Herron Island Ferry",
+      "operator": "Herron Maintenance Co.",
+      "from": "Key Peninsula",
+      "to": "Herron Island",
+      "osmWayIds": [
+        224061584
+      ],
+      "coordinates": [
+        [
+          [
+            -122.8157758,
+            47.2755843
+          ],
+          [
+            -122.8164414,
+            47.2760124
+          ],
+          [
+            -122.817407,
+            47.2761434
+          ],
+          [
+            -122.8185657,
+            47.2761143
+          ],
+          [
+            -122.8196386,
+            47.2757649
+          ],
+          [
+            -122.820454,
+            47.275037
+          ],
+          [
+            -122.8211406,
+            47.2738723
+          ],
+          [
+            -122.8223218,
+            47.2692161
+          ],
+          [
+            -122.8229999,
+            47.2680491
+          ],
+          [
+            -122.8240159,
+            47.2671456
+          ],
+          [
+            -122.8250888,
+            47.2668253
+          ],
+          [
+            -122.8262046,
+            47.2667088
+          ],
+          [
+            -122.8268913,
+            47.266767
+          ],
+          [
+            -122.8274706,
+            47.2669855
           ]
         ]
       ]
