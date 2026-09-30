@@ -938,7 +938,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
       [-122.6773, 48.159],
     ],
   },
-  "port-townsend-point-hudson\u0000friday-harbor-spring-street": {
+  "port-townsend-point-hudson\u0000friday-harbor": {
     source: "osm",
     coordinates: [
       [-122.75166, 48.11704],
@@ -994,7 +994,7 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
       [-123.0121418, 48.538361],
       [-123.0130054, 48.5371214],
       [-123.0144105, 48.5362578],
-      [-123.01441, 48.53626],
+      [-123.0163, 48.5352],
     ],
   },
   "powell-river\u0000texada-island": {

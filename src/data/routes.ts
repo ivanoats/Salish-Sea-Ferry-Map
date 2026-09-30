@@ -223,8 +223,8 @@ export const ROUTES: readonly FerryRoute[] = [
     operatorId: "puget-sound-express",
     mode: "passenger",
     status: "seasonal",
-    terminalIds: ["port-townsend-point-hudson", "friday-harbor-spring-street"],
-    note: "Seasonal May–September; sails as a whale-watching trip, so ~3 hr rather than a direct crossing. Bicycles carried, no vehicles",
+    terminalIds: ["port-townsend-point-hudson", "friday-harbor"],
+    note: "Seasonal May–September; sails as a whale-watching trip, so ~3 hr rather than a direct crossing. Lands at Spring Street Landing, a short walk from the WSF terminal. Bicycles carried, no vehicles",
   },
 
   // --- BC Ferries: major Strait of Georgia routes ---

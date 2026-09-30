@@ -52,14 +52,15 @@ describe("ferry dataset integrity", () => {
    * `gooseberry-point` — on the mainland, not the island — so the Whatcom
    * Chief drew a stub that never left the dock.
    *
-   * The floor is also the rule the two Everett docks were merged under: a
-   * pair closer than this renders as one smudge at every zoom this map
-   * uses, so it belongs in one terminal rather than two. The closest
-   * legitimate pair is Friday Harbor's WSF dock and Spring Street landing,
-   * at 0.098 nm.
+   * The floor is also the rule docks in the same town are merged under:
+   * two docks a short walk apart are one place to a traveller, so they
+   * belong in one terminal. The two Everett docks were merged this way, and
+   * so were Friday Harbor's WSF terminal and Spring Street Landing, 0.098 nm
+   * apart. The closest pair kept separate is Colman Dock and Pier 69 in
+   * Seattle, at 0.394 nm.
    */
   it("keeps distinct terminals far enough apart to be distinct places", () => {
-    const minimumSeparationNm = 0.05;
+    const minimumSeparationNm = 0.2;
     const terminals = [...TERMINALS_BY_ID.values()];
     const tooClose: string[] = [];
 
