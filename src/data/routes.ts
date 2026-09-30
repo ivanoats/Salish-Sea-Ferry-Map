@@ -216,6 +216,17 @@ export const ROUTES: readonly FerryRoute[] = [
     note: "MV Another Holiday — passengers and freight, no vehicles. Reservations required, island members and their guests",
   },
 
+  // --- Port of Everett ---
+  {
+    id: "port-of-everett-jetty-island",
+    name: "Everett – Jetty Island (passenger only)",
+    operatorId: "port-of-everett",
+    mode: "passenger",
+    status: "seasonal",
+    terminalIds: ["everett-jetty-landing", "jetty-island"],
+    note: "Summer only; about five minutes across to Jetty Island. No vehicles",
+  },
+
   // --- Puget Sound Express ---
   {
     id: "pse-port-townsend-friday-harbor",

@@ -120,6 +120,13 @@ export const OPERATORS: readonly Operator[] = [
     color: "#4f46e5",
     website: "https://granvilleislandferries.bc.ca",
   },
+  {
+    id: "port-of-everett",
+    name: "Port of Everett (Jetty Island Ferry)",
+    shortName: "Jetty Island Ferry",
+    color: "#ca8a04",
+    website: "https://www.portofeverett.com",
+  },
 ];
 
 export const OPERATORS_BY_ID = new Map(OPERATORS.map((o) => [o.id, o] as const));

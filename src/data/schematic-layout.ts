@@ -88,6 +88,8 @@ const terminals: SchematicLayout["terminals"] = {
   langley: { position: [28, 43], label: "Langley", labelSide: "w" },
   "hat-island": { position: [30, 41], label: "Hat Island", labelSide: "n" },
   "everett-marina": { position: [32, 43], label: "Everett", labelSide: "e" },
+  "everett-jetty-landing": { position: [32, 40], label: "Jetty Landing", labelSide: "e" },
+  "jetty-island": { position: [31, 40], label: "Jetty Island", labelSide: "n" },
   clinton: { position: [28, 45], label: "Clinton", labelSide: "w" },
   mukilteo: { position: [30, 45], label: "Mukilteo", labelSide: "e" },
 
@@ -198,6 +200,7 @@ export const SCHEMATIC_LAND_LINKS: readonly (readonly [string, string])[] = [
   ["anacortes", "anacortes-guemes-dock"],
   ["port-townsend", "port-townsend-point-hudson"],
   ["langley", "clinton"],
+  ["everett-marina", "everett-jetty-landing"],
   ["seattle-colman-dock", "seattle-pier-69"],
   ["vashon-north", "tahlequah"],
 ];
@@ -333,7 +336,9 @@ export const SCHEMATIC_LAND: readonly { readonly name: string; readonly outline:
   { name: "San Juan Island", outline: [[19.9, 31.2], [22.2, 31.2], [22.2, 34.5], [21.2, 35.5], [19.9, 35.5]] },
   { name: "Guemes Island", outline: [[30.8, 26.2], [32.5, 26.2], [32.5, 28], [30.8, 28]] },
   { name: "Whidbey Island", outline: [[25, 35], [26.2, 33.8], [30.2, 33.8], [28, 36], [28, 45], [27, 46], [26, 46], [25, 45]] },
-  { name: "Hat Island", outline: [[29, 39.8], [30.4, 39.8], [30.4, 40.6], [29.6, 41.4], [29, 41.4]] },
+  { name: "Hat Island", outline: [[29, 39.8], [30.25, 39.8], [30.25, 40.75], [29.6, 41.4], [29, 41.4]] },
+  // Long and thin, as the real island is, running north from the landing.
+  { name: "Jetty Island", outline: [[30.55, 37.8], [31, 37.8], [31, 40.6], [30.55, 40.6]] },
   { name: "Bainbridge Island", outline: [[22.7, 49.6], [24, 49.6], [25, 50.6], [25, 53], [22.7, 53]] },
   { name: "Vashon Island", outline: [[28, 56.85], [29, 57.85], [29.6, 57.85], [29.6, 59.2], [28.8, 60], [27.2, 60], [26.4, 59.2], [26.4, 57.85], [27, 57.85]] },
   { name: "Anderson Island", outline: [[22.6, 63.8], [24, 63.8], [24, 66.4], [22.6, 66.4]] },

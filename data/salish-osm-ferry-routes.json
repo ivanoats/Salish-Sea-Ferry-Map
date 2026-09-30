@@ -50,6 +50,13 @@
         "endpoint": "https://api.openstreetmap.org/api/0.6/",
         "retrieved": "2026-09-30",
         "note": "False Creek, Vancouver. The Aquabus and False Creek Ferries (routes 2 and 3) relation pairs, one relation per direction. The first relation query's box already covered them; they were not vendored because no False Creek service was modelled then. False Creek Ferries route 1 (Granville Island to the Aquatic Centre) is the first leg of route 2 and is not vendored separately. Relation member way geometry, unmodified."
+      },
+      {
+        "source": "OpenStreetMap API 0.6 (/way/{id}/full)",
+        "query": "way 243013571",
+        "endpoint": "https://api.openstreetmap.org/api/0.6/",
+        "retrieved": "2026-09-30",
+        "note": "The Jetty Island Ferry (Port of Everett, summer only), for issue #40. A bare route=ferry way with no parent relation and no terminal nodes; the bare-way sweep didn't keep it because the route wasn't modelled. Way geometry, unmodified."
       }
     ]
   },
@@ -10937,6 +10944,47 @@
           [
             -123.1368961,
             49.2766337
+          ]
+        ]
+      ]
+    },
+    {
+      "routeName": "Jetty Island Ferry",
+      "operator": "Port of Everett",
+      "from": "Everett",
+      "to": "Jetty Island",
+      "osmWayIds": [
+        243013571
+      ],
+      "coordinates": [
+        [
+          [
+            -122.2231288,
+            48.0042913
+          ],
+          [
+            -122.223524,
+            48.0043075
+          ],
+          [
+            -122.2243758,
+            48.0042721
+          ],
+          [
+            -122.2249815,
+            48.0041388
+          ],
+          [
+            -122.2256645,
+            48.0038532
+          ],
+          [
+            -122.2260711,
+            48.0036329
+          ],
+          [
+            -122.2264651,
+            48.0033577
           ]
         ]
       ]
