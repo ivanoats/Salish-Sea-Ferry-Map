@@ -21,6 +21,8 @@ const operatorCoverage = [
   "Puget Sound Express — seasonal passenger service between Port Townsend and Friday Harbor",
   "Harbor Hopper — the Ports of Everett and South Whidbey's summer foot ferry between Everett and Langley",
   "Hat Island Ferry — the Another Holiday between Everett and Hat Island",
+  "Hullo — passenger service between downtown Nanaimo and downtown Vancouver",
+  "TransLink SeaBus — Waterfront to Lonsdale Quay across Burrard Inlet",
 ] as const;
 
 const proseClassName = css({
@@ -84,7 +86,7 @@ function WhyThisExists() {
       <p className={proseClassName}>
         Good ferry maps around the Salish Sea usually stop at a single operator. This project
         exists to show Washington State Ferries, BC Ferries, Black Ball, Kitsap Transit,
-        Victoria Clipper, Puget Sound Express, and the county and community ferries together on
+        Victoria Clipper, Puget Sound Express, Hullo, the SeaBus, and the county and community ferries together on
         one map so visitors can see the whole network at a glance.
       </p>
       <p className={proseClassName}>

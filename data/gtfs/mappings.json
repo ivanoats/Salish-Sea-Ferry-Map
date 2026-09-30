@@ -399,5 +399,16 @@
       "anacortes-guemes-dock": "4212587",
       "guemes-island": "4212588"
     }
+  },
+  {
+    "routeId": "hullo-nanaimo-vancouver",
+    "gtfsRouteIds": [
+      "NAN-VAN",
+      "VAN-NAN"
+    ],
+    "stopIds": {
+      "nanaimo-hullo": "NAN",
+      "vancouver-hullo": "VAN"
+    }
   }
 ]

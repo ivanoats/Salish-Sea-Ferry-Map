@@ -20,7 +20,9 @@ export type OperatorId =
   | "whatcom-county"
   | "harbor-hopper"
   | "hat-island-ferry"
-  | "puget-sound-express";
+  | "puget-sound-express"
+  | "hullo"
+  | "translink";
 
 export interface Operator {
   readonly id: OperatorId;

@@ -105,6 +105,17 @@ export const TERMINALS: readonly Terminal[] = [
   { id: "cortes-island", name: "Whaletown (Cortes Island)", coordinates: [-125.05386, 50.10974], jurisdiction: "BC" },
   { id: "french-creek", name: "French Creek", coordinates: [-124.35662, 49.34895], jurisdiction: "BC" },
   { id: "lasqueti-island", name: "False Bay (Lasqueti Island)", coordinates: [-124.35159, 49.49144], jurisdiction: "BC" },
+
+  // --- Hullo (downtown Nanaimo – downtown Vancouver) ---
+  // Hullo's own docks, not BC Ferries': the Nanaimo one is half a mile south
+  // of the Gabriola ferry at Nanaimo Harbour, and the Vancouver one is at
+  // Coal Harbour, a short walk west of the SeaBus.
+  { id: "nanaimo-hullo", name: "Nanaimo (Hullo terminal)", coordinates: [-123.92249, 49.16354], jurisdiction: "BC" },
+  { id: "vancouver-hullo", name: "Vancouver (Hullo terminal, Coal Harbour)", coordinates: [-123.11635, 49.29031], jurisdiction: "BC" },
+
+  // --- TransLink SeaBus ---
+  { id: "vancouver-waterfront", name: "Vancouver (Waterfront)", coordinates: [-123.10903, 49.28702], jurisdiction: "BC" },
+  { id: "lonsdale-quay", name: "North Vancouver (Lonsdale Quay)", coordinates: [-123.08392, 49.30954], jurisdiction: "BC" },
 ];
 
 export const TERMINALS_BY_ID = new Map(TERMINALS.map((t) => [t.id, t] as const));

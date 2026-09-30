@@ -45,6 +45,8 @@ Initial snapshot fetched 2026-09-26 UTC (2026-09-25 Pacific):
 | Victoria Clipper | Archive expired in February 2018; skipped |
 | Whatcom County | Archive expired August 2026; skipped |
 | Pierce County, Harbor Hopper, Hat Island, Puget Sound Express | No usable feed identified; manually verified |
+| Hullo | Route, stops, calendar (pinned 2026-09-30 UTC; the feed ends 2026-11-30, so refresh before then) |
+| TransLink (SeaBus) | Not pinned: SeaBus is only in the full regional feed, about 16 MB; manually verified |
 
 Coverage warnings appear during generation and in the integrity test. They do
 not fail the build. Missing or corrupt pinned files and unexpected data drift do.

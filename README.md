@@ -28,6 +28,8 @@ An interactive map of every ferry route across the Salish Sea — Puget Sound, t
 - **Puget Sound Express** — Port Townsend ↔ Friday Harbor, passenger only, seasonal
 - **Harbor Hopper** — the Ports of Everett and South Whidbey's summer foot ferry, Everett ↔ Langley
 - **Hat Island Ferry** — the *Another Holiday*, Everett ↔ Hat Island (Gedney)
+- **Hullo** — downtown Nanaimo ↔ downtown Vancouver (Coal Harbour), passenger only
+- **TransLink SeaBus** — Waterfront ↔ Lonsdale Quay across Burrard Inlet, passenger only
 
 ## Route diagram
 

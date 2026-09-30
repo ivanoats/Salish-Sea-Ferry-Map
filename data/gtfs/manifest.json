@@ -76,5 +76,17 @@
   {
     "operatorId": "puget-sound-express",
     "skipReason": "No usable published ferry feed identified in ADR 0005 survey"
+  },
+  {
+    "operatorId": "hullo",
+    "url": "https://hullo.com/gtfs/gtfs-hullo.zip",
+    "fetchedAt": "2026-09-30",
+    "archive": "hullo.zip",
+    "sha256": "068fee6a324549e3238e10fba1ec2e59f0960f81723c511fbd718b644b55b021",
+    "feedVersion": "20260902142215"
+  },
+  {
+    "operatorId": "translink",
+    "skipReason": "Not pinned: TransLink publishes SeaBus only inside its full regional feed (about 16 MB), which would double the vendored archives for one route; SeaBus manually verified"
   }
 ]
