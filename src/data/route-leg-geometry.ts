@@ -432,6 +432,20 @@ export const ROUTE_LEG_GEOMETRY_BY_DIRECTED_TERMINAL_IDS: Readonly<Record<string
       [-122.4956, 47.7968],
     ],
   },
+  "everett-jetty-landing\u0000jetty-island": {
+    source: "osm",
+    coordinates: [
+      [-122.22313, 48.00429],
+      [-122.2231288, 48.0042913],
+      [-122.223524, 48.0043075],
+      [-122.2243758, 48.0042721],
+      [-122.2249815, 48.0041388],
+      [-122.2256645, 48.0038532],
+      [-122.2260711, 48.0036329],
+      [-122.2264651, 48.0033577],
+      [-122.22647, 48.00336],
+    ],
+  },
   "everett-marina\u0000hat-island": {
     source: "osm",
     coordinates: [

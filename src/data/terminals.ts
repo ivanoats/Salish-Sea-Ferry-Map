@@ -67,6 +67,14 @@ export const TERMINALS: readonly Terminal[] = [
   { id: "langley", name: "Langley (Whidbey Island)", coordinates: [-122.40197, 48.03864], jurisdiction: "WA" },
   { id: "hat-island", name: "Hat Island (Gedney Island)", coordinates: [-122.32259, 48.02016], jurisdiction: "WA" },
 
+  // --- Port of Everett (Jetty Island Ferry) ---
+  // The Jetty Island Ferry's two landings. OSM maps the crossing as a bare
+  // route=ferry way (243013571) with no terminal nodes, so these are its end
+  // nodes: 319262243 on the Everett waterfront, 850 m north of the marina
+  // docks, and 12116363048 on Jetty Island.
+  { id: "everett-jetty-landing", name: "Everett (Jetty Island Ferry landing)", coordinates: [-122.22313, 48.00429], jurisdiction: "WA" },
+  { id: "jetty-island", name: "Jetty Island", coordinates: [-122.22647, 48.00336], jurisdiction: "WA" },
+
   // --- Puget Sound Express ---
   // Point Hudson is the operator's own dock, a mile up the shore from the
   // Port Townsend slip. At the other end the boat lands at Spring Street
