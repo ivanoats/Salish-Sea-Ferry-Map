@@ -21940,5 +21940,35 @@ export const GTFS = [
     "referenceDate": null,
     "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap",
     "routes": []
+  },
+  {
+    "operatorId": "sidney-spit-ferry",
+    "referenceDate": null,
+    "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap",
+    "routes": []
+  },
+  {
+    "operatorId": "dinghy-dock-pub",
+    "referenceDate": null,
+    "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap",
+    "routes": []
+  },
+  {
+    "operatorId": "saysutshun-ferry",
+    "referenceDate": null,
+    "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap",
+    "routes": []
+  },
+  {
+    "operatorId": "lund-water-taxi",
+    "referenceDate": null,
+    "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap",
+    "routes": []
+  },
+  {
+    "operatorId": "big-animal-encounters",
+    "referenceDate": null,
+    "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against the operator's 2026 schedule (no OpenStreetMap route)",
+    "routes": []
   }
 ];

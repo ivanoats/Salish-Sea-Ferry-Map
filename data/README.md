@@ -64,9 +64,10 @@ sailing lines, both mapped as ferries rather than inferred from open water.
 Check a terminal against OSM, not against this mesh.
 
 Since the OSM ferry routes landed, the mesh is a fallback rather than the
-primary source: 72 of 73 route legs use OSM geometry and 1 uses the mesh
-(`friday-harbor`–`sidney-bc`, suspended since 2020, whose Sidney end has
-no OSM ferry route within `MAX_OSM_ENDPOINT_NM`). No leg falls back to a
+primary source: 76 of 78 route legs use OSM geometry and 2 use the mesh:
+`friday-harbor`–`sidney-bc`, suspended since 2020, whose Sidney end has
+no OSM ferry route within `MAX_OSM_ENDPOINT_NM`, and the Comox–Hornby
+Island water taxi, which OSM doesn't map at all. No leg falls back to a
 straight line.
 
 ### Licensing
@@ -83,7 +84,7 @@ it for a leg only when **both** of the leg's terminals sit within
 `MAX_OSM_ENDPOINT_NM` (1.25 nm) of that one route's vertices. So a leg
 either gets the line a ferry actually sails or it gets none — two
 terminals covered by two different routes are never stitched together.
-Geometry beats the mesh where it exists, which is 72 of the 73 legs.
+Geometry beats the mesh where it exists, which is 76 of the 78 legs.
 
 ### Relations first, bare ways only to fill gaps
 
@@ -95,18 +96,19 @@ Kitsap Transit fast ferries and the Gambier–Keats crossing fell back to the
 mesh long after every terminal they touch had real geometry nearby.
 
 The third source query subtracts relation member ways from all ferry ways
-in the region, leaving 66 standalone ones. Only thirteen are vendored: the
+in the region, leaving 66 standalone ones. Only seventeen are vendored: the
 ones carrying a route leg no relation reaches — the two Kitsap Transit
 fast ferries, the Gambier–Keats crossing, Seattle–West Seattle, the Hat
 Island Ferry, the Puget Sound Express Port Townsend–Friday Harbor run, and,
 added later from the main OSM API, Hullo's Nanaimo–Vancouver crossing,
 Long Harbour's three legs to Village Bay, Otter Bay and Tsawwassen, the
-Jetty Island Ferry, Bremerton–Annapolis, and the private Herron Island
-Ferry.
+Jetty Island Ferry, Bremerton–Annapolis, the private Herron Island Ferry,
+the Sidney Spit Ferry, Nanaimo's Protection Island and Saysutshun
+(Newcastle Island) ferries, and the Lund Water Taxi to Savary Island.
 The rest are either the same crossing a relation already covers — and a
 duplicate can only displace better geometry, since the builder breaks ties
-on snap distance — or berth approaches, freight barges and water taxis this
-dataset does not model beyond Seattle–West Seattle.
+on snap distance — or berth approaches, freight barges and charter water
+taxis this dataset does not model.
 
 Adding a way here is therefore a deliberate act, not a sweep: check that
 the leg has no relation coverage first.

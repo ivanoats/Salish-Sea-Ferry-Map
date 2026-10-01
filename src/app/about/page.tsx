@@ -25,6 +25,10 @@ const operatorCoverage = [
   "TransLink SeaBus — Waterfront to Lonsdale Quay across Burrard Inlet",
   "Herron Island Ferry — the private ferry to Herron Island, for residents and their guests only",
   "Port of Everett — the summer Jetty Island Ferry from the Everett waterfront",
+  "Sidney Spit Ferry — the summer foot ferry from Sidney to Sidney Spit, in the Gulf Islands National Park Reserve",
+  "Protection Island Ferry and Saysutshun Ferry — Nanaimo harbour's foot ferries to Protection Island, run by the Dinghy Dock Pub, and to Saysutshun (Newcastle Island), run by the Snuneymuxw First Nation in summer",
+  "Lund Water Taxi — the year-round crossing from Lund to Savary Island",
+  "Hornby Island Water Taxi — Big Animal Encounters' spring and summer run from Comox to Hornby Island",
   "Aquabus and False Creek Ferries — the small passenger ferries around False Creek in Vancouver",
 ] as const;
 
@@ -89,7 +93,7 @@ function WhyThisExists() {
       <p className={proseClassName}>
         Good ferry maps around the Salish Sea usually stop at a single operator. This project
         exists to show Washington State Ferries, BC Ferries, Black Ball, Kitsap Transit,
-        Victoria Clipper, Puget Sound Express, Hullo, the SeaBus, the False Creek ferries, and the county and community ferries together on
+        Victoria Clipper, Puget Sound Express, Hullo, the SeaBus, the False Creek ferries, the small island foot ferries and water taxis, and the county and community ferries together on
         one map so visitors can see the whole network at a glance.
       </p>
       <p className={proseClassName}>

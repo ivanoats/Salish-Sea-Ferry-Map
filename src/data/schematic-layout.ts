@@ -23,6 +23,9 @@ const terminals: SchematicLayout["terminals"] = {
 
   // --- Northern Strait of Georgia ---
   comox: { position: [2, 7], label: "Comox", labelSide: "w" },
+  "comox-marina": { position: [2, 9], label: "Comox Marina", labelSide: "w" },
+  lund: { position: [9, 5], label: "Lund", labelSide: "e" },
+  "savary-island": { position: [7, 5], label: "Savary Island", labelSide: "w" },
   "powell-river": { position: [7, 7], label: "Powell River", labelSide: "ne" },
   "texada-island": { position: [7, 9], label: "Texada Island", labelSide: "e" },
   "saltery-bay": { position: [11, 6], label: "Saltery Bay", labelSide: "n" },
@@ -43,6 +46,9 @@ const terminals: SchematicLayout["terminals"] = {
 
   // --- Nanaimo ---
   "departure-bay": { position: [6, 20], label: "Departure Bay", labelSide: "w" },
+  "nanaimo-maffeo-sutton": { position: [6, 21], label: "Maffeo Sutton Park", labelSide: "w" },
+  "newcastle-island": { position: [7, 20], label: "Saysutshun", labelSide: "e" },
+  "protection-island": { position: [7, 21], label: "Protection Island", labelSide: "e" },
   "nanaimo-harbour": { position: [6, 22], label: "Nanaimo Harbour", labelSide: "w" },
   "gabriola-island": { position: [9, 22], label: "Gabriola Island", labelSide: "e" },
   "nanaimo-hullo": { position: [6, 23], label: "Nanaimo (Hullo)", labelSide: "w" },
@@ -64,7 +70,9 @@ const terminals: SchematicLayout["terminals"] = {
   "pender-island": { position: [15, 31], label: "Pender Island", labelSide: "w" },
   "saturna-island": { position: [17, 31], label: "Saturna Island", labelSide: "s" },
   "swartz-bay": { position: [11, 32], label: "Swartz Bay", labelSide: "e" },
+  "port-sidney": { position: [11, 33], label: "Port Sidney", labelSide: "w" },
   "sidney-bc": { position: [11, 34], label: "Sidney", labelSide: "e" },
+  "sidney-spit": { position: [13, 33], label: "Sidney Spit", labelSide: "e" },
   "brentwood-bay": { position: [10, 36], label: "Brentwood Bay", labelSide: "e" },
   "mill-bay": { position: [8, 36], label: "Mill Bay", labelSide: "w" },
   "victoria-belleville": { position: [12, 40], label: "Victoria", labelSide: "w" },
@@ -164,6 +172,9 @@ const legVias: Record<string, readonly GridPoint[]> = {
   // than along its shore.
   "anacortes>friday-harbor": [[28, 32]],
   "friday-harbor>sidney-bc": [[21, 30], [20, 30], [16, 34]],
+  // Round the north end of Denman and down Lambert Channel, between Denman
+  // and Hornby, as the water taxi goes.
+  "comox-marina>hornby-island": [[4, 9], [8, 13]],
   // Down San Juan Channel, east of San Juan Island, then across the Strait
   // of Juan de Fuca to Point Hudson.
   "friday-harbor>port-townsend-point-hudson": [[23, 32], [23, 36], [22, 37]],
@@ -198,11 +209,14 @@ export const SCHEMATIC_LAYOUT: SchematicLayout = { terminals, legVias };
 export const SCHEMATIC_LAND_LINKS: readonly (readonly [string, string])[] = [
   ["quadra-quathiaski", "quadra-heriot-bay"],
   ["denman-island-west", "denman-island-east"],
-  ["departure-bay", "nanaimo-harbour"],
+  ["comox", "comox-marina"],
+  ["departure-bay", "nanaimo-maffeo-sutton"],
+  ["nanaimo-maffeo-sutton", "nanaimo-harbour"],
   ["nanaimo-harbour", "nanaimo-hullo"],
   ["nanaimo-hullo", "duke-point"],
   ["vancouver-hullo", "vancouver-waterfront"],
-  ["swartz-bay", "sidney-bc"],
+  ["swartz-bay", "port-sidney"],
+  ["port-sidney", "sidney-bc"],
   ["anacortes", "anacortes-guemes-dock"],
   ["port-townsend", "port-townsend-point-hudson"],
   ["langley", "clinton"],
@@ -323,13 +337,16 @@ export const SCHEMATIC_LAND: readonly { readonly name: string; readonly outline:
   },
   { name: "Quadra Island", outline: [[5, -1.5], [7.5, -1.5], [7.5, 1.5], [5.5, 3.5], [5, 3.5]] },
   { name: "Cortes Island", outline: [[10, -1.5], [11.4, -1.5], [11.4, 2.2], [10, 2.2]] },
-  { name: "Texada Island", outline: [[6.5, 9], [8.5, 9], [8.5, 11.5], [6.5, 11.5]] },
+  { name: "Savary Island", outline: [[5.2, 4.65], [7, 4.65], [7, 5.35], [5.2, 5.35]] },
+  { name: "Texada Island", outline: [[7, 9], [8.5, 9], [8.5, 11.5], [7, 11.5]] },
   { name: "Denman Island", outline: [[4, 10.3], [4.7, 10.3], [6, 11.6], [6, 13.6], [5.3, 13.6], [4, 12.3]] },
   { name: "Hornby Island", outline: [[9, 12.3], [10.6, 12.3], [10.6, 13.7], [9, 13.7]] },
   { name: "Lasqueti Island", outline: [[7, 14.4], [8.6, 14.4], [8.6, 15.6], [7, 15.6]] },
   { name: "Gambier Island", outline: [[14.6, 9.6], [16.4, 9.6], [16.4, 10.6], [15.4, 10.6], [14.6, 11.4]] },
   { name: "Keats Island", outline: [[17, 10.4], [18.2, 10.4], [18.2, 11.6], [17, 11.6]] },
   { name: "Bowen Island", outline: [[18.4, 14.8], [19.4, 14.8], [19.4, 15.6], [18.4, 15.6]] },
+  { name: "Newcastle Island", outline: [[6.8, 19.45], [8.4, 19.45], [8.4, 20.45], [6.8, 20.45]] },
+  { name: "Protection Island", outline: [[6.8, 20.75], [8, 20.75], [8, 21.35], [6.8, 21.35]] },
   { name: "Gabriola Island", outline: [[9, 21], [10.5, 21], [10.5, 22.6], [9, 22.6]] },
   { name: "Thetis Island", outline: [[5.4, 25.8], [6.6, 25.8], [6.6, 27], [5.4, 27]] },
   { name: "Penelakut Island", outline: [[8, 28.3], [8.9, 28.3], [8.9, 29.4], [8, 29.4]] },
@@ -337,6 +354,7 @@ export const SCHEMATIC_LAND: readonly { readonly name: string; readonly outline:
   { name: "Galiano Island", outline: [[11.6, 24.6], [15.6, 24.6], [15.6, 26], [11.6, 26]] },
   { name: "Mayne Island", outline: [[14.85, 29], [15.45, 28.4], [16.6, 28.4], [16.6, 30], [15.85, 30]] },
   { name: "Pender Island", outline: [[13.6, 30.4], [14.4, 30.4], [15.6, 31.6], [15.6, 32.4], [13.6, 32.4]] },
+  { name: "Sidney Island", outline: [[13, 32.7], [13.8, 32.7], [13.8, 33.6], [13, 33.6]] },
   { name: "Saturna Island", outline: [[17, 30.3], [18, 30.3], [18, 31.4], [17, 31.4]] },
   { name: "Lummi Island", outline: [[23.6, 23.5], [25, 23.5], [25, 25.4], [23.6, 25.4]] },
   { name: "Orcas Island", outline: [[23.5, 26], [27, 26], [27, 28], [23.5, 28]] },

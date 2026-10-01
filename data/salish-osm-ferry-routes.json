@@ -64,6 +64,13 @@
         "endpoint": "https://api.openstreetmap.org/api/0.6/",
         "retrieved": "2026-09-30",
         "note": "Batch B of the #51 plan: Kitsap Transit's Bremerton-Port Orchard relation pair, and two bare route=ferry ways no relation covers: Bremerton-Annapolis and the private Herron Island Ferry. None was vendored before because none of these routes was modelled. (The Plover at Blaine, way 436312687, is left out: in 2026 it no longer docks at Semiahmoo and runs round-trip excursions only.) Way geometry, unmodified."
+      },
+      {
+        "source": "OpenStreetMap API 0.6 (/way/{id}/full)",
+        "query": "way 299945752, way 156392002, way 37091332, way 291364983 (found with way[\"route\"=\"ferry\"] around Sidney, Nanaimo Harbour and Lund on overpass-api.de)",
+        "endpoint": "https://api.openstreetmap.org/api/0.6/",
+        "retrieved": "2026-09-30",
+        "note": "Batch C of the #51 plan: the Sidney Spit Ferry, the Protection Island and Saysutshun (Newcastle Island) ferries at Nanaimo, and the Lund Water Taxi to Savary Island. All four are bare route=ferry ways with no parent relation, not vendored before because none of these routes was modelled. Access Point Marine's Savary Island Ferry (way 1086564014) duplicates the Lund crossing and is left out. OSM has no route for the Comox-Hornby water taxi or for Lund-Cortes, which runs as a charter only. Way geometry, unmodified."
       }
     ]
   },
@@ -11128,6 +11135,342 @@
           [
             -122.8274706,
             47.2669855
+          ]
+        ]
+      ]
+    },
+    {
+      "routeName": "Sidney Spit Ferry",
+      "operator": "Alpine Group",
+      "from": "Sidney Spit",
+      "to": "Sidney (Port Sidney Marina)",
+      "osmWayIds": [
+        299945752
+      ],
+      "coordinates": [
+        [
+          [
+            -123.3327677,
+            48.6418001
+          ],
+          [
+            -123.3930263,
+            48.6497538
+          ]
+        ]
+      ]
+    },
+    {
+      "routeName": "Protection Island Ferry",
+      "operator": "Dinghy Dock Pub",
+      "from": "Nanaimo",
+      "to": "Protection Island",
+      "osmWayIds": [
+        156392002
+      ],
+      "coordinates": [
+        [
+          [
+            -123.9334555,
+            49.1660425
+          ],
+          [
+            -123.9333906,
+            49.1662069
+          ],
+          [
+            -123.9334088,
+            49.166283
+          ],
+          [
+            -123.9334502,
+            49.1663511
+          ],
+          [
+            -123.933566,
+            49.1664485
+          ],
+          [
+            -123.9337802,
+            49.1667904
+          ],
+          [
+            -123.9339088,
+            49.1671434
+          ],
+          [
+            -123.9339774,
+            49.1676366
+          ],
+          [
+            -123.9337369,
+            49.1681839
+          ],
+          [
+            -123.9332003,
+            49.1695363
+          ],
+          [
+            -123.9327365,
+            49.1700512
+          ],
+          [
+            -123.9262558,
+            49.1764723
+          ],
+          [
+            -123.9262387,
+            49.1765319
+          ],
+          [
+            -123.9262424,
+            49.1765889
+          ],
+          [
+            -123.9262588,
+            49.1766419
+          ],
+          [
+            -123.9262939,
+            49.1766833
+          ],
+          [
+            -123.926354,
+            49.1767114
+          ]
+        ]
+      ]
+    },
+    {
+      "routeName": "Newcastle Island Passenger Ferry",
+      "operator": "Snuneymuxw First Nation",
+      "from": "Nanaimo (Maffeo Sutton Dock)",
+      "to": "Saysutshun (Newcastle Island)",
+      "osmWayIds": [
+        37091332
+      ],
+      "coordinates": [
+        [
+          [
+            -123.9364253,
+            49.171864
+          ],
+          [
+            -123.9362155,
+            49.1718914
+          ],
+          [
+            -123.9356147,
+            49.172172
+          ],
+          [
+            -123.9344989,
+            49.1729015
+          ],
+          [
+            -123.9335548,
+            49.1740237
+          ],
+          [
+            -123.9323532,
+            49.1753143
+          ],
+          [
+            -123.9314949,
+            49.1762121
+          ],
+          [
+            -123.9301216,
+            49.1777271
+          ],
+          [
+            -123.9292633,
+            49.1788492
+          ],
+          [
+            -123.9287731,
+            49.1800917
+          ]
+        ]
+      ]
+    },
+    {
+      "routeName": "Lund \u2194 Savary Island",
+      "operator": "Lund Water Taxi",
+      "from": "Lund",
+      "to": "Savary Island",
+      "osmWayIds": [
+        291364983
+      ],
+      "coordinates": [
+        [
+          [
+            -124.7625332,
+            49.9809704
+          ],
+          [
+            -124.762917,
+            49.9809009
+          ],
+          [
+            -124.7631609,
+            49.9809087
+          ],
+          [
+            -124.7634008,
+            49.9809427
+          ],
+          [
+            -124.7636081,
+            49.9809819
+          ],
+          [
+            -124.7637707,
+            49.9810708
+          ],
+          [
+            -124.7639862,
+            49.9811728
+          ],
+          [
+            -124.7641082,
+            49.9812224
+          ],
+          [
+            -124.7642505,
+            49.9812564
+          ],
+          [
+            -124.7643846,
+            49.9812643
+          ],
+          [
+            -124.7645838,
+            49.9812512
+          ],
+          [
+            -124.7647302,
+            49.9812224
+          ],
+          [
+            -124.7649904,
+            49.9810917
+          ],
+          [
+            -124.7652546,
+            49.9809035
+          ],
+          [
+            -124.7655148,
+            49.9806316
+          ],
+          [
+            -124.7658401,
+            49.9802447
+          ],
+          [
+            -124.7661694,
+            49.979714
+          ],
+          [
+            -124.7664499,
+            49.9792094
+          ],
+          [
+            -124.7668322,
+            49.9784966
+          ],
+          [
+            -124.7671863,
+            49.9776652
+          ],
+          [
+            -124.7677549,
+            49.9765992
+          ],
+          [
+            -124.7679909,
+            49.9760334
+          ],
+          [
+            -124.7685081,
+            49.9751032
+          ],
+          [
+            -124.7694513,
+            49.9735135
+          ],
+          [
+            -124.7702807,
+            49.9719656
+          ],
+          [
+            -124.7709487,
+            49.9703987
+          ],
+          [
+            -124.7721933,
+            49.9681904
+          ],
+          [
+            -124.7723864,
+            49.9675279
+          ],
+          [
+            -124.7747467,
+            49.9634009
+          ],
+          [
+            -124.7756265,
+            49.9615513
+          ],
+          [
+            -124.7780083,
+            49.9564988
+          ],
+          [
+            -124.7787593,
+            49.9548146
+          ],
+          [
+            -124.7797249,
+            49.9519015
+          ],
+          [
+            -124.7798537,
+            49.9503275
+          ],
+          [
+            -124.7802614,
+            49.9473451
+          ],
+          [
+            -124.7801755,
+            49.9469171
+          ],
+          [
+            -124.7802185,
+            49.9463095
+          ],
+          [
+            -124.7800039,
+            49.9460057
+          ],
+          [
+            -124.7799186,
+            49.9458994
+          ],
+          [
+            -124.7798938,
+            49.9458038
+          ],
+          [
+            -124.7798408,
+            49.9457263
+          ],
+          [
+            -124.7795952,
+            49.945808
           ]
         ]
       ]

@@ -108,5 +108,25 @@
   {
     "operatorId": "herron-island",
     "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap"
+  },
+  {
+    "operatorId": "sidney-spit-ferry",
+    "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap"
+  },
+  {
+    "operatorId": "dinghy-dock-pub",
+    "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap"
+  },
+  {
+    "operatorId": "saysutshun-ferry",
+    "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap"
+  },
+  {
+    "operatorId": "lund-water-taxi",
+    "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against OpenStreetMap"
+  },
+  {
+    "operatorId": "big-animal-encounters",
+    "skipReason": "No published feed in the Mobility Database catalog (checked 2026-09-30); manually verified against the operator's 2026 schedule (no OpenStreetMap route)"
   }
 ]
