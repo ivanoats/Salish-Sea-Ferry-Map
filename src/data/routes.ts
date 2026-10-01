@@ -503,7 +503,7 @@ export const ROUTES: readonly FerryRoute[] = [
     mode: "passenger",
     status: "seasonal",
     terminalIds: ["port-sidney", "sidney-spit"],
-    note: "Mid-May to early September, to Sidney Spit in the Gulf Islands National Park Reserve. Weekends only until late June",
+    note: "Summer only, from Port Sidney Marina to Sidney Spit in the Gulf Islands National Park Reserve. No vehicles",
   },
   {
     id: "protection-island-ferry",
@@ -512,7 +512,7 @@ export const ROUTES: readonly FerryRoute[] = [
     mode: "passenger",
     status: "active",
     terminalIds: ["nanaimo-harbour", "protection-island"],
-    note: "Hourly, year-round, about 10 min. Run by the Dinghy Dock Pub, Canada's only floating pub",
+    note: "Year-round, about 10 min. Run by the Dinghy Dock Pub, Canada's only floating pub",
   },
   {
     id: "saysutshun-ferry",
@@ -521,7 +521,7 @@ export const ROUTES: readonly FerryRoute[] = [
     mode: "passenger",
     status: "seasonal",
     terminalIds: ["nanaimo-maffeo-sutton", "newcastle-island"],
-    note: "May to mid-October, half-hourly or hourly from Maffeo Sutton Park. Run by the Snuneymuxw First Nation to Saysutshun (Newcastle Island Marine Park)",
+    note: "Seasonal, spring to fall, from Maffeo Sutton Park. Run by the Snuneymuxw First Nation to Saysutshun (Newcastle Island Marine Park)",
   },
   {
     id: "lund-savary-island",
@@ -530,7 +530,7 @@ export const ROUTES: readonly FerryRoute[] = [
     mode: "passenger",
     status: "active",
     terminalIds: ["lund", "savary-island"],
-    note: "Year-round, about 15 min. Hourly in July and August; reservations required",
+    note: "Year-round, about 15 min. Reservations required",
   },
   {
     id: "comox-hornby-water-taxi",
@@ -539,7 +539,7 @@ export const ROUTES: readonly FerryRoute[] = [
     mode: "passenger",
     status: "seasonal",
     terminalIds: ["comox-marina", "hornby-island"],
-    note: "Twice daily, April to mid-August, about 40 min to the Thatch Pub dock at Shingle Spit. Reservations required",
+    note: "Seasonal, spring and summer; about 40 min to the Thatch Pub dock at Shingle Spit. Reservations required",
   },
 
   // --- TransLink SeaBus ---
