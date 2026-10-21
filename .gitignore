@@ -89,3 +89,7 @@ Thumbs.db
 
 # Python build-time GTFS tooling
 __pycache__/
+
+# Third-party map used in the CUGOS talk: non-commercial use with citation, not an open license.
+# Keep it local; the deck embeds its own copy.
+talks/2026-10-cugos/assets/Freelan_Salish_Sea_2009_grayscale.webp
