@@ -15,8 +15,7 @@ export const TALKS = [{ folder: "2026-10-cugos", slug: "cugos" }];
 for (const { folder, slug } of TALKS) {
   const source = join(root, "talks", folder, "web");
   if (!existsSync(join(source, "index.html"))) {
-    console.error(`[copy-talks] ${source}/index.html is missing; /talks/${slug} would 404. Aborting.`);
-    process.exit(1);
+    throw new Error(`[copy-talks] ${source}/index.html is missing; /talks/${slug} would 404.`);
   }
   const dest = join(root, "public", "talks", slug);
   rmSync(dest, { recursive: true, force: true });

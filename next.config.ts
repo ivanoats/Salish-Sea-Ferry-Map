@@ -5,9 +5,8 @@ const nextConfig: NextConfig = {
   // Talk decks are static files staged into public/talks/<slug>/ by
   // scripts/copy-talks.mjs. Next serves public files only by exact path,
   // so map the bare talk URL to its index.html.
-  async rewrites() {
-    return [{ source: "/talks/cugos", destination: "/talks/cugos/index.html" }];
-  },
+  rewrites: () =>
+    Promise.resolve([{ source: "/talks/cugos", destination: "/talks/cugos/index.html" }]),
 };
 
 export default nextConfig;
