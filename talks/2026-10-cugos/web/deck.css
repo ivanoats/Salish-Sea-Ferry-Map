@@ -184,3 +184,15 @@ body {
 .reveal pre.code { display: inline-block; font-size: 20px; line-height: 1.32; padding: 16px 26px; }
 .code-note { margin-top: 10px; }
 .credit.closing { margin-top: 48px; max-width: 70ch; line-height: 1.5; }
+/* data visualisation slides */
+.viz-wrap { display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
+.viz { display: block; height: 648px; width: auto; max-width: 100%; border: 1px solid var(--land-edge); background: #f4f8f9; }
+#morph-svg { width: 589px; }
+.lede.small { font-size: 26px; max-width: 26ch; }
+.viz-wrap .caption { max-width: 40ch; line-height: 1.5; }
+.m-land path { fill: #dde9d2; stroke: #c6d6bb; stroke-width: 1; }
+.m-real path, .m-link path, .m-octo path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.m-real path { stroke-width: 2.2; }
+.m-link path { stroke-width: 1.6; opacity: .9; }
+.m-octo path { stroke-width: 2.4; }
+.m-dots circle { fill: #fff; stroke: var(--ink); stroke-width: 1.2; }
