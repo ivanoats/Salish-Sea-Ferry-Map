@@ -1,0 +1,186 @@
+/* Layout: projector-first nautical chart. Pale chart water, a faint lat/long graticule,
+   ferry routes drawn the way charts draw them (magenta), operator colors only on route marks. */
+:root {
+  color-scheme: light;
+  --water: #eaf3f6;
+  --water-deep: #d6e7ee;
+  --grid: rgba(30, 70, 90, .07);
+  --ink: #12262f;
+  --ink-soft: #4a6470;
+  --mag: #b0127a;          /* chart magenta: how nautical charts mark ferry routes */
+  --land: #efe2b8;
+  --land-edge: #c9b77f;
+  --bad: #d43a2f;
+  --pass: #1f7a4d;
+  --wsf: #1f7a4d;
+  --bcf: #1d5fa8;
+  --bb: #9a5b1f;
+  --kt: #6f3fa0;
+  --vc: #0f8a8a;
+  --sk: #6b7a1f;
+  --wc: #d0782a;
+  --display: "Saira Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+html, body { height: 100%; }
+body {
+  background-color: var(--water);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 64px 64px;
+  color: var(--ink);
+  overflow: hidden;
+}
+.reveal { font-family: var(--body); font-size: 30px; color: var(--ink); }
+.reveal .slides { text-align: left; }
+.reveal .slides section { padding: 0 24px; box-sizing: border-box; }
+.reveal h1, .reveal h2 {
+  font-family: var(--display); font-weight: 700; line-height: .98;
+  letter-spacing: -.005em; margin: 0 0 28px; text-wrap: balance; color: var(--ink);
+}
+.reveal h1 { font-size: 112px; }
+.reveal h2 { font-size: 72px; }
+.reveal h2.huge { font-size: 104px; }
+.mag { color: var(--mag); }
+.arrow { color: var(--ink-soft); font-weight: 400; }
+.eyebrow {
+  font-family: var(--mono); font-size: 20px; text-transform: uppercase;
+  letter-spacing: .14em; color: var(--mag); margin: 0 0 22px;
+}
+.byline, .coord, .caption, .repo { font-family: var(--mono); color: var(--ink-soft); }
+.byline { font-size: 22px; margin-top: 18px; }
+.coord { font-size: 24px; margin-top: 8px; }
+.caption { font-size: 16px; margin-top: 18px; }
+.repo { font-size: 34px; color: var(--ink); margin: 6px 0 0; }
+.lede { font-size: 32px; line-height: 1.35; max-width: 30ch; color: var(--ink); margin: 26px 0 0; }
+.aside-note { font-size: 24px; color: var(--ink-soft); margin-top: 28px; font-style: italic; }
+
+/* title slides get a chart-margin frame */
+.reveal .title-slide { border-left: 10px solid var(--mag); padding-left: 48px; }
+
+/* operator list */
+.ops { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 48px; font-size: 30px; }
+.ops li { display: flex; align-items: center; gap: 16px; }
+.ops i { flex: none; width: 44px; height: 8px; border-radius: 4px; background: var(--c); }
+.ops.compact { grid-template-columns: 1fr; gap: 10px; font-size: 24px; }
+.ops.compact i { width: 32px; height: 6px; }
+
+/* border */
+.border-line { position: relative; height: 0; border-top: 4px dashed var(--ink); margin: 34px 0 0; width: 100%; }
+.border-line span { position: absolute; right: 0; top: -40px; font-family: var(--mono); font-size: 22px; color: var(--ink-soft); }
+
+/* equation */
+.equation { display: flex; flex-wrap: wrap; align-items: baseline; gap: 18px; font-family: var(--display); font-size: 54px; font-weight: 600; margin-bottom: 18px; }
+.equation b { color: var(--ink-soft); font-weight: 400; }
+
+/* stats */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.stats div { display: flex; flex-direction: column; border-top: 3px solid var(--ink); padding-top: 12px; }
+.stats strong { font-family: var(--display); font-size: 170px; line-height: .9; font-variant-numeric: tabular-nums; }
+.stats span { font-family: var(--mono); font-size: 22px; text-transform: uppercase; letter-spacing: .12em; color: var(--ink-soft); }
+.stats .one { border-top-color: var(--mag); }
+.stats .one strong { color: var(--mag); }
+
+/* map slide */
+.map-wrap { display: grid; grid-template-columns: 1fr 520px; gap: 40px; align-items: center; }
+.map-copy h2 { font-size: 60px; }
+#ferry-svg { width: 520px; height: 640px; background: var(--water-deep); border: 1px solid var(--land-edge); }
+#ferry-svg .route { fill: none; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+#ferry-svg .terminal { fill: #fff; stroke: var(--ink); stroke-width: 1.4; }
+#ferry-svg .label { font-family: var(--mono); font-size: 11px; fill: var(--ink); paint-order: stroke; stroke: var(--water-deep); stroke-width: 3px; }
+#ferry-svg .country { font-family: var(--mono); font-size: 13px; letter-spacing: .3em; fill: var(--ink-soft); }
+#ferry-svg .border { stroke: var(--ink-soft); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+#ferry-svg .draw { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.map-on #ferry-svg .draw { animation: draw 1.6s ease-out forwards; animation-delay: var(--d, 0s); }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+/* stack */
+.stack { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 40px; }
+.stack div { border-left: 6px solid var(--mag); padding: 6px 0 6px 20px; display: flex; flex-direction: column; }
+.stack strong { font-family: var(--display); font-size: 52px; line-height: 1; }
+.stack span { font-family: var(--mono); font-size: 20px; color: var(--ink-soft); }
+.stack .dim { border-left-color: var(--ink-soft); }
+.stack .dim strong { color: var(--ink-soft); }
+
+/* flow */
+.flow { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.node { background: #fff; border: 2px solid var(--ink); padding: 18px 24px; display: flex; flex-direction: column; min-width: 220px; }
+.node strong { font-family: var(--mono); font-size: 30px; }
+.node span { font-size: 20px; color: var(--ink-soft); }
+.link { font-family: var(--mono); font-size: 20px; color: var(--mag); }
+
+/* test */
+.testline { font-family: var(--mono); font-size: 26px; background: var(--ink); color: #e9f2f4; padding: 20px 26px; display: inline-flex; gap: 18px; align-items: center; }
+.pass { background: var(--pass); color: #fff; padding: 2px 12px; font-weight: 600; }
+
+/* stamp */
+.stamp { display: inline-block; border: 5px solid var(--bad); color: var(--bad); font-family: var(--display); font-weight: 700; font-size: 64px; text-transform: uppercase; letter-spacing: .06em; padding: 4px 26px; transform: rotate(-4deg); margin-top: 16px; }
+
+/* rules */
+.rules { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.rule svg { width: 100%; height: 24px; }
+.rule p { font-size: 34px; margin: 10px 0 0; }
+
+/* split + island illustration */
+.split { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; }
+.island { width: 100%; height: auto; }
+
+/* compare */
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 10px; }
+.compare div { border-top: 3px solid var(--ink); padding-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+.compare div + div { border-top-color: var(--mag); }
+.compare strong { font-family: var(--display); font-size: 48px; }
+.compare span { font-size: 26px; color: var(--ink-soft); }
+
+/* todo */
+.todo { list-style: none; padding: 0; margin: 0; display: grid; gap: 16px; font-size: 36px; }
+.todo li { display: flex; gap: 18px; align-items: baseline; }
+.todo li::before { content: ""; flex: none; width: 22px; height: 22px; border: 3px solid var(--mag); transform: translateY(3px); }
+
+/* reveal chrome */
+.reveal .progress { color: var(--mag); height: 6px; }
+.reveal .slide-number { font-family: var(--mono); background: transparent; color: var(--ink-soft); font-size: 18px; right: 16px; bottom: 14px; }
+.reveal .controls { color: var(--mag); }
+.reveal .playback { left: 16px; bottom: 16px; }
+@media (prefers-reduced-motion: reduce) {
+  .map-on #ferry-svg .draw { animation: none; stroke-dashoffset: 0; }
+}
+.reveal-viewport { background-color: var(--water); }
+.reveal .slide-number { top: 14px; bottom: auto; right: 20px; }
+.reveal .slide-number a { text-decoration: none; color: inherit; }
+.rule svg { width: 300px; height: 30px; }
+#ferry-svg .route { stroke-width: 4.2; }
+#ferry-svg .terminal { r: 3.2; }
+/* real-data revision */
+:root { --wsf: #2563eb; }
+.wall { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 12px; max-width: 1180px; }
+.wall li { font-family: var(--body); font-size: 22px; padding: 6px 14px 6px 12px; background: #fff; border-left: 8px solid var(--c); }
+.legs { display: flex; gap: 32px; margin-top: 8px; }
+.legs div { display: flex; flex-direction: column; }
+.legs strong { font-family: var(--display); font-size: 84px; line-height: .9; font-variant-numeric: tabular-nums; }
+.legs span { font-family: var(--mono); font-size: 18px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .08em; }
+.legs .zero strong { color: var(--mag); }
+.todo.fails li::before { border-color: var(--bad); }
+.repo.small { font-size: 24px; color: var(--ink-soft); }
+.compare strong { font-size: 44px; }
+#ferry-svg .route { stroke-width: 2.6; }
+#ferry-svg .label { font-size: 12px; }
+.diagram-wrap { display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: center; }
+.diagram-wrap .lede { font-size: 28px; }
+.diagram { display: block; height: 648px; width: auto; max-width: 100%; border: 1px solid var(--land-edge); }
+.map-wrap { grid-template-columns: 1fr auto; }
+.livemap { display: block; height: 648px; width: auto; max-width: 100%; border: 1px solid var(--land-edge); }
+.credit { font-family: var(--mono); font-size: 15px; color: var(--ink-soft); margin-top: 120px; }
+.reveal pre.code { margin: 0; width: auto; box-shadow: none; font-size: 22px; line-height: 1.45; background: #12262f; color: #e6eef0; padding: 22px 28px; border-left: 6px solid var(--mag); text-align: left; }
+.reveal pre.code code { font-family: var(--mono); max-height: none; padding: 0; white-space: pre; display: block; }
+.code .k { color: #ff8fc8; }
+.code .s { color: #9fe0b6; }
+.code .f { color: #8cc8ff; }
+.code .c { color: #8aa4ad; font-style: italic; }
+.code-note { font-family: var(--mono); font-size: 18px; color: var(--ink-soft); margin-top: 14px; }
+.reveal h2.mid { font-size: 60px; margin-bottom: 18px; }
+.reveal pre.code { display: inline-block; font-size: 20px; line-height: 1.32; padding: 16px 26px; }
+.code-note { margin-top: 10px; }
+.credit.closing { margin-top: 48px; max-width: 70ch; line-height: 1.5; }

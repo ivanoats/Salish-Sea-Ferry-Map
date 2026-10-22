@@ -16,6 +16,9 @@ const eslintConfig = [
       ".agents/**",
       ".claude/**",
       "public/maplibre/**",
+      // Generated talk decks: vendored reveal.js plus the deck build output.
+      "talks/*/web/**",
+      "public/talks/**",
     ],
   },
   {
