@@ -177,9 +177,11 @@ function SourcesAndCredits() {
         .
       </p>
       <p className={proseClassName}>
-        <strong>Basemaps</strong> are{" "}
+        <strong>Basemaps</strong> are provided by{" "}
         <ExternalLink href="https://openfreemap.org">OpenFreeMap</ExternalLink> (©
-        OpenMapTiles, data from OpenStreetMap) and Stamen Terrain from{" "}
+        OpenMapTiles, data from OpenStreetMap),{" "}
+        <ExternalLink href="https://www.openstreetmap.org/copyright">OpenStreetMap</ExternalLink>,{" "}
+        <ExternalLink href="https://versatiles.org">VersaTiles</ExternalLink>, and Stamen Terrain from{" "}
         <ExternalLink href="https://stadiamaps.com/attribution/">Stadia Maps</ExternalLink>. Each
         basemap&rsquo;s credit is also shown in the corner of the map.
       </p>
