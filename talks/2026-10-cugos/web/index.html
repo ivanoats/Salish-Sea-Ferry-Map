@@ -117,24 +117,20 @@
 </section>
 
 <section>
-  <p class="eyebrow">Lines over water</p>
-  <div class="split">
+  <div class="viz-wrap">
     <div>
-      <h2 class="huge">Routes follow<br>the <span class="mag">water</span>.</h2>
+      <p class="eyebrow">Lines over water</p>
+      <h2 class="mid">OSM where it's mapped.<br>The <span class="mag">mesh</span> where it isn't.</h2>
       <div class="legs">
         <div><strong>85</strong><span>OSM ferry routes</span></div>
         <div><strong>2</strong><span>water mesh</span></div>
         <div class="zero"><strong>0</strong><span>straight lines</span></div>
       </div>
+      <p class="caption">Grey: the navigable-water mesh from salish-nav-planner, built from OSM's coastline. Color: OSM ferry routes. Magenta: the two legs only the mesh can draw.</p>
     </div>
-    <svg class="island" viewBox="0 0 360 240" aria-hidden="true">
-      <path d="M120 70 C150 40 220 45 245 80 C270 115 255 170 210 185 C165 200 120 180 105 145 C92 115 100 90 120 70Z" fill="var(--land)" stroke="var(--land-edge)" stroke-width="2"/>
-      <line x1="30" y1="120" x2="330" y2="120" stroke="var(--bad)" stroke-width="3" stroke-dasharray="6 6" opacity=".6"/>
-      <path d="M30 120 C60 120 70 215 175 215 C280 215 290 120 330 120" fill="none" stroke="var(--wsf)" stroke-width="5" stroke-linecap="round"/>
-      <circle cx="30" cy="120" r="9" fill="var(--ink)"/><circle cx="330" cy="120" r="9" fill="var(--ink)"/>
-    </svg>
+    <img class="viz" data-src="/talks/cugos/assets/mesh-vs-osm.webp" alt="The navigable-water mesh in grey under the OpenStreetMap ferry routes in operator colors, with the two mesh-routed legs, Friday Harbor to Sidney and Comox to Hornby, in magenta">
   </div>
-  <aside class="notes">Early versions drew straight lines between docks, right across islands. Now all eighty-seven legs follow the water: eighty-five from OSM ferry routes, two from a navigable-water mesh, and zero straight lines.</aside>
+  <aside class="notes">Here's that in data. The grey web is the navigable-water mesh from my sailing planner. The colored lines are OpenStreetMap ferry routes: eighty-five of the eighty-seven legs. Only two, in magenta, need the mesh, and none are straight lines.</aside>
 </section>
 
 <section>
@@ -170,16 +166,17 @@ geometry.<span class="f">set</span>(key, { source: <span class="s">"straight"</s
   <aside class="notes">There's a second view: an octolinear route diagram in the spirit of Beck's London Underground map. For "what connects to what, and where do I change," true geography is mostly noise.</aside>
 </section>
 
-<section>
-  <p class="eyebrow">Tests for cartography</p>
-  <h2>The build fails if…</h2>
-  <ul class="todo fails">
-    <li>a leg leaves the 45° grid</li>
-    <li>a route crosses land</li>
-    <li>an island's terminal lands in the water</li>
-    <li>a line runs through a stop it doesn't make</li>
-  </ul>
-  <aside class="notes">And the diagram has tests. The build fails if a leg leaves the forty-five-degree grid, if a route crosses land, if an island's terminal ends up in the water, or if a line runs through a stop it doesn't make.</aside>
+<section id="morph-slide">
+  <div class="viz-wrap">
+    <div>
+      <p class="eyebrow">Geography in, diagram out</p>
+      <h2 class="mid">Placed by hand.<br><span class="mag">Checked by code.</span></h2>
+      <p class="lede small">Terminals sit on hand-picked grid points. Code works out the parallel lanes, and the build fails if a line leaves the 45° grid or crosses land.</p>
+      <p class="caption" id="morph-caption">Diagram: every leg at 0°, 45° or 90°</p>
+    </div>
+    <svg id="morph-svg" class="viz" viewBox="0 0 600 660" role="img" aria-label="Animation: ferry terminals move from their real positions to their places on the octolinear diagram"></svg>
+  </div>
+  <aside class="notes">Here's how it gets from one to the other. Every terminal is placed by hand on a grid: the layout problem is NP-hard, and a person does it better. Code works out the parallel lanes, and tests fail the build if a line leaves the grid or crosses land.</aside>
 </section>
 
 <section>
