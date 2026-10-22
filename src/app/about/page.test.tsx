@@ -26,6 +26,26 @@ describe("AboutPage", () => {
     expect(screen.getByRole("link", { name: /back to the map/i })).toHaveAttribute("href", "/");
   });
 
+  it("credits the data sources, including the wording King County's terms require", () => {
+    render(<AboutPage />);
+
+    const heading = screen.getByRole("heading", { level: 2, name: "Sources and credits" });
+    expect(heading.closest("section")).toHaveAttribute("id", "sources");
+    expect(screen.getByRole("link", { name: /^OpenStreetMap contributors/ })).toHaveAttribute(
+      "href",
+      "https://www.openstreetmap.org/copyright"
+    );
+    expect(screen.getByRole("link", { name: /^Open Database License/ })).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Transit scheduling, geographic, and real-time data provided by permission of King County."
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /^WSDOT Washington State Ferries Vessels API/ })
+    ).toBeInTheDocument();
+  });
+
   it("links external sites in a new tab with an announced accessible name", () => {
     render(<AboutPage />);
 

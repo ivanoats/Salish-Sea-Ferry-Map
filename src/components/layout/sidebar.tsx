@@ -93,7 +93,11 @@ export function OperatorSection({ visibleOperatorIds, onToggle, showInactiveRout
 export function SidebarFooter({ children }: { children: React.ReactNode }) {
   return (
     <footer className="sidebar-footer">
-      <p>{children}<br /><strong>Not for navigation.</strong></p>
+      <p>
+        {children}
+        <br />
+        <strong>Not for navigation.</strong> <Link href="/about#sources">Sources and credits</Link>
+      </p>
       <span>Updated September 2026</span>
     </footer>
   );

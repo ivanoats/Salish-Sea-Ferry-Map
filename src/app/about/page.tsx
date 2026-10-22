@@ -144,6 +144,71 @@ function ExternalLink({ href, isMe = false, children }: ExternalLinkProps) {
   );
 }
 
+const gtfsPublishers = [
+  "Washington State Ferries",
+  "BC Ferries (hosted by Trillium)",
+  "Black Ball Ferry Line",
+  "King County Metro (King County Water Taxi)",
+  "Skagit County (Guemes Island Ferry)",
+  "Hullo",
+  "Aquabus",
+] as const;
+
+function SourcesAndCredits() {
+  return (
+    <section id="sources" className={sectionClassName}>
+      <h2 className={sectionHeadingClassName}>Sources and credits</h2>
+      <p className={proseClassName}>
+        <strong>Routes and terminals</strong> are compiled by hand from each operator&rsquo;s own
+        route and schedule pages, cross-checked against Wikipedia, and last updated in September
+        2026. Every terminal position is checked against its dock in OpenStreetMap.
+      </p>
+      <p className={proseClassName}>
+        <strong>Route lines</strong> follow ferry routes mapped in OpenStreetMap. Where none is
+        mapped, the line is routed through a navigable-water network derived from
+        OpenStreetMap&rsquo;s coastline. Map data ©{" "}
+        <ExternalLink href="https://www.openstreetmap.org/copyright">
+          OpenStreetMap contributors
+        </ExternalLink>
+        , available under the{" "}
+        <ExternalLink href="https://opendatacommons.org/licenses/odbl/">
+          Open Database License
+        </ExternalLink>
+        .
+      </p>
+      <p className={proseClassName}>
+        <strong>Basemaps</strong> are{" "}
+        <ExternalLink href="https://openfreemap.org">OpenFreeMap</ExternalLink> (©
+        OpenMapTiles, data from OpenStreetMap) and Stamen Terrain from{" "}
+        <ExternalLink href="https://stadiamaps.com/attribution/">Stadia Maps</ExternalLink>. Each
+        basemap&rsquo;s credit is also shown in the corner of the map.
+      </p>
+      <p className={proseClassName}>
+        <strong>Schedule checks.</strong> The published GTFS feeds of these operators are used
+        when the site is built, to check that each route, its stops, and its service days still
+        match the curated data. They are not shown on the map.
+      </p>
+      <ul className={css({ margin: 0, paddingLeft: "5", display: "grid", gap: "1", listStyleType: "disc" })}>
+        {gtfsPublishers.map((publisher) => (
+          <li key={publisher} className={proseClassName}>
+            {publisher}
+          </li>
+        ))}
+      </ul>
+      <p className={proseClassName}>
+        Transit scheduling, geographic, and real-time data provided by permission of King County.
+      </p>
+      <p className={proseClassName}>
+        <strong>Live vessel positions</strong> for Washington State Ferries come from the{" "}
+        <ExternalLink href="https://www.wsdot.wa.gov/ferries/api/vessels/documentation/">
+          WSDOT Washington State Ferries Vessels API
+        </ExternalLink>
+        , provided as is by the Washington State Department of Transportation.
+      </p>
+    </section>
+  );
+}
+
 function WhoIAm() {
   return (
     <section className={sectionClassName}>
@@ -206,6 +271,7 @@ export default function AboutPage() {
         <AboutHeader />
         <WhyThisExists />
         <WhatItCovers />
+        <SourcesAndCredits />
         <WhoIAm />
       </div>
     </main>

@@ -34,6 +34,15 @@ describe("AppShell", () => {
     );
   });
 
+  it("links to the sources and credits from the sidebar footer", () => {
+    render(<AppShell />);
+
+    expect(screen.getByRole("link", { name: "Sources and credits" })).toHaveAttribute(
+      "href",
+      "/about#sources"
+    );
+  });
+
   it("links to the route diagram", () => {
     render(<AppShell />);
 
