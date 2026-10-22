@@ -8,11 +8,12 @@
     "node": ">=24"
   },
   "scripts": {
-    "dev": "npm run maplibre-worker && panda codegen --silent && next dev",
-    "build": "npm run maplibre-worker && panda codegen --silent && next build",
+    "dev": "npm run maplibre-worker && npm run talks && panda codegen --silent && next dev",
+    "build": "npm run maplibre-worker && npm run talks && panda codegen --silent && next build",
     "build-route-geometry": "node scripts/build-route-geometry.ts",
     "start": "next start",
     "maplibre-worker": "node scripts/copy-maplibre-worker.mjs",
+    "talks": "node scripts/copy-talks.mjs",
     "postinstall": "node scripts/copy-maplibre-worker.mjs",
     "lint": "eslint .",
     "typecheck": "panda codegen --silent && tsc --noEmit",

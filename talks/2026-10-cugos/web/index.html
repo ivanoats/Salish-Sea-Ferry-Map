@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One Sea, 23 Ferry Operators, Zero Maps</title>
+<meta name="description" content="A 20-slide Ignite talk for CUGOS about the Salish Sea Ferry Map: 59 routes, 23 operators, one map.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&family=Saira+Condensed:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/talks/cugos/reveal.css">
+<link rel="stylesheet" href="/talks/cugos/deck.css">
+</head><body>
+<div class="reveal">
+<div class="slides">
+
+<section class="title-slide" data-background-image="/talks/cugos/assets/title-circle.webp" data-background-size="auto 118%" data-background-position="right -34% center" data-background-opacity="0.55">
+  <p class="eyebrow">CUGOS lightning talk · 20 × 15 s</p>
+  <h1>One Sea,<br>23 Ferry Operators,<br><span class="mag">Zero Maps</span></h1>
+  <p class="byline">Charting every ferry in the Salish Sea · Ivan · @ivanoats</p>
+  <aside class="notes">Hi, I'm Ivan. I'm a transportation nerd: give me a good transit map and I'll stare at it longer than is reasonable. This talk is about a map I wanted, couldn't find, and built.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">A bike-and-ferry loop</p>
+  <h2 class="huge">Seattle <span class="arrow">→</span> Bainbridge <span class="arrow">→</span> <span class="arrow">(bike)</span> Kingston <span class="arrow">→</span> Edmonds</h2>
+  <p class="lede">Whose boats? Which docks? <span class="mag">What are all my options?</span></p>
+  <aside class="notes">I plan a lot of bike-and-ferry trips. Ferry to Bainbridge, ride north to Kingston, ferry to Edmonds. A simple loop. But I wanted to see every option at once, across every agency.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">The answer today</p>
+  <h2>23 operators. <span class="mag">23 websites.</span></h2>
+  <ul class="wall" id="op-wall"></ul>
+  <aside class="notes">That's harder than it sounds. Twenty-three operators run boats on this water, from WSF and BC Ferries down to a pub that runs its own boat to Protection Island. Each one maps only its own routes.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">The border problem</p>
+  <h2 class="huge">Every map stops<br>at the border.</h2>
+  <div class="border-line"><span>49°N</span></div>
+  <p class="aside-note">The last border dispute out here was about a pig. San Juan Island, 1859.</p>
+  <aside class="notes">And every agency map stops at the border. The water doesn't. The last real border argument out here was the Pig War in 1859, and it was literally about a pig.</aside>
+</section>
+
+<section data-background-image="/talks/cugos/assets/freelan-salish-sea-2009.webp" data-background-size="cover" data-background-opacity="0.22">
+  <p class="eyebrow">Officially, since 2009–2010</p>
+  <div class="equation">
+    <span>Puget Sound</span><b>+</b><span>Strait of Georgia</span><b>+</b><span>Strait of Juan de Fuca</span>
+  </div>
+  <h2 class="huge">= <span class="mag">the Salish Sea</span></h2>
+  <p class="credit">Background: Map of the Salish Sea &amp; Surrounding Basin, Stefan Freelan, WWU, 2009 · stefanfreelan.com/salishsea</p>
+  <aside class="notes">I think of this place as the Salish Sea before I think of it as Washington or BC: one body of water with a line drawn across it. That's much closer to how Coast Salish peoples have long understood it.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">So I counted</p>
+  <div class="stats">
+    <div><strong>59</strong><span>routes</span></div>
+    <div><strong>23</strong><span>operators</span></div>
+    <div><strong>101</strong><span>terminals</span></div>
+    <div class="one"><strong>1</strong><span>map</span></div>
+  </div>
+  <p class="aside-note">From the 90-minute Coho to the 5-minute summer hop to Jetty Island.</p>
+  <aside class="notes">Here's the count: fifty-nine routes, twenty-three operators, a hundred and one terminals, two countries. Everything from the Coho across Juan de Fuca to the five-minute summer hop to Jetty Island in Everett.</aside>
+</section>
+
+<section id="map-slide">
+  <div class="map-wrap">
+    <div class="map-copy">
+      <p class="eyebrow">salishseaferrymap.com</p>
+      <h2>Every route, every operator.</h2>
+      <ul class="ops compact">
+        <li><i style="--c:#7c3aed"></i>BC Ferries · 23</li>
+        <li><i style="--c:#2563eb"></i>WSF · 9</li>
+        <li><i style="--c:#16a34a"></i>Kitsap Transit · 5</li>
+        <li><i style="--c:#0284c7"></i>King County Water Taxi · 2</li>
+        <li><i style="--c:#4f46e5"></i>False Creek Ferries · 2</li>
+        <li><i style="--c:var(--ink-soft)"></i>18 more, one route each</li>
+      </ul>
+      <p class="caption">The live site, light mode. Suspended routes hidden by default.</p>
+    </div>
+    <img class="livemap" data-src="/talks/cugos/assets/livemap.webp" alt="The Salish Sea Ferry Map site showing every ferry route from Campbell River to Tacoma, colored by operator">
+  </div>
+  <aside class="notes">Here's the live site, every route on one map. Purple is BC Ferries, blue is WSF, and all those little lines are the passenger boats and water taxis that agency maps leave out.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">The stack</p>
+  <h2>All open, all boring <span class="mag">(good)</span>.</h2>
+  <div class="stack">
+    <div><strong>MapLibre GL</strong><span>rendering</span></div>
+    <div><strong>OpenStreetMap</strong><span>basemaps and route geometry</span></div>
+    <div><strong>GeoJSON</strong><span>the routes</span></div>
+    <div class="dim"><strong>Next.js + TypeScript</strong><span>the wrapper, on Netlify</span></div>
+  </div>
+  <aside class="notes">The stack is open and boring, in a good way. MapLibre GL renders it, OpenStreetMap underneath, and plain GeoJSON for the routes. Next.js and TypeScript wrap it, and Netlify hosts it.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">The data</p>
+  <h2 class="huge">Hand-curated.<br><span class="mag">Checked against GTFS.</span></h2>
+  <p class="lede">Some operators publish no feed at all. Where feeds exist, they're pinned and used at build time to check the data, not replace it.</p>
+  <aside class="notes">Some operators publish no machine-readable feed at all, so the dataset is hand-curated. Where GTFS feeds do exist, like WSF and BC Ferries, they're pinned and used at build time to check my data, not replace it.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">Terminal audit against OSM</p>
+  <h2 class="huge"><span class="mag">17</span> terminals<br>were in the water.</h2>
+  <div class="compare">
+    <div><strong>up to 850 m</strong><span>off their docks</span></div>
+    <div><strong>OSM node IDs</strong><span>now cited in a comment on each one</span></div>
+  </div>
+  <aside class="notes">Then I audited every terminal against OpenStreetMap. Seventeen were off, some by half a mile. Langdale was sitting out in Howe Sound. Every one is now on its dock, with its OSM node ID cited.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">Precision</p>
+  <h2 class="huge">Dock-level.<br>Not survey-grade.</h2>
+  <div class="stamp">Not for navigation</div>
+  <aside class="notes">Even so, it's dock-level, not survey-grade, and the app says so: not for navigation. As a sailor, I take that disclaimer seriously.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">Lines over water</p>
+  <div class="split">
+    <div>
+      <h2 class="huge">Routes follow<br>the <span class="mag">water</span>.</h2>
+      <div class="legs">
+        <div><strong>85</strong><span>OSM ferry routes</span></div>
+        <div><strong>2</strong><span>water mesh</span></div>
+        <div class="zero"><strong>0</strong><span>straight lines</span></div>
+      </div>
+    </div>
+    <svg class="island" viewBox="0 0 360 240" aria-hidden="true">
+      <path d="M120 70 C150 40 220 45 245 80 C270 115 255 170 210 185 C165 200 120 180 105 145 C92 115 100 90 120 70Z" fill="var(--land)" stroke="var(--land-edge)" stroke-width="2"/>
+      <line x1="30" y1="120" x2="330" y2="120" stroke="var(--bad)" stroke-width="3" stroke-dasharray="6 6" opacity=".6"/>
+      <path d="M30 120 C60 120 70 215 175 215 C280 215 290 120 330 120" fill="none" stroke="var(--wsf)" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="30" cy="120" r="9" fill="var(--ink)"/><circle cx="330" cy="120" r="9" fill="var(--ink)"/>
+    </svg>
+  </div>
+  <aside class="notes">Early versions drew straight lines between docks, right across islands. Now all eighty-seven legs follow the water: eighty-five from OSM ferry routes, two from a navigable-water mesh, and zero straight lines.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">How · scripts/build-route-geometry.ts (condensed)</p>
+  <h2 class="mid">A fallback chain.</h2>
+<pre class="code"><code><span class="k">const</span> osm = <span class="f">osmRouteCoordinates</span>(osmGraphs, from, to);
+<span class="k">if</span> (osm !== <span class="k">null</span>) {
+  geometry.<span class="f">set</span>(key, { source: <span class="s">"osm"</span>, coordinates: osm });
+  <span class="k">continue</span>;
+}
+
+<span class="k">const</span> mesh = <span class="f">meshPathCoordinates</span>(waterMesh, from, to);
+<span class="k">if</span> (mesh !== <span class="k">null</span>) {
+  geometry.<span class="f">set</span>(key, { source: <span class="s">"mesh"</span>, coordinates: mesh });
+  <span class="k">continue</span>;
+}
+
+<span class="c">// last resort, and the count on the last slide was zero</span>
+geometry.<span class="f">set</span>(key, { source: <span class="s">"straight"</span>, coordinates: [from, to] });</code></pre>
+  <p class="code-note">Baked at build time. Neither dataset ships to the browser.</p>
+  <aside class="notes">The trick is a fallback chain. Prefer OSM's mapped ferry route. If there isn't one, use a water mesh borrowed from my sailing route planner: OSM's coastline drawn on an 80-metre grid and flooded from the Pacific. Straight lines only as a last resort.</aside>
+</section>
+
+<section>
+  <div class="diagram-wrap">
+    <div>
+      <p class="eyebrow">A second view · /schematic</p>
+      <h2 class="huge">A Beck-style<br><span class="mag">route diagram</span>.</h2>
+      <p class="lede">Every leg at 45°. Terminals placed by hand. Shared corridors run in parallel lanes, like the Tube map.</p>
+    </div>
+    <img class="diagram" data-src="/talks/cugos/assets/diagram.webp" alt="Octolinear route diagram of Salish Sea ferries, with a False Creek inset and an operator legend">
+  </div>
+  <aside class="notes">There's a second view: an octolinear route diagram in the spirit of Beck's London Underground map. For "what connects to what, and where do I change," true geography is mostly noise.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">Tests for cartography</p>
+  <h2>The build fails if…</h2>
+  <ul class="todo fails">
+    <li>a leg leaves the 45° grid</li>
+    <li>a route crosses land</li>
+    <li>an island's terminal lands in the water</li>
+    <li>a line runs through a stop it doesn't make</li>
+  </ul>
+  <aside class="notes">And the diagram has tests. The build fails if a leg leaves the forty-five-degree grid, if a route crosses land, if an island's terminal ends up in the water, or if a line runs through a stop it doesn't make.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">Print</p>
+  <h2 class="huge">A web map is not<br>a <span class="mag">print</span> map.</h2>
+  <div class="compare">
+    <div><strong>Tee</strong><span>whole diagram · 3600 × 4800 px at 300 DPI</span></div>
+    <div><strong>Tote</strong><span>cropped to Puget Sound, or the labels print at 4 pt</span></div>
+  </div>
+  <aside class="notes">Print turned out to be its own problem. The diagram renders as 300 DPI print files for a tee and a tote. The tote is cropped to Puget Sound, because the full diagram would print its labels at four points.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">The live layer</p>
+  <h2>Real boats, right now.</h2>
+  <div class="flow">
+    <div class="node"><strong>WSDOT</strong><span>Vessel Locations API</span></div>
+    <div class="link">→</div>
+    <div class="node"><strong>server proxy</strong><span>keeps the key private</span></div>
+    <div class="link">→</div>
+    <div class="node"><strong>vessel dots</strong><span>on the map</span></div>
+  </div>
+  <p class="lede">No API key? The layer turns off and the map still works.</p>
+  <aside class="notes">WSF is the one operator with a public vessel API. A small server proxy pulls positions from WSDOT and shows live boats. Without an API key, the layer turns off and the map still works.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">Scope</p>
+  <h2 class="huge">A route map,<br>not a trip planner.</h2>
+  <p class="lede">No schedules. No fares. <span class="mag">On purpose.</span> The operators already publish those, and they change constantly.</p>
+  <aside class="notes">One thing it won't do: schedules and fares. Those change constantly and the operators already publish them. This is a route map. It answers where the boats go, then sends you onward.</aside>
+</section>
+
+<section>
+  <p class="eyebrow">Help wanted</p>
+  <h2>Know a dock better than OSM does?</h2>
+  <ul class="todo">
+    <li>Check the terminal you know best</li>
+    <li>Tell me about a boat I've missed</li>
+    <li>Help build the bridge layer: six crossings with no ferry</li>
+  </ul>
+  <aside class="notes">It's open on GitHub, and there's plenty to do. Check the dock you know best. Tell me about a boat I've missed. Or help with the next layer: the bridges that cross the Salish Sea without a ferry.</aside>
+</section>
+
+<section class="title-slide">
+  <p class="eyebrow">One sea, connected by boats</p>
+  <h1>Thanks, <span class="mag">CUGOS</span>.</h1>
+  <p class="repo">salishseaferrymap.com</p>
+  <p class="repo small">github.com/ivanoats/Salish-Sea-Ferry-Map</p>
+  <p class="byline">PRs welcome · find me after</p>
+  <p class="credit closing">Title illustration inspired by the design elements of Coast Salish art: circle, crescent, extended crescent and trigon. Slide 5 map: Stefan Freelan, WWU, 2009.</p>
+  <aside class="notes">So, that bike loop? Now there's one map that shows every option. It's live at salishseaferrymap.com, PRs are welcome, and I'll be around afterwards. Thanks, CUGOS!</aside>
+</section>
+
+</div>
+</div>
+
+<script src="/talks/cugos/deck.js"></script>
+<script src="/talks/cugos/reveal.js"></script>
+<script src="/talks/cugos/notes.js"></script>
+<script>
+(function(){
+  var ignite = /ignite/.test(location.search + location.hash);
+  var deck = new Reveal({ width: 1280, height: 720, margin: 0.06, center: true, hash: false,
+    controls: true, progress: true, slideNumber: 'c/t', transition: 'fade', transitionSpeed: 'fast',
+    autoSlide: 15000, autoSlideStoppable: true, loop: false, plugins: [RevealNotes] });
+  deck.on('ready', function(){ if (!ignite) deck.toggleAutoSlide(false); });
+  window.deck = deck; deck.initialize();
+})();
+</script>
+</body></html>
