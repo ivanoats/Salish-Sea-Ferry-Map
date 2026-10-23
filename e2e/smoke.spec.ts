@@ -50,10 +50,10 @@ async function routePixels(page: Page): Promise<number> {
   const { data, info } = await sharp(shot).extract(middle).removeAlpha().raw().toBuffer({ resolveWithObject: true });
   let count = 0;
   for (let i = 0; i < data.length; i += info.channels) {
-    const r = data[i] ?? 0;
-    const g = data[i + 1] ?? 0;
-    const b = data[i + 2] ?? 0;
-    if (Math.max(r, g, b) - Math.min(r, g, b) >= ROUTE_CHROMA) count += 1;
+    const red = data[i] ?? 0;
+    const green = data[i + 1] ?? 0;
+    const blue = data[i + 2] ?? 0;
+    if (Math.max(red, green, blue) - Math.min(red, green, blue) >= ROUTE_CHROMA) count += 1;
   }
   return count;
 }
