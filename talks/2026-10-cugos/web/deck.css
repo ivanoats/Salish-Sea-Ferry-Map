@@ -191,6 +191,10 @@ body {
 .lede.small { font-size: 26px; max-width: 26ch; }
 .viz-wrap .caption { max-width: 40ch; line-height: 1.5; }
 .m-land path { fill: #dde9d2; stroke: #c6d6bb; stroke-width: 1; }
+.m-inset-frame { fill: #f4f8f9; }
+.m-inset-outline { fill: none; stroke: #c6d6bb; stroke-width: 1; }
+.m-inset-label, .m-inset-title { fill: #4a6470; font: 6px "IBM Plex Sans", "Segoe UI", system-ui, sans-serif; }
+.m-inset-title { font-size: 5px; }
 .m-real path, .m-link path, .m-octo path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .m-real path { stroke-width: 2.2; }
 .m-link path { stroke-width: 1.6; opacity: .9; }
