@@ -112,9 +112,15 @@ Without a key, the toggle still works — it just shows a note that live data is
 ```bash
 npm run build-route-geometry   # refresh src/data/route-leg-geometry.ts from data/*
 npm run test        # vitest
+npm run test:coverage   # vitest with v8 coverage; HTML report in coverage/
+npm run test:e2e     # Playwright smoke tests against a production build
 npm run typecheck    # tsc --noEmit (after panda codegen)
 npm run lint
 ```
+
+`npm run test:coverage` fails if statement, branch, function or line coverage drops below the floors in `vitest.config.ts`. CI runs it in place of `npm test`. When coverage goes up, raise the floors to match.
+
+`npm run test:e2e` builds the site and serves it on port 3100 the way the Docker image does (`scripts/start-standalone.mjs`), then runs `e2e/` in desktop Chrome and on an emulated phone. If a server is already running on 3100, the run reuses it instead. Run `npx playwright install chromium` once beforehand. The tests stub every off-site request, so third-party basemaps never load. The map test checks that the ferry routes are drawn by measuring the pixels in a screenshot, and it unchecks every operator to confirm the map then clears. CI runs this suite as its own job and uploads the Playwright report and traces when it fails.
 
 `src/data/__tests__/data-integrity.test.ts` checks that every route's terminal ids actually resolve — the cheapest possible guard against a typo in the hand-written dataset silently dropping a route from the map.
 

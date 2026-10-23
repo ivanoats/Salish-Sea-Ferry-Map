@@ -30,6 +30,9 @@ pids
 coverage/
 *.lcov
 .nyc_output/
+# Playwright output from `npm run test:e2e`
+playwright-report/
+test-results/
 
 # Caches
 .npm

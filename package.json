@@ -19,6 +19,8 @@
     "typecheck": "panda codegen --silent && tsc --noEmit",
     "test": "panda codegen --silent && vitest run",
     "test:watch": "panda codegen --silent && vitest",
+    "test:coverage": "panda codegen --silent && vitest run --coverage",
+    "test:e2e": "playwright test",
     "favicons": "node scripts/generate-favicons.mjs",
     "print-files": "node scripts/export-print-files.ts",
     "build-gtfs": "python3 scripts/build-gtfs.py",
@@ -35,6 +37,7 @@
   "devDependencies": {
     "@pandacss/dev": "^1.12.0",
     "@park-ui/panda-preset": "^0.43.1",
+    "@playwright/test": "~1.64.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
@@ -42,13 +45,14 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.0.5",
+    "@vitest/coverage-v8": "^4.1.12",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "jsdom": "^29.1.1",
     "sharp": "^0.35.5",
     "typescript": "^5",
     "typescript-eslint": "^8.70.0",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.12"
   },
   "allowScripts": {
     "@park-ui/panda-preset@0.43.1": true,

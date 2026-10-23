@@ -13,7 +13,26 @@ export default defineConfig({
     // Those are upstream's to run, not this project's — without this, vitest
     // collects them and reports a dozen failures that have nothing to do with
     // the map.
-    exclude: [...defaultExclude, ".agents/**", ".claude/**"],
+    // `e2e/` holds the Playwright suite, which runs in a real browser
+    // against a production build — see playwright.config.ts.
+    exclude: [...defaultExclude, ".agents/**", ".claude/**", "e2e/**"],
+    coverage: {
+      provider: "v8",
+      // Listed by extension so the Python GTFS tooling in scripts/ isn't
+      // handed to the JS parser, which fails the whole report.
+      include: ["src/**/*.{ts,tsx}", "scripts/**/*.{ts,mjs}"],
+      exclude: ["**/*.test.{ts,tsx}", "**/__tests__/**"],
+      reporter: ["text-summary", "text", "html", "lcov"],
+      // Floors a little under the coverage when they were added (Oct 2026:
+      // 80% statements, 73% branches, 84% functions, 82% lines), so CI fails
+      // on a real drop rather than on noise. Raise them as coverage improves.
+      thresholds: {
+        statements: 77,
+        branches: 70,
+        functions: 80,
+        lines: 79,
+      },
+    },
   },
   resolve: {
     alias: {
