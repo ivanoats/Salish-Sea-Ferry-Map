@@ -7,7 +7,8 @@ import sharp from "sharp";
 // layers), and tiles are refused.
 const EMPTY_STYLE = { version: 8, sources: {}, layers: [] };
 
-async function stubBasemaps(page: Page) {
+// Every test, including ones that only reach the map by following a link.
+test.beforeEach(async ({ page }) => {
   await page.route(
     (url) => url.hostname !== "localhost",
     (route) => {
@@ -16,7 +17,7 @@ async function stubBasemaps(page: Page) {
       return route.abort();
     }
   );
-}
+});
 
 /** Uncaught exceptions on the page — MapLibre failing to get a WebGL context lands here. */
 function collectPageErrors(page: Page): Error[] {
@@ -25,13 +26,17 @@ function collectPageErrors(page: Page): Error[] {
   return errors;
 }
 
+/** Max minus min channel: the cream background and the slate-and-white terminal dots stay well under this. */
+const ROUTE_CHROMA = 80;
+
 /**
- * How much the map's middle varies in colour. With the basemap stubbed to
- * nothing, only the ferry layers draw, so this is ~0 for an empty map and
- * well above it once routes render. The middle is cropped to leave out the
- * zoom controls and attribution in the corners.
+ * Pixels in the map's middle strongly coloured enough to be a route line.
+ * With the basemap stubbed out, the only colour on the map comes from the
+ * operator-coloured lines; terminal dots are slate with a white stroke
+ * (TERMINAL_DOT_COLOR), so they don't count. The middle is cropped to leave
+ * out the zoom controls and attribution in the corners.
  */
-async function mapInk(page: Page): Promise<number> {
+async function routePixels(page: Page): Promise<number> {
   // An element screenshot scrolls the map into view first; on phones it sits
   // below the sidebar.
   const shot = await page.getByRole("region", { name: "Salish Sea ferry route map" }).screenshot();
@@ -42,10 +47,15 @@ async function mapInk(page: Page): Promise<number> {
     width: Math.round(width * 0.7),
     height: Math.round(height * 0.7),
   };
-  // stats() reads the input image, not the pipeline, so crop to a buffer first.
-  const cropped = await sharp(shot).extract(middle).toBuffer();
-  const { channels } = await sharp(cropped).stats();
-  return Math.max(...channels.slice(0, 3).map((channel) => channel.stdev));
+  const { data, info } = await sharp(shot).extract(middle).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  let count = 0;
+  for (let i = 0; i < data.length; i += info.channels) {
+    const r = data[i] ?? 0;
+    const g = data[i + 1] ?? 0;
+    const b = data[i + 2] ?? 0;
+    if (Math.max(r, g, b) - Math.min(r, g, b) >= ROUTE_CHROMA) count += 1;
+  }
+  return count;
 }
 
 async function routeCount(page: Page): Promise<number> {
@@ -55,12 +65,11 @@ async function routeCount(page: Page): Promise<number> {
 test.describe("map", () => {
   test("renders the routes and filters them by operator", async ({ page }) => {
     const errors = collectPageErrors(page);
-    await stubBasemaps(page);
     await page.goto("/");
 
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Find your way");
     await expect(page.locator(".maplibregl-canvas")).toBeVisible();
-    await expect.poll(() => mapInk(page), { message: "ferry routes drawn on the map" }).toBeGreaterThan(5);
+    await expect.poll(() => routePixels(page), { message: "ferry route lines drawn on the map" }).toBeGreaterThan(500);
 
     const total = await routeCount(page);
     expect(total).toBeGreaterThan(0);
@@ -75,16 +84,16 @@ test.describe("map", () => {
     // Every operator off: nothing left to draw.
     while ((await checkedRows.count()) > 0) await checkedRows.first().click();
     await expect(page.locator(".route-count-number")).toHaveText("0");
-    await expect.poll(() => mapInk(page), { message: "map cleared of routes" }).toBeLessThan(1);
+    await expect.poll(() => routePixels(page), { message: "map cleared of route lines" }).toBe(0);
 
     await operators.getByRole("button", { name: "Show all" }).click();
     await expect(page.locator(".route-count-number")).toHaveText(String(total));
+    await expect.poll(() => routePixels(page), { message: "route lines drawn again" }).toBeGreaterThan(500);
 
     expect(errors).toEqual([]);
   });
 
   test("tells the viewer when live vessel positions are unavailable", async ({ page }) => {
-    await stubBasemaps(page);
     await page.goto("/");
     await page.getByText("WSF vessel positions").click();
     await expect(page.getByText("Live positions need a free WSDOT API key")).toBeVisible();

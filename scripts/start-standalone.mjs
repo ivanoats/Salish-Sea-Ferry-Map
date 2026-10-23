@@ -6,7 +6,7 @@
 // Run `npm run build` first; PORT picks the port (default 3000).
 import { cpSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const standalone = join(root, ".next", "standalone");
@@ -18,4 +18,5 @@ if (!existsSync(join(standalone, "server.js"))) {
 cpSync(join(root, ".next", "static"), join(standalone, ".next", "static"), { recursive: true });
 cpSync(join(root, "public"), join(standalone, "public"), { recursive: true });
 
-await import(join(standalone, "server.js"));
+// A file URL, not a path: on Windows the ESM loader reads `C:\…` as a URL scheme.
+await import(pathToFileURL(join(standalone, "server.js")).href);
