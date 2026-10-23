@@ -19,6 +19,10 @@ const eslintConfig = [
       // Generated talk decks: vendored reveal.js plus the deck build output.
       "talks/*/web/**",
       "public/talks/**",
+      // Test reports: vitest's coverage HTML and Playwright's report and traces.
+      "coverage/**",
+      "playwright-report/**",
+      "test-results/**",
     ],
   },
   {
