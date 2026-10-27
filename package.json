@@ -23,6 +23,7 @@
     "test:e2e": "playwright test",
     "favicons": "node scripts/generate-favicons.mjs",
     "print-files": "node scripts/export-print-files.ts",
+    "export:routes": "node scripts/export-routes.ts",
     "build-gtfs": "python3 scripts/build-gtfs.py",
     "refresh-gtfs": "python3 scripts/build-gtfs.py --refresh",
     "check-gtfs": "python3 scripts/build-gtfs.py --check && python3 -m unittest discover -s scripts -p \"test_gtfs.py\""
