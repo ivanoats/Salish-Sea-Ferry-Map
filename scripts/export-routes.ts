@@ -10,21 +10,21 @@ import { relative, resolve } from "node:path";
 const INPUT_PATH = resolve("data/salish-osm-ferry-routes.json");
 const OUTPUT_PATH = resolve("data/salish-osm-ferry-routes.geojson");
 
-type Position = [number, number];
+type Position = readonly [number, number];
 
 interface OsmFerryRoute {
-  routeName: string;
-  operator?: string;
-  from?: string;
-  to?: string;
-  osmRelationIds?: number[];
-  osmWayIds?: number[];
-  coordinates: Position[][];
+  readonly routeName: string;
+  readonly operator?: string;
+  readonly from?: string;
+  readonly to?: string;
+  readonly osmRelationIds?: readonly number[];
+  readonly osmWayIds?: readonly number[];
+  readonly coordinates: readonly (readonly Position[])[];
 }
 
 interface OsmFerryRoutes {
-  metadata: Record<string, unknown>;
-  routes: OsmFerryRoute[];
+  readonly metadata: Readonly<Record<string, unknown>>;
+  readonly routes: readonly OsmFerryRoute[];
 }
 
 const snapshot = JSON.parse(readFileSync(INPUT_PATH, "utf8")) as OsmFerryRoutes;
