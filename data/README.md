@@ -155,3 +155,19 @@ Pinned operator GTFS archives corroborate the curated dataset under
 [the feed manifest and refresh guide](gtfs/README.md) for coverage, exceptions,
 and offline generation. These inputs and their generated validation snapshot
 are never imported by application code.
+
+## Historical overlay
+
+The map loads [the 1908 Mosquito Fleet GeoJSON](../public/data/mosquito-fleet-1908.geojson)
+when a visitor turns on the layer. It comes from [Ted Sweeney's Lowtide Seattle](https://midtide.github.io/Lowtide-Seattle/),
+pinned to [the source data at commit `184ca6b`](https://github.com/midtide/Lowtide-Seattle/tree/184ca6be8bed363a04f0984e95fa06457edcdb44/data).
+
+Join the GeoJSON feature's `name` to CSV `Name`. Keep `Sound steamer` and `River steamer`
+lines and their stop lists and notes. Make points from `Port of call` rows using
+longitude, latitude, and the CSV's position status and source. The published file
+contains 37 lines and 93 points, including 14 approximate landings. It preserves
+the map-sheet credit and full-sheet link for ports where Lowtide provides them.
+
+Lowtide reconstructed the routes from a 1908 Seattle Post-Intelligencer map using
+present-day waterways derived from © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright),
+under the [Open Database License](https://opendatacommons.org/licenses/odbl/).

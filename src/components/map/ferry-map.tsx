@@ -13,6 +13,12 @@ import {
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 import { BASEMAPS, type BasemapId } from "./basemaps";
+import {
+  createMosquitoFleetPopup,
+  MOSQUITO_FLEET_LAYERS,
+  MOSQUITO_FLEET_SOURCE,
+  MOSQUITO_FLEET_SOURCE_ID,
+} from "./mosquito-fleet";
 import type { OperatorId } from "@/domain/ferry";
 import { routesToLineFeatureCollection, terminalsToPointFeatureCollection } from "@/domain/geojson";
 import type { RouteLegGeometrySource } from "@/data/route-leg-geometry";
@@ -72,6 +78,7 @@ interface FerryMapProps {
   readonly visibleOperatorIds: ReadonlySet<OperatorId>;
   /** Whether suspended/seasonal-inactive routes should still be drawn (faded). */
   readonly showInactiveRoutes: boolean;
+  readonly showMosquitoFleet: boolean;
   /** Live WSF vessel positions, or empty when the live layer is off/unavailable. */
   readonly vessels: readonly VesselPosition[];
 }
@@ -121,10 +128,11 @@ for (const operator of OPERATORS) {
 }
 operatorColorExpression.push("#64748b"); // fallback
 
-export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, vessels }: FerryMapProps) {
+export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, showMosquitoFleet, vessels }: FerryMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const popupRef = useRef<Popup | null>(null);
+  const historicalPopupRef = useRef<Popup | null>(null);
   const restoreStyleLayersWhenReadyRef = useRef<((requestedBasemapId: BasemapId, loadStyle?: () => void) => void) | null>(null);
   const [styleRevision, setStyleRevision] = useState(0);
   const requestedBasemapId = useRef(basemapId);
@@ -242,7 +250,20 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
       popupRef.current?.remove();
       popupRef.current = new Popup().setLngLat(event.lngLat).setText(label).addTo(map);
     });
-    for (const layerId of [ROUTES_LAYER_ID, TERMINALS_LAYER_ID, VESSEL_LAYER_ID]) {
+    const historicalLayerIds = MOSQUITO_FLEET_LAYERS.map((layer) => layer.id);
+    map.on("click", historicalLayerIds, (event) => {
+      const feature = event.features?.[0];
+      if (!feature || typeof feature.properties.name !== "string") return;
+      popupRef.current?.remove();
+      const content = createMosquitoFleetPopup(
+        { ...feature.properties, name: feature.properties.name },
+        feature.geometry.type === "Point",
+      );
+      const popup = new Popup().setLngLat(event.lngLat).setDOMContent(content).addTo(map);
+      popupRef.current = popup;
+      historicalPopupRef.current = popup;
+    });
+    for (const layerId of [ROUTES_LAYER_ID, TERMINALS_LAYER_ID, VESSEL_LAYER_ID, ...historicalLayerIds]) {
       map.on("mouseenter", layerId, () => {
         map.getCanvas().style.cursor = "pointer";
       });
@@ -289,6 +310,7 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
       restoreStyleLayersWhenReadyRef.current = null;
       popupRef.current?.remove();
       popupRef.current = null;
+      historicalPopupRef.current = null;
       map.remove();
       mapRef.current = null;
     };
@@ -298,12 +320,36 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
     if (basemapId === requestedBasemapId.current) return;
     requestedBasemapId.current = basemapId;
     popupRef.current?.remove();
+    popupRef.current = null;
+    historicalPopupRef.current = null;
     const map = mapRef.current;
     if (map === null) return;
     restoreStyleLayersWhenReadyRef.current?.(basemapId, () => {
       map.setStyle(BASEMAPS[basemapId].style, { diff: false });
     });
   }, [basemapId]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (map === null || !map.getSource(ROUTES_SOURCE_ID)) return;
+
+    if (showMosquitoFleet) {
+      if (!map.getSource(MOSQUITO_FLEET_SOURCE_ID)) {
+        map.addSource(MOSQUITO_FLEET_SOURCE_ID, MOSQUITO_FLEET_SOURCE);
+        for (const layer of MOSQUITO_FLEET_LAYERS) map.addLayer(layer);
+      }
+      return;
+    }
+
+    if (historicalPopupRef.current && popupRef.current === historicalPopupRef.current) {
+      popupRef.current.remove();
+      popupRef.current = null;
+    }
+    historicalPopupRef.current = null;
+    if (!map.getSource(MOSQUITO_FLEET_SOURCE_ID)) return;
+    for (const layer of MOSQUITO_FLEET_LAYERS) map.removeLayer(layer.id);
+    map.removeSource(MOSQUITO_FLEET_SOURCE_ID);
+  }, [showMosquitoFleet, styleRevision]);
 
   // Push filtered data into the sources whenever the filter changes.
   useEffect(() => {

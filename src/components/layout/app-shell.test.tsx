@@ -1,9 +1,11 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { AppShell } from "./app-shell";
 
 vi.mock("@/components/map/ferry-map", () => ({
-  FerryMap: ({ basemapId }: { basemapId: string }) => <div data-testid="ferry-map" data-basemap={basemapId} />,
+  FerryMap: ({ basemapId, showMosquitoFleet }: { basemapId: string; showMosquitoFleet: boolean }) => (
+    <div data-testid="ferry-map" data-basemap={basemapId} data-mosquito-fleet={showMosquitoFleet} />
+  ),
 }));
 
 vi.mock("@/components/map/use-vessel-positions", () => ({
@@ -11,6 +13,26 @@ vi.mock("@/components/map/use-vessel-positions", () => ({
 }));
 
 describe("AppShell", () => {
+  it("lets visitors opt in to the 1908 layer", async () => {
+    render(<AppShell />);
+
+    const toggle = screen.getByRole("checkbox", { name: "Mosquito Fleet (1908)" });
+    expect(toggle).not.toBeChecked();
+    expect(screen.getByTestId("ferry-map")).toHaveAttribute("data-mosquito-fleet", "false");
+
+    await act(async () => { fireEvent.click(toggle); });
+    expect(toggle).toBeChecked();
+    expect(screen.getByTestId("ferry-map")).toHaveAttribute("data-mosquito-fleet", "true");
+    expect(screen.getByRole("link", { name: /Ted Sweeney/ })).toHaveAttribute(
+      "href",
+      "https://midtide.github.io/Lowtide-Seattle/",
+    );
+
+    await act(async () => { fireEvent.click(toggle); });
+    expect(toggle).not.toBeChecked();
+    expect(screen.getByTestId("ferry-map")).toHaveAttribute("data-mosquito-fleet", "false");
+  });
+
   it("defaults to Positron and passes basemap selections to the map", () => {
     render(<AppShell />);
 

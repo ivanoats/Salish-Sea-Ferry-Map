@@ -27,6 +27,8 @@ const mock = vi.hoisted(() => {
     addSource: vi.fn((id: string) => sources.set(id, { setData: vi.fn() })),
     getLayer: vi.fn((id: string) => layers.get(id)),
     addLayer: vi.fn((layer: { id: string }) => layers.set(layer.id, layer)),
+    removeLayer: vi.fn((id: string) => layers.delete(id)),
+    removeSource: vi.fn((id: string) => sources.delete(id)),
     setStyle: vi.fn(() => { sources.clear(); layers.clear(); }),
     off: vi.fn(),
     remove: vi.fn(),
@@ -55,6 +57,7 @@ it("restores overlays and the latest filters after switching basemaps", () => {
   const props = {
     visibleOperatorIds: new Set(OPERATORS.map((operator) => operator.id)),
     showInactiveRoutes: false,
+    showMosquitoFleet: false,
     vessels: [],
   };
   mock.map.isStyleLoaded.mockReturnValue(true);
@@ -80,6 +83,7 @@ it("ignores superseded basemap style loads", () => {
   const props = {
     visibleOperatorIds: new Set(OPERATORS.map((operator) => operator.id)),
     showInactiveRoutes: false,
+    showMosquitoFleet: false,
     vessels: [],
   };
   const { rerender } = render(<FerryMap {...props} basemapId="osm" />);
@@ -95,4 +99,33 @@ it("ignores superseded basemap style loads", () => {
   act(() => mock.emitNext("style.load"));
   expect(mock.layers.size).toBe(3);
   expect(mock.sources.get("ferry-routes")?.setData.mock.lastCall?.[0].features.length).toBeGreaterThan(0);
+});
+
+it("loads the fleet only when enabled and restores it after a basemap change", () => {
+  const props = {
+    visibleOperatorIds: new Set(OPERATORS.map((operator) => operator.id)),
+    showInactiveRoutes: false,
+    vessels: [],
+  };
+  const { rerender } = render(<FerryMap {...props} basemapId="osm" showMosquitoFleet={false} />);
+  act(() => mock.emitNext("style.load"));
+  expect(mock.sources.has("mosquito-fleet-1908")).toBe(false);
+
+  rerender(<FerryMap {...props} basemapId="osm" showMosquitoFleet />);
+  expect(mock.map.addSource).toHaveBeenCalledWith("mosquito-fleet-1908", expect.objectContaining({
+    type: "geojson",
+    data: "/data/mosquito-fleet-1908.geojson",
+  }));
+
+  rerender(<FerryMap {...props} basemapId="dark" showMosquitoFleet />);
+  act(() => mock.emitNext("style.load"));
+  expect(mock.sources.has("mosquito-fleet-1908")).toBe(true);
+  expect(mock.layers.has("mosquito-fleet-runs")).toBe(true);
+  expect(mock.layers.has("mosquito-fleet-ports")).toBe(true);
+
+  rerender(<FerryMap {...props} basemapId="dark" showMosquitoFleet={false} />);
+  expect(mock.layers.has("mosquito-fleet-runs")).toBe(false);
+  expect(mock.layers.has("mosquito-fleet-ports")).toBe(false);
+  expect(mock.sources.has("mosquito-fleet-1908")).toBe(false);
+  expect(mock.sources.has("ferry-routes")).toBe(true);
 });
