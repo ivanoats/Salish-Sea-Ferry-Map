@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { AppShell } from "./app-shell";
 
@@ -20,16 +20,16 @@ describe("AppShell", () => {
     expect(toggle).not.toBeChecked();
     expect(screen.getByTestId("ferry-map")).toHaveAttribute("data-mosquito-fleet", "false");
 
-    await act(async () => { fireEvent.click(toggle); });
-    expect(toggle).toBeChecked();
+    fireEvent.click(toggle);
+    await waitFor(() => expect(toggle).toBeChecked());
     expect(screen.getByTestId("ferry-map")).toHaveAttribute("data-mosquito-fleet", "true");
     expect(screen.getByRole("link", { name: /Ted Sweeney/ })).toHaveAttribute(
       "href",
       "https://midtide.github.io/Lowtide-Seattle/",
     );
 
-    await act(async () => { fireEvent.click(toggle); });
-    expect(toggle).not.toBeChecked();
+    fireEvent.click(toggle);
+    await waitFor(() => expect(toggle).not.toBeChecked());
     expect(screen.getByTestId("ferry-map")).toHaveAttribute("data-mosquito-fleet", "false");
   });
 
