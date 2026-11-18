@@ -8,6 +8,7 @@ import {
   type ExpressionSpecification,
   type GeoJSONSource,
   type LayerSpecification,
+  type MapGeoJSONFeature,
   type SourceSpecification,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -129,6 +130,126 @@ const routeLegGeometrySource = (
   }
 };
 
+const MOSQUITO_FLEET_LAYER_IDS = MOSQUITO_FLEET_LAYERS.map((layer) => layer.id);
+
+const pointCoordinates = (
+  feature: MapGeoJSONFeature
+): [number, number] | undefined => {
+  if (feature.geometry.type !== "Point") return undefined;
+  const [longitude, latitude] = feature.geometry.coordinates;
+  if (longitude === undefined || latitude === undefined) return undefined;
+  return [longitude, latitude];
+};
+
+const routeClickChoice = (
+  feature: MapGeoJSONFeature,
+  name: string
+): MapClickChoice => {
+  const status = String(feature.properties.status);
+  const geometrySource = routeLegGeometrySource(feature.properties.geometrySource);
+  const labelBase =
+    status === "suspended"
+      ? `${name} (suspended)`
+      : status === "seasonal"
+        ? `${name} (seasonal)`
+        : name;
+  const label =
+    geometrySource === null
+      ? labelBase
+      : `${labelBase} — ${geometrySourceLabel(geometrySource)}`;
+  return {
+    key: `route:${String(feature.properties.routeId ?? name)}:${status}:${geometrySource ?? ""}`,
+    label: `Current route: ${labelBase}`,
+    content: label,
+    historical: false,
+  };
+};
+
+const terminalClickChoice = (
+  feature: MapGeoJSONFeature,
+  name: string
+): MapClickChoice | undefined => {
+  const coordinates = pointCoordinates(feature);
+  if (coordinates === undefined) return undefined;
+  return {
+    key: `terminal:${String(feature.properties.terminalId ?? name)}`,
+    label: `Current terminal: ${name}`,
+    content: name,
+    coordinates,
+    historical: false,
+  };
+};
+
+const vesselClickChoice = (
+  feature: MapGeoJSONFeature,
+  name: string
+): MapClickChoice => {
+  const props = feature.properties as Partial<VesselProperties>;
+  const route =
+    props.departingTerminal && props.arrivingTerminal
+      ? `${props.departingTerminal} → ${props.arrivingTerminal}`
+      : undefined;
+  const speed = typeof props.speed === "number" ? `${props.speed.toFixed(1)} kn` : undefined;
+  return {
+    key: `vessel:${name}`,
+    label: `Live vessel: ${name}`,
+    content: [name, route, speed].filter(Boolean).join(" — "),
+    historical: false,
+  };
+};
+
+const historicalClickChoice = (
+  feature: MapGeoJSONFeature,
+  name: string
+): MapClickChoice => {
+  const isLanding = feature.geometry.type === "Point";
+  const coordinates = pointCoordinates(feature);
+  return {
+    key: `historical:${feature.layer.id}:${name}`,
+    label: `${isLanding ? "1908 landing" : "1908 run"}: ${name}`,
+    content: createMosquitoFleetPopup({ ...feature.properties, name }, isLanding),
+    ...(coordinates === undefined ? {} : { coordinates }),
+    historical: true,
+  };
+};
+
+const mapClickChoice = (feature: MapGeoJSONFeature): MapClickChoice | undefined => {
+  const name = feature.properties.name;
+  if (typeof name !== "string") return undefined;
+
+  switch (feature.layer.id) {
+    case ROUTES_LAYER_ID:
+      return routeClickChoice(feature, name);
+    case TERMINALS_LAYER_ID:
+      return terminalClickChoice(feature, name);
+    case VESSEL_LAYER_ID:
+      return vesselClickChoice(feature, name);
+    default:
+      return MOSQUITO_FLEET_LAYER_IDS.includes(feature.layer.id)
+        ? historicalClickChoice(feature, name)
+        : undefined;
+  }
+};
+
+const createMapFeatureChoices = (
+  choices: readonly MapClickChoice[],
+  onSelect: (choice: MapClickChoice) => void
+): HTMLElement => {
+  const content = document.createElement("div");
+  content.className = "map-feature-choices";
+  const heading = document.createElement("strong");
+  heading.textContent = "Choose a map feature";
+  content.append(heading);
+  for (const choice of choices) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = choice.label;
+    button.addEventListener("click", () => onSelect(choice));
+    content.append(button);
+  }
+  return content;
+};
+
 /** MapLibre `match` expression pairing each operator id with its display color. */
 const operatorColorExpression: unknown[] = ["match", ["get", "operatorId"]];
 for (const operator of OPERATORS) {
@@ -216,80 +337,16 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, sh
     });
     map.addControl(new NavigationControl(), "top-right");
 
-    const historicalLayerIds = MOSQUITO_FLEET_LAYERS.map((layer) => layer.id);
     const clickableLayerIds = [
       ROUTES_LAYER_ID,
       TERMINALS_LAYER_ID,
       VESSEL_LAYER_ID,
-      ...historicalLayerIds,
+      ...MOSQUITO_FLEET_LAYER_IDS,
     ];
     map.on("click", clickableLayerIds, (event) => {
       const choices = new Map<string, MapClickChoice>();
       for (const feature of event.features ?? []) {
-        const { properties } = feature;
-        if (typeof properties.name !== "string") continue;
-        const name = properties.name;
-        const layerId = feature.layer.id;
-        let choice: MapClickChoice | undefined;
-
-        if (layerId === ROUTES_LAYER_ID) {
-          const status = String(properties.status);
-          const geometrySource = routeLegGeometrySource(properties.geometrySource);
-          const labelBase =
-            status === "suspended"
-              ? `${name} (suspended)`
-              : status === "seasonal"
-                ? `${name} (seasonal)`
-                : name;
-          const label =
-            geometrySource === null
-              ? labelBase
-              : `${labelBase} — ${geometrySourceLabel(geometrySource)}`;
-          choice = {
-            key: `route:${String(properties.routeId ?? name)}:${status}:${geometrySource ?? ""}`,
-            label: `Current route: ${labelBase}`,
-            content: label,
-            historical: false,
-          };
-        } else if (layerId === TERMINALS_LAYER_ID && feature.geometry.type === "Point") {
-          const [lon, lat] = feature.geometry.coordinates;
-          if (lon === undefined || lat === undefined) continue;
-          choice = {
-            key: `terminal:${String(properties.terminalId ?? name)}`,
-            label: `Current terminal: ${name}`,
-            content: name,
-            coordinates: [lon, lat],
-            historical: false,
-          };
-        } else if (layerId === VESSEL_LAYER_ID) {
-          const props = properties as Partial<VesselProperties>;
-          const route =
-            props.departingTerminal && props.arrivingTerminal
-              ? `${props.departingTerminal} → ${props.arrivingTerminal}`
-              : undefined;
-          const speed = typeof props.speed === "number" ? `${props.speed.toFixed(1)} kn` : undefined;
-          choice = {
-            key: `vessel:${name}`,
-            label: `Live vessel: ${name}`,
-            content: [name, route, speed].filter(Boolean).join(" — "),
-            historical: false,
-          };
-        } else if (historicalLayerIds.includes(layerId)) {
-          const isLanding = feature.geometry.type === "Point";
-          let coordinates: [number, number] | undefined;
-          if (feature.geometry.type === "Point") {
-            const [lon, lat] = feature.geometry.coordinates;
-            if (lon !== undefined && lat !== undefined) coordinates = [lon, lat];
-          }
-          choice = {
-            key: `historical:${layerId}:${name}`,
-            label: `${isLanding ? "1908 landing" : "1908 run"}: ${name}`,
-            content: createMosquitoFleetPopup({ ...properties, name }, isLanding),
-            ...(coordinates === undefined ? {} : { coordinates }),
-            historical: true,
-          };
-        }
-
+        const choice = mapClickChoice(feature);
         if (choice !== undefined && !choices.has(choice.key)) {
           choices.set(choice.key, choice);
         }
@@ -318,19 +375,7 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, sh
         return;
       }
 
-      const content = document.createElement("div");
-      content.className = "map-feature-choices";
-      const heading = document.createElement("strong");
-      heading.textContent = "Choose a map feature";
-      content.append(heading);
-      for (const choice of availableChoices) {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.textContent = choice.label;
-        button.addEventListener("click", () => showChoice(choice));
-        content.append(button);
-      }
-      popup.setDOMContent(content).addTo(map);
+      popup.setDOMContent(createMapFeatureChoices(availableChoices, showChoice)).addTo(map);
       popupRef.current = popup;
       historicalPopupRef.current = availableChoices.some((choice) => choice.historical)
         ? popup
