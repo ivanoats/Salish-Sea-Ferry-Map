@@ -165,7 +165,7 @@ pinned to [the source data at commit `184ca6b`](https://github.com/midtide/Lowti
 Join the GeoJSON feature's `name` to CSV `Name`. Keep `Sound steamer` and `River steamer`
 lines and their stop lists and notes. Make points from `Port of call` rows using
 longitude, latitude, and the CSV's position status and source. The published file
-contains 37 lines and 93 points, including 14 approximate landings. It preserves
+contains 37 lines and 93 points, including 15 approximate landings. It preserves
 the map-sheet credit and full-sheet link for ports where Lowtide provides them.
 
 Lowtide reconstructed the routes from a 1908 Seattle Post-Intelligencer map using

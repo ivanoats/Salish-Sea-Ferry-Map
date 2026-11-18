@@ -55,6 +55,14 @@ interface VesselProperties {
   arrivingTerminal: string;
 }
 
+interface MapClickChoice {
+  key: string;
+  label: string;
+  content: string | HTMLElement;
+  coordinates?: [number, number];
+  historical: boolean;
+}
+
 const vesselsToFeatureCollection = (
   vessels: readonly VesselPosition[]
 ): GeoJSON.FeatureCollection<GeoJSON.Point, VesselProperties> => ({
@@ -208,62 +216,127 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, sh
     });
     map.addControl(new NavigationControl(), "top-right");
 
-    map.on("click", ROUTES_LAYER_ID, (event) => {
-      const feature = event.features?.[0];
-      if (feature === undefined) return;
-      const name = String(feature.properties.name);
-      const status = String(feature.properties.status);
-      const geometrySource = routeLegGeometrySource(
-        feature.properties.geometrySource
-      );
-      const labelBase =
-        status === "suspended"
-          ? `${name} (suspended)`
-          : status === "seasonal"
-            ? `${name} (seasonal)`
-            : name;
-      const label =
-        geometrySource === null
-          ? labelBase
-          : `${labelBase} — ${geometrySourceLabel(geometrySource)}`;
-      popupRef.current?.remove();
-      popupRef.current = new Popup().setLngLat(event.lngLat).setText(label).addTo(map);
-    });
-    map.on("click", TERMINALS_LAYER_ID, (event) => {
-      const feature = event.features?.[0];
-      if (feature === undefined || feature.geometry.type !== "Point") return;
-      const [lon, lat] = feature.geometry.coordinates;
-      if (lon === undefined || lat === undefined) return;
-      popupRef.current?.remove();
-      popupRef.current = new Popup().setLngLat([lon, lat]).setText(String(feature.properties.name)).addTo(map);
-    });
-    map.on("click", VESSEL_LAYER_ID, (event) => {
-      const feature = event.features?.[0];
-      if (feature === undefined || feature.geometry.type !== "Point") return;
-      const props = feature.properties as Partial<VesselProperties>;
-      const route =
-        props.departingTerminal && props.arrivingTerminal
-          ? `${props.departingTerminal} → ${props.arrivingTerminal}`
-          : undefined;
-      const speed = typeof props.speed === "number" ? `${props.speed.toFixed(1)} kn` : undefined;
-      const label = [props.name, route, speed].filter(Boolean).join(" — ");
-      popupRef.current?.remove();
-      popupRef.current = new Popup().setLngLat(event.lngLat).setText(label).addTo(map);
-    });
     const historicalLayerIds = MOSQUITO_FLEET_LAYERS.map((layer) => layer.id);
-    map.on("click", historicalLayerIds, (event) => {
-      const feature = event.features?.[0];
-      if (!feature || typeof feature.properties.name !== "string") return;
+    const clickableLayerIds = [
+      ROUTES_LAYER_ID,
+      TERMINALS_LAYER_ID,
+      VESSEL_LAYER_ID,
+      ...historicalLayerIds,
+    ];
+    map.on("click", clickableLayerIds, (event) => {
+      const choices = new Map<string, MapClickChoice>();
+      for (const feature of event.features ?? []) {
+        const { properties } = feature;
+        if (typeof properties.name !== "string") continue;
+        const name = properties.name;
+        const layerId = feature.layer.id;
+        let choice: MapClickChoice | undefined;
+
+        if (layerId === ROUTES_LAYER_ID) {
+          const status = String(properties.status);
+          const geometrySource = routeLegGeometrySource(properties.geometrySource);
+          const labelBase =
+            status === "suspended"
+              ? `${name} (suspended)`
+              : status === "seasonal"
+                ? `${name} (seasonal)`
+                : name;
+          const label =
+            geometrySource === null
+              ? labelBase
+              : `${labelBase} — ${geometrySourceLabel(geometrySource)}`;
+          choice = {
+            key: `route:${String(properties.routeId ?? name)}:${status}:${geometrySource ?? ""}`,
+            label: `Current route: ${labelBase}`,
+            content: label,
+            historical: false,
+          };
+        } else if (layerId === TERMINALS_LAYER_ID && feature.geometry.type === "Point") {
+          const [lon, lat] = feature.geometry.coordinates;
+          if (lon === undefined || lat === undefined) continue;
+          choice = {
+            key: `terminal:${String(properties.terminalId ?? name)}`,
+            label: `Current terminal: ${name}`,
+            content: name,
+            coordinates: [lon, lat],
+            historical: false,
+          };
+        } else if (layerId === VESSEL_LAYER_ID) {
+          const props = properties as Partial<VesselProperties>;
+          const route =
+            props.departingTerminal && props.arrivingTerminal
+              ? `${props.departingTerminal} → ${props.arrivingTerminal}`
+              : undefined;
+          const speed = typeof props.speed === "number" ? `${props.speed.toFixed(1)} kn` : undefined;
+          choice = {
+            key: `vessel:${name}`,
+            label: `Live vessel: ${name}`,
+            content: [name, route, speed].filter(Boolean).join(" — "),
+            historical: false,
+          };
+        } else if (historicalLayerIds.includes(layerId)) {
+          const isLanding = feature.geometry.type === "Point";
+          let coordinates: [number, number] | undefined;
+          if (feature.geometry.type === "Point") {
+            const [lon, lat] = feature.geometry.coordinates;
+            if (lon !== undefined && lat !== undefined) coordinates = [lon, lat];
+          }
+          choice = {
+            key: `historical:${layerId}:${name}`,
+            label: `${isLanding ? "1908 landing" : "1908 run"}: ${name}`,
+            content: createMosquitoFleetPopup({ ...properties, name }, isLanding),
+            ...(coordinates === undefined ? {} : { coordinates }),
+            historical: true,
+          };
+        }
+
+        if (choice !== undefined && !choices.has(choice.key)) {
+          choices.set(choice.key, choice);
+        }
+      }
+
+      const availableChoices = [...choices.values()];
+      if (availableChoices.length === 0) return;
       popupRef.current?.remove();
-      const content = createMosquitoFleetPopup(
-        { ...feature.properties, name: feature.properties.name },
-        feature.geometry.type === "Point",
-      );
-      const popup = new Popup().setLngLat(event.lngLat).setDOMContent(content).addTo(map);
+      historicalPopupRef.current = null;
+      const popup = new Popup().setLngLat(event.lngLat);
+      const showChoice = (choice: MapClickChoice) => {
+        popup.setLngLat(choice.coordinates ?? event.lngLat);
+        if (typeof choice.content === "string") {
+          popup.setText(choice.content);
+        } else {
+          popup.setDOMContent(choice.content);
+        }
+        popup.addTo(map);
+        popupRef.current = popup;
+        historicalPopupRef.current = choice.historical ? popup : null;
+      };
+
+      if (availableChoices.length === 1) {
+        const [choice] = availableChoices;
+        if (choice !== undefined) showChoice(choice);
+        return;
+      }
+
+      const content = document.createElement("div");
+      content.className = "map-feature-choices";
+      const heading = document.createElement("strong");
+      heading.textContent = "Choose a map feature";
+      content.append(heading);
+      for (const choice of availableChoices) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = choice.label;
+        button.addEventListener("click", () => showChoice(choice));
+        content.append(button);
+      }
+      popup.setDOMContent(content).addTo(map);
       popupRef.current = popup;
-      historicalPopupRef.current = popup;
+      historicalPopupRef.current = availableChoices.some((choice) => choice.historical)
+        ? popup
+        : null;
     });
-    for (const layerId of [ROUTES_LAYER_ID, TERMINALS_LAYER_ID, VESSEL_LAYER_ID, ...historicalLayerIds]) {
+    for (const layerId of clickableLayerIds) {
       map.on("mouseenter", layerId, () => {
         map.getCanvas().style.cursor = "pointer";
       });
