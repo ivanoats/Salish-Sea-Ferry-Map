@@ -24,6 +24,7 @@ Person(Maintainer, "Maintainer", $descr="Curates operators, terminals, routes, a
 System(OpenStreetMap, "OpenStreetMap", $descr="Raster tiles for the basemap.", $tags="External", $link="")
 System(OpenFreeMap, "OpenFreeMap", $descr="Hosted no-key basemap styles and vector tiles.", $tags="External", $link="")
 System(VersaTiles, "VersaTiles", $descr="Hosted no-key basemap style and vector tiles.", $tags="External", $link="")
+System(StadiaMaps, "Stadia Maps", $descr="Stamen Terrain raster tiles; keyless on registered domains, optional public key otherwise.", $tags="External", $link="")
 System(WSDOTVesselLocationsAPI, "WSDOT Vessel Locations API", $descr="Optional live vessel positions.", $tags="External", $link="")
 System(SalishSeaFerryMap, "Salish Sea Ferry Map", $descr="Interactive route map spanning multiple ferry operators.", $tags="Element", $link="")
 
@@ -33,6 +34,7 @@ Rel(SalishSeaFerryMap, WSDOTVesselLocationsAPI, "Vessel locations", $techn="", $
 Rel(SalishSeaFerryMap, OpenStreetMap, "Basemap tiles", $techn="", $tags="Relationship", $link="")
 Rel(SalishSeaFerryMap, OpenFreeMap, "Basemap styles and tiles", $techn="", $tags="Relationship", $link="")
 Rel(SalishSeaFerryMap, VersaTiles, "Basemap styles and tiles", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap, StadiaMaps, "Basemap tiles", $techn="", $tags="Relationship", $link="")
 
 SHOW_LEGEND(true)
 hide stereotypes

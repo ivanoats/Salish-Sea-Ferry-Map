@@ -1,5 +1,5 @@
 @startuml
-title <size:24>Component View: Salish Sea Ferry Map - Browser map UI</size>\n<size:24>Component view — browser map UI</size>
+title <size:24>Component View: Salish Sea Ferry Map - Browser UI</size>\n<size:24>Component view — browser UI</size>
 
 set separator none
 left to right direction
@@ -28,13 +28,17 @@ Person(Mapuser, "Map user", $descr="Browses and filters ferry routes.", $tags="E
 System(OpenStreetMap, "OpenStreetMap", $descr="Raster tiles for the basemap.", $tags="External", $link="")
 System(OpenFreeMap, "OpenFreeMap", $descr="Hosted no-key basemap styles and vector tiles.", $tags="External", $link="")
 System(VersaTiles, "VersaTiles", $descr="Hosted no-key basemap style and vector tiles.", $tags="External", $link="")
+System(StadiaMaps, "Stadia Maps", $descr="Stamen Terrain raster tiles; keyless on registered domains, optional public key otherwise.", $tags="External", $link="")
 
 System_Boundary("SalishSeaFerryMap_boundary", "Salish Sea Ferry Map", $tags="Element") {
-  Container_Boundary("SalishSeaFerryMap.BrowsermapUI_boundary", "Browser map UI", $tags="Element") {
-    Component(SalishSeaFerryMap.BrowsermapUI.Appshell, "App shell", $techn="src/components/layout/app-shell.tsx", $descr="Owns operator filter state and wires the panel to the map.", $tags="Element", $link="")
-    Component(SalishSeaFerryMap.BrowsermapUI.Operatorfilter, "Operator filter", $techn="src/components/panels/operator-filter.tsx", $descr="Ark UI checkboxes for per-operator visibility.", $tags="Element", $link="")
-    Component(SalishSeaFerryMap.BrowsermapUI.Ferrymap, "Ferry map", $techn="src/components/map/ferry-map.tsx", $descr="MapLibre GL map, layers, and interactions.", $tags="Element", $link="")
-    Component(SalishSeaFerryMap.BrowsermapUI.Vesselpositionshook, "Vessel positions hook", $techn="src/components/map/use-vessel-positions.ts", $descr="Polls the proxy for live WSF vessels.", $tags="Element", $link="")
+  Container_Boundary("SalishSeaFerryMap.BrowserUI_boundary", "Browser UI", $tags="Element") {
+    Component(SalishSeaFerryMap.BrowserUI.Mapshell, "Map shell", $techn="src/components/layout/app-shell.tsx", $descr="Wires the sidebar, basemap selector, and vessel toggle to the map.", $tags="Element", $link="")
+    Component(SalishSeaFerryMap.BrowserUI.Sharedsidebar, "Shared sidebar", $techn="src/components/layout/sidebar.tsx", $descr="Brand, Map / Route diagram switch, and per-page route filter state.", $tags="Element", $link="")
+    Component(SalishSeaFerryMap.BrowserUI.Operatorfilter, "Operator filter", $techn="src/components/panels/operator-filter.tsx", $descr="Ark UI checkboxes for per-operator visibility.", $tags="Element", $link="")
+    Component(SalishSeaFerryMap.BrowserUI.Ferrymap, "Ferry map", $techn="src/components/map/ferry-map.tsx", $descr="MapLibre GL map, layers, basemaps, and interactions.", $tags="Element", $link="")
+    Component(SalishSeaFerryMap.BrowserUI.Vesselpositionshook, "Vessel positions hook", $techn="src/components/map/use-vessel-positions.ts", $descr="Polls the proxy for live WSF vessels.", $tags="Element", $link="")
+    Component(SalishSeaFerryMap.BrowserUI.Routediagramshell, "Route diagram shell", $techn="src/components/schematic/schematic-shell.tsx", $descr="Wires the sidebar to the diagram.", $tags="Element", $link="")
+    Component(SalishSeaFerryMap.BrowserUI.Routediagram, "Route diagram", $techn="src/components/schematic/", $descr="Plain-SVG octolinear diagram, legend, and False Creek inset.", $tags="Element", $link="")
   }
 
   Container(SalishSeaFerryMap.Livevesselproxy, "Live vessel proxy", $techn="Next.js route handler, TypeScript", $descr="Fetches WSDOT vessel positions without exposing the API key to the browser.", $tags="Element", $link="")
@@ -42,18 +46,25 @@ System_Boundary("SalishSeaFerryMap_boundary", "Salish Sea Ferry Map", $tags="Ele
 }
 
 Rel(Mapuser, SalishSeaFerryMap.Nextjswebapp, "Requests pages", $techn="", $tags="Relationship", $link="")
-Rel(Mapuser, SalishSeaFerryMap.BrowsermapUI.Appshell, "Views and filters ferry routes", $techn="", $tags="Relationship", $link="")
-Rel(SalishSeaFerryMap.Nextjswebapp, SalishSeaFerryMap.BrowsermapUI.Appshell, "Delivers to the browser", $techn="", $tags="Relationship", $link="")
+Rel(Mapuser, SalishSeaFerryMap.BrowserUI.Mapshell, "Views and filters ferry routes", $techn="", $tags="Relationship", $link="")
+Rel(Mapuser, SalishSeaFerryMap.BrowserUI.Routediagramshell, "Reads the route diagram", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.Nextjswebapp, SalishSeaFerryMap.BrowserUI.Mapshell, "Delivers / to the browser", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.Nextjswebapp, SalishSeaFerryMap.BrowserUI.Routediagramshell, "Delivers /schematic to the browser", $techn="", $tags="Relationship", $link="")
 Rel(SalishSeaFerryMap.Livevesselproxy, SalishSeaFerryMap.Nextjswebapp, "Parses payloads", $techn="", $tags="Relationship", $link="")
-Rel(SalishSeaFerryMap.BrowsermapUI.Appshell, SalishSeaFerryMap.BrowsermapUI.Operatorfilter, "Filter state", $techn="", $tags="Relationship", $link="")
-Rel(SalishSeaFerryMap.BrowsermapUI.Appshell, SalishSeaFerryMap.BrowsermapUI.Ferrymap, "Visible routes", $techn="", $tags="Relationship", $link="")
-Rel(SalishSeaFerryMap.BrowsermapUI.Appshell, SalishSeaFerryMap.BrowsermapUI.Vesselpositionshook, "Live vessels", $techn="", $tags="Relationship", $link="")
-Rel(SalishSeaFerryMap.BrowsermapUI.Appshell, SalishSeaFerryMap.Nextjswebapp, "Operators, routes", $techn="", $tags="Relationship", $link="")
-Rel(SalishSeaFerryMap.BrowsermapUI.Ferrymap, SalishSeaFerryMap.Nextjswebapp, "Feature collections", $techn="", $tags="Relationship", $link="")
-Rel(SalishSeaFerryMap.BrowsermapUI.Ferrymap, OpenStreetMap, "Basemap tiles", $techn="", $tags="Relationship", $link="")
-Rel(SalishSeaFerryMap.BrowsermapUI.Ferrymap, OpenFreeMap, "Basemap styles and tiles", $techn="", $tags="Relationship", $link="")
-Rel(SalishSeaFerryMap.BrowsermapUI.Ferrymap, VersaTiles, "Basemap styles and tiles", $techn="", $tags="Relationship", $link="")
-Rel(SalishSeaFerryMap.BrowsermapUI.Vesselpositionshook, SalishSeaFerryMap.Livevesselproxy, "GET /api/vessels", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI.Mapshell, SalishSeaFerryMap.BrowserUI.Sharedsidebar, "Filter state", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI.Mapshell, SalishSeaFerryMap.BrowserUI.Ferrymap, "Visible routes, basemap", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI.Mapshell, SalishSeaFerryMap.BrowserUI.Vesselpositionshook, "Live vessels", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI.Routediagramshell, SalishSeaFerryMap.BrowserUI.Sharedsidebar, "Filter state", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI.Routediagramshell, SalishSeaFerryMap.BrowserUI.Routediagram, "Visible routes", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI.Sharedsidebar, SalishSeaFerryMap.BrowserUI.Operatorfilter, "Operator checkboxes", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI.Sharedsidebar, SalishSeaFerryMap.Nextjswebapp, "Operators, routes", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI.Routediagram, SalishSeaFerryMap.Nextjswebapp, "Diagram paths and lanes", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI.Ferrymap, SalishSeaFerryMap.Nextjswebapp, "Feature collections", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI.Ferrymap, OpenStreetMap, "Basemap tiles", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI.Ferrymap, OpenFreeMap, "Basemap styles and tiles", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI.Ferrymap, VersaTiles, "Basemap styles and tiles", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI.Ferrymap, StadiaMaps, "Basemap tiles", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI.Vesselpositionshook, SalishSeaFerryMap.Livevesselproxy, "GET /api/vessels", $techn="", $tags="Relationship", $link="")
 
 SHOW_LEGEND(true)
 hide stereotypes
