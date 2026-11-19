@@ -8,11 +8,18 @@ import {
   type ExpressionSpecification,
   type GeoJSONSource,
   type LayerSpecification,
+  type MapGeoJSONFeature,
   type SourceSpecification,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 import { BASEMAPS, type BasemapId } from "./basemaps";
+import {
+  createMosquitoFleetPopup,
+  MOSQUITO_FLEET_LAYERS,
+  MOSQUITO_FLEET_SOURCE,
+  MOSQUITO_FLEET_SOURCE_ID,
+} from "./mosquito-fleet";
 import type { OperatorId } from "@/domain/ferry";
 import { routesToLineFeatureCollection, terminalsToPointFeatureCollection } from "@/domain/geojson";
 import type { RouteLegGeometrySource } from "@/data/route-leg-geometry";
@@ -49,6 +56,14 @@ interface VesselProperties {
   arrivingTerminal: string;
 }
 
+interface MapClickChoice {
+  key: string;
+  label: string;
+  content: string | HTMLElement;
+  coordinates?: [number, number];
+  historical: boolean;
+}
+
 const vesselsToFeatureCollection = (
   vessels: readonly VesselPosition[]
 ): GeoJSON.FeatureCollection<GeoJSON.Point, VesselProperties> => ({
@@ -72,6 +87,7 @@ interface FerryMapProps {
   readonly visibleOperatorIds: ReadonlySet<OperatorId>;
   /** Whether suspended/seasonal-inactive routes should still be drawn (faded). */
   readonly showInactiveRoutes: boolean;
+  readonly showMosquitoFleet: boolean;
   /** Live WSF vessel positions, or empty when the live layer is off/unavailable. */
   readonly vessels: readonly VesselPosition[];
 }
@@ -114,6 +130,126 @@ const routeLegGeometrySource = (
   }
 };
 
+const MOSQUITO_FLEET_LAYER_IDS = MOSQUITO_FLEET_LAYERS.map((layer) => layer.id);
+
+const pointCoordinates = (
+  feature: MapGeoJSONFeature
+): [number, number] | undefined => {
+  if (feature.geometry.type !== "Point") return undefined;
+  const [longitude, latitude] = feature.geometry.coordinates;
+  if (longitude === undefined || latitude === undefined) return undefined;
+  return [longitude, latitude];
+};
+
+const routeClickChoice = (
+  feature: MapGeoJSONFeature,
+  name: string
+): MapClickChoice => {
+  const status = String(feature.properties.status);
+  const geometrySource = routeLegGeometrySource(feature.properties.geometrySource);
+  const labelBase =
+    status === "suspended"
+      ? `${name} (suspended)`
+      : status === "seasonal"
+        ? `${name} (seasonal)`
+        : name;
+  const label =
+    geometrySource === null
+      ? labelBase
+      : `${labelBase} — ${geometrySourceLabel(geometrySource)}`;
+  return {
+    key: `route:${String(feature.properties.routeId ?? name)}:${status}:${geometrySource ?? ""}`,
+    label: `Current route: ${labelBase}`,
+    content: label,
+    historical: false,
+  };
+};
+
+const terminalClickChoice = (
+  feature: MapGeoJSONFeature,
+  name: string
+): MapClickChoice | undefined => {
+  const coordinates = pointCoordinates(feature);
+  if (coordinates === undefined) return undefined;
+  return {
+    key: `terminal:${String(feature.properties.terminalId ?? name)}`,
+    label: `Current terminal: ${name}`,
+    content: name,
+    coordinates,
+    historical: false,
+  };
+};
+
+const vesselClickChoice = (
+  feature: MapGeoJSONFeature,
+  name: string
+): MapClickChoice => {
+  const props = feature.properties as Partial<VesselProperties>;
+  const route =
+    props.departingTerminal && props.arrivingTerminal
+      ? `${props.departingTerminal} → ${props.arrivingTerminal}`
+      : undefined;
+  const speed = typeof props.speed === "number" ? `${props.speed.toFixed(1)} kn` : undefined;
+  return {
+    key: `vessel:${name}`,
+    label: `Live vessel: ${name}`,
+    content: [name, route, speed].filter(Boolean).join(" — "),
+    historical: false,
+  };
+};
+
+const historicalClickChoice = (
+  feature: MapGeoJSONFeature,
+  name: string
+): MapClickChoice => {
+  const isLanding = feature.geometry.type === "Point";
+  const coordinates = pointCoordinates(feature);
+  return {
+    key: `historical:${feature.layer.id}:${name}`,
+    label: `${isLanding ? "1908 landing" : "1908 run"}: ${name}`,
+    content: createMosquitoFleetPopup({ ...feature.properties, name }, isLanding),
+    ...(coordinates === undefined ? {} : { coordinates }),
+    historical: true,
+  };
+};
+
+const mapClickChoice = (feature: MapGeoJSONFeature): MapClickChoice | undefined => {
+  const name = feature.properties.name;
+  if (typeof name !== "string") return undefined;
+
+  switch (feature.layer.id) {
+    case ROUTES_LAYER_ID:
+      return routeClickChoice(feature, name);
+    case TERMINALS_LAYER_ID:
+      return terminalClickChoice(feature, name);
+    case VESSEL_LAYER_ID:
+      return vesselClickChoice(feature, name);
+    default:
+      return MOSQUITO_FLEET_LAYER_IDS.includes(feature.layer.id)
+        ? historicalClickChoice(feature, name)
+        : undefined;
+  }
+};
+
+const createMapFeatureChoices = (
+  choices: readonly MapClickChoice[],
+  onSelect: (choice: MapClickChoice) => void
+): HTMLElement => {
+  const content = document.createElement("div");
+  content.className = "map-feature-choices";
+  const heading = document.createElement("strong");
+  heading.textContent = "Choose a map feature";
+  content.append(heading);
+  for (const choice of choices) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = choice.label;
+    button.addEventListener("click", () => onSelect(choice));
+    content.append(button);
+  }
+  return content;
+};
+
 /** MapLibre `match` expression pairing each operator id with its display color. */
 const operatorColorExpression: unknown[] = ["match", ["get", "operatorId"]];
 for (const operator of OPERATORS) {
@@ -121,10 +257,11 @@ for (const operator of OPERATORS) {
 }
 operatorColorExpression.push("#64748b"); // fallback
 
-export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, vessels }: FerryMapProps) {
+export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, showMosquitoFleet, vessels }: FerryMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const popupRef = useRef<Popup | null>(null);
+  const historicalPopupRef = useRef<Popup | null>(null);
   const restoreStyleLayersWhenReadyRef = useRef<((requestedBasemapId: BasemapId, loadStyle?: () => void) => void) | null>(null);
   const [styleRevision, setStyleRevision] = useState(0);
   const requestedBasemapId = useRef(basemapId);
@@ -200,49 +337,51 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
     });
     map.addControl(new NavigationControl(), "top-right");
 
-    map.on("click", ROUTES_LAYER_ID, (event) => {
-      const feature = event.features?.[0];
-      if (feature === undefined) return;
-      const name = String(feature.properties.name);
-      const status = String(feature.properties.status);
-      const geometrySource = routeLegGeometrySource(
-        feature.properties.geometrySource
-      );
-      const labelBase =
-        status === "suspended"
-          ? `${name} (suspended)`
-          : status === "seasonal"
-            ? `${name} (seasonal)`
-            : name;
-      const label =
-        geometrySource === null
-          ? labelBase
-          : `${labelBase} — ${geometrySourceLabel(geometrySource)}`;
+    const clickableLayerIds = [
+      ROUTES_LAYER_ID,
+      TERMINALS_LAYER_ID,
+      VESSEL_LAYER_ID,
+      ...MOSQUITO_FLEET_LAYER_IDS,
+    ];
+    map.on("click", clickableLayerIds, (event) => {
+      const choices = new Map<string, MapClickChoice>();
+      for (const feature of event.features ?? []) {
+        const choice = mapClickChoice(feature);
+        if (choice !== undefined && !choices.has(choice.key)) {
+          choices.set(choice.key, choice);
+        }
+      }
+
+      const availableChoices = [...choices.values()];
+      if (availableChoices.length === 0) return;
       popupRef.current?.remove();
-      popupRef.current = new Popup().setLngLat(event.lngLat).setText(label).addTo(map);
+      historicalPopupRef.current = null;
+      const popup = new Popup().setLngLat(event.lngLat);
+      const showChoice = (choice: MapClickChoice) => {
+        popup.setLngLat(choice.coordinates ?? event.lngLat);
+        if (typeof choice.content === "string") {
+          popup.setText(choice.content);
+        } else {
+          popup.setDOMContent(choice.content);
+        }
+        popup.addTo(map);
+        popupRef.current = popup;
+        historicalPopupRef.current = choice.historical ? popup : null;
+      };
+
+      if (availableChoices.length === 1) {
+        const [choice] = availableChoices;
+        if (choice !== undefined) showChoice(choice);
+        return;
+      }
+
+      popup.setDOMContent(createMapFeatureChoices(availableChoices, showChoice)).addTo(map);
+      popupRef.current = popup;
+      historicalPopupRef.current = availableChoices.some((choice) => choice.historical)
+        ? popup
+        : null;
     });
-    map.on("click", TERMINALS_LAYER_ID, (event) => {
-      const feature = event.features?.[0];
-      if (feature === undefined || feature.geometry.type !== "Point") return;
-      const [lon, lat] = feature.geometry.coordinates;
-      if (lon === undefined || lat === undefined) return;
-      popupRef.current?.remove();
-      popupRef.current = new Popup().setLngLat([lon, lat]).setText(String(feature.properties.name)).addTo(map);
-    });
-    map.on("click", VESSEL_LAYER_ID, (event) => {
-      const feature = event.features?.[0];
-      if (feature === undefined || feature.geometry.type !== "Point") return;
-      const props = feature.properties as Partial<VesselProperties>;
-      const route =
-        props.departingTerminal && props.arrivingTerminal
-          ? `${props.departingTerminal} → ${props.arrivingTerminal}`
-          : undefined;
-      const speed = typeof props.speed === "number" ? `${props.speed.toFixed(1)} kn` : undefined;
-      const label = [props.name, route, speed].filter(Boolean).join(" — ");
-      popupRef.current?.remove();
-      popupRef.current = new Popup().setLngLat(event.lngLat).setText(label).addTo(map);
-    });
-    for (const layerId of [ROUTES_LAYER_ID, TERMINALS_LAYER_ID, VESSEL_LAYER_ID]) {
+    for (const layerId of clickableLayerIds) {
       map.on("mouseenter", layerId, () => {
         map.getCanvas().style.cursor = "pointer";
       });
@@ -289,6 +428,7 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
       restoreStyleLayersWhenReadyRef.current = null;
       popupRef.current?.remove();
       popupRef.current = null;
+      historicalPopupRef.current = null;
       map.remove();
       mapRef.current = null;
     };
@@ -298,12 +438,36 @@ export function FerryMap({ basemapId, visibleOperatorIds, showInactiveRoutes, ve
     if (basemapId === requestedBasemapId.current) return;
     requestedBasemapId.current = basemapId;
     popupRef.current?.remove();
+    popupRef.current = null;
+    historicalPopupRef.current = null;
     const map = mapRef.current;
     if (map === null) return;
     restoreStyleLayersWhenReadyRef.current?.(basemapId, () => {
       map.setStyle(BASEMAPS[basemapId].style, { diff: false });
     });
   }, [basemapId]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (map === null || !map.getSource(ROUTES_SOURCE_ID)) return;
+
+    if (showMosquitoFleet) {
+      if (!map.getSource(MOSQUITO_FLEET_SOURCE_ID)) {
+        map.addSource(MOSQUITO_FLEET_SOURCE_ID, MOSQUITO_FLEET_SOURCE);
+        for (const layer of MOSQUITO_FLEET_LAYERS) map.addLayer(layer);
+      }
+      return;
+    }
+
+    if (historicalPopupRef.current && popupRef.current === historicalPopupRef.current) {
+      popupRef.current.remove();
+      popupRef.current = null;
+    }
+    historicalPopupRef.current = null;
+    if (!map.getSource(MOSQUITO_FLEET_SOURCE_ID)) return;
+    for (const layer of MOSQUITO_FLEET_LAYERS) map.removeLayer(layer.id);
+    map.removeSource(MOSQUITO_FLEET_SOURCE_ID);
+  }, [showMosquitoFleet, styleRevision]);
 
   // Push filtered data into the sources whenever the filter changes.
   useEffect(() => {

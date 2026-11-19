@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Checkbox } from "@ark-ui/react/checkbox";
 import { BASEMAPS, type BasemapId } from "@/components/map/basemaps";
 import { FerryMap } from "@/components/map/ferry-map";
+import { LOWTIDE_URL } from "@/components/map/mosquito-fleet";
 import { useVesselPositions } from "@/components/map/use-vessel-positions";
 import { OperatorSection, RouteCount, SidebarFooter, SidebarHeader, ViewSwitch, useRouteFilter } from "@/components/layout/sidebar";
 
@@ -37,6 +38,29 @@ function SidebarIntro({ visibleRouteCount }: { visibleRouteCount: number }) {
   );
 }
 
+function HistoricalLayers({ showMosquitoFleet, onToggle }: {
+  showMosquitoFleet: boolean;
+  onToggle: (checked: boolean) => void;
+}) {
+  return (
+    <section className="filter-section" aria-labelledby="historical-heading">
+      <p className="eyebrow" id="historical-heading">Historical layers</p>
+      <Checkbox.Root className="toggle-row" checked={showMosquitoFleet}
+        onCheckedChange={(details) => onToggle(details.checked === true)}>
+        <Checkbox.HiddenInput />
+        <Checkbox.Label>Mosquito Fleet (1908)</Checkbox.Label>
+        <Checkbox.Control className="switch"><span className="switch-thumb" /></Checkbox.Control>
+      </Checkbox.Root>
+      {showMosquitoFleet && (
+        <p className="helper-text">
+          Dashed lines show reconstructed steamer routes. Hollow dots mark approximate landings.{" "}
+          <a href={LOWTIDE_URL}>Ted Sweeney’s Lowtide Seattle</a>
+        </p>
+      )}
+    </section>
+  );
+}
+
 function BasemapSection({ basemapId, onChange }: { basemapId: BasemapId; onChange: (id: BasemapId) => void }) {
   return (
     <section className="filter-section" aria-labelledby="basemap-label">
@@ -62,6 +86,7 @@ export function AppShell() {
   const filter = useRouteFilter();
   const [basemapId, setBasemapId] = useState<BasemapId>("positron");
   const [showLiveVessels, setShowLiveVessels] = useState(false);
+  const [showMosquitoFleet, setShowMosquitoFleet] = useState(false);
   const { vessels, unavailable: vesselsUnavailable } = useVesselPositions(showLiveVessels);
 
   return (
@@ -73,6 +98,8 @@ export function AppShell() {
 
         <SidebarIntro visibleRouteCount={filter.visibleRoutes.length} />
 
+        <HistoricalLayers showMosquitoFleet={showMosquitoFleet} onToggle={setShowMosquitoFleet} />
+
         <OperatorSection visibleOperatorIds={filter.visibleOperatorIds} onToggle={filter.toggleOperator} showInactiveRoutes={filter.showInactiveRoutes} onToggleInactive={filter.setShowInactiveRoutes} onShowAll={filter.showAllOperators} />
 
         <LiveLayers showLiveVessels={showLiveVessels} vesselsUnavailable={vesselsUnavailable} onToggle={setShowLiveVessels} />
@@ -83,7 +110,7 @@ export function AppShell() {
       </aside>
 
       <main className="map-panel">
-        <FerryMap basemapId={basemapId} visibleOperatorIds={filter.visibleOperatorIds} showInactiveRoutes={filter.showInactiveRoutes} vessels={vessels} />
+        <FerryMap basemapId={basemapId} visibleOperatorIds={filter.visibleOperatorIds} showInactiveRoutes={filter.showInactiveRoutes} showMosquitoFleet={showMosquitoFleet} vessels={vessels} />
         <div className="map-caption" aria-hidden="true"><span className="map-caption-dot" /> Salish Sea region</div>
       </main>
     </div>
