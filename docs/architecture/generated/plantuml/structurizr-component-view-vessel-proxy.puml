@@ -30,15 +30,15 @@ System_Boundary("SalishSeaFerryMap_boundary", "Salish Sea Ferry Map", $tags="Ele
     Component(SalishSeaFerryMap.Livevesselproxy.Vesselproxyroute, "Vessel proxy route", $techn="src/app/api/vessels/route.ts", $descr="Server-side WSDOT call that keeps the API key off the client and parses the response.", $tags="Element", $link="")
   }
 
-  Container(SalishSeaFerryMap.BrowsermapUI, "Browser map UI", $techn="MapLibre GL JS, React", $descr="Renders routes, terminals, filters, and optional vessels over the basemap.", $tags="Element", $link="")
+  Container(SalishSeaFerryMap.BrowserUI, "Browser UI", $techn="React, MapLibre GL JS, SVG", $descr="Renders the geographic map and the route diagram, with filters and optional vessels.", $tags="Element", $link="")
   Container(SalishSeaFerryMap.Nextjswebapp, "Next.js web app", $techn="Next.js App Router, React, TypeScript", $descr="Serves the site and bundles the shared application modules.", $tags="Element", $link="")
 }
 
-Rel(SalishSeaFerryMap.Nextjswebapp, SalishSeaFerryMap.BrowsermapUI, "Delivers to the browser", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.Nextjswebapp, SalishSeaFerryMap.BrowserUI, "Delivers / to the browser", $techn="", $tags="Relationship", $link="")
 Rel(SalishSeaFerryMap.Livevesselproxy.Vesselproxyroute, SalishSeaFerryMap.Nextjswebapp, "Parses payloads", $techn="", $tags="Relationship", $link="")
 Rel(SalishSeaFerryMap.Livevesselproxy.Vesselproxyroute, WSDOTVesselLocationsAPI, "Vessel locations", $techn="", $tags="Relationship", $link="")
-Rel(SalishSeaFerryMap.BrowsermapUI, SalishSeaFerryMap.Nextjswebapp, "Operators, routes", $techn="", $tags="Relationship", $link="")
-Rel(SalishSeaFerryMap.BrowsermapUI, SalishSeaFerryMap.Livevesselproxy.Vesselproxyroute, "GET /api/vessels", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI, SalishSeaFerryMap.Nextjswebapp, "Operators, routes", $techn="", $tags="Relationship", $link="")
+Rel(SalishSeaFerryMap.BrowserUI, SalishSeaFerryMap.Livevesselproxy.Vesselproxyroute, "GET /api/vessels", $techn="", $tags="Relationship", $link="")
 
 SHOW_LEGEND(true)
 hide stereotypes

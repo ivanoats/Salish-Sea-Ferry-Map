@@ -16,3 +16,6 @@ Add a row here whenever an ADR is accepted, superseded, deprecated, or rejected.
 | 2026-09-13 | [0004](../adr/0004-route-map-scope.md) | Accepted — route mapping only, not trip planning or navigation |
 | 2026-09-24 | [0006](../adr/0006-octolinear-diagram-as-separate-page.md) | Accepted — octolinear route diagram as a separate SVG page over the same dataset |
 | 2026-09-25 | [0005](../adr/0005-gtfs-as-build-time-input.md) | Accepted — pinned GTFS archives corroborate curated data through offline validation |
+| 2026-09-24 | [0007](../adr/0007-selectable-no-key-basemaps.md) | Accepted — selectable hosted basemaps, defaulting to no-key OpenFreeMap Positron (recorded 2026-11-18) |
+| 2026-09-25 | [0008](../adr/0008-print-files-from-diagram-code.md) | Accepted — print files generated from the route diagram's own code (recorded 2026-11-18) |
+| 2026-10-22 | [0009](../adr/0009-talk-decks-as-staged-static-files.md) | Accepted — talk decks served as static files staged at build time (recorded 2026-11-18) |
