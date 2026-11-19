@@ -14,11 +14,15 @@ mean maintaining two versions of the slides.
 
 ## Decision
 
-- Keep each deck's source in `talks/<folder>/web/`. That folder is the only
-  copy in git.
-- At `npm run dev` and `npm run build`, `scripts/copy-talks.mjs` copies each
-  deck into `public/talks/<slug>/`. `public/talks/` is gitignored, the same
-  way the staged MapLibre worker in `public/maplibre/` is.
+- Serve each deck from `talks/<folder>/web/`, the deck split into cacheable
+  files. A talk folder can also commit a single-file offline copy of the deck
+  for the talk laptop, such as `talks/2026-10-cugos/salish-sea-ferry-ignite.html`.
+  That copy is separate: the site never serves it, and changes to `web/` don't
+  reach it, so it has to be kept in step by hand.
+- At `npm run dev` and `npm run build`, `scripts/copy-talks.mjs` copies only
+  `web/` into `public/talks/<slug>/`. That copy is generated and gitignored,
+  like the staged MapLibre worker in `public/maplibre/`, so it's never the
+  one to edit.
 - `next.config.ts` rewrites the bare `/talks/<slug>` path to its
   `index.html`, since Next serves `public/` files by exact path only.
 - The decks are outside the C4 model. They are static assets served by the web
